@@ -69,7 +69,7 @@ public class ArmAutoFactories {
                 grabberWaitTimeCube, 
                 waitForElevatorToTilt2, 
                 elevatorPositionMeters, 
-                elbowPositionDegrees, 
+                Constants.Auto.Arm.Placement.elbowPositionAfterPlacement, 
                 elevatorTiltState2, 
                 elevatorTiltState3);
                 
