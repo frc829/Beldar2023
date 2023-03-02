@@ -5,15 +5,19 @@
 package frc.robot.framework.motors;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import frc.robot.framework.motors.Motor.REVMotor;
+import frc.robot.framework.simulation.Simulator;
 
 /** Add your docs here. */
 public abstract class SparkMaxFactory {
+
+    public enum REVMotor{
+        NEO,
+        NEO550
+    }
 
     public static CANSparkMax create(
             int deviceId,
@@ -25,10 +29,7 @@ public abstract class SparkMaxFactory {
             double velocityKD,
             double velocityKF) {
 
-        MotorType motorType = (revMotor != REVMotor.NEO && revMotor != REVMotor.NEO550)
-                ? MotorType.kBrushed
-                : MotorType.kBrushless;
-        CANSparkMax canSparkMax = new CANSparkMax(deviceId, motorType);
+        CANSparkMax canSparkMax = new CANSparkMax(deviceId, MotorType.kBrushless);
         canSparkMax.setInverted(isInverted);
         canSparkMax.setIdleMode(idleMode);
         canSparkMax.getPIDController().setP(velocityKP);
@@ -36,28 +37,15 @@ public abstract class SparkMaxFactory {
         canSparkMax.getPIDController().setD(velocityKD);
         canSparkMax.getPIDController().setFF(velocityKF);
 
-        setSmartCurrentLimit(canSparkMax, revMotor);
-        addToSimulator(canSparkMax, revMotor);
-
-        return canSparkMax;
-    }
-
-    private static void addToSimulator(CANSparkMax canSparkMax, REVMotor revMotor) {
         if(revMotor == REVMotor.NEO){
-            REVPhysicsSim.getInstance().addSparkMax(canSparkMax, DCMotor.getNEO(1));
-        }
-        else{
-            REVPhysicsSim.getInstance().addSparkMax(canSparkMax, DCMotor.getNeo550(1));
-        }
-    }
-
-    private static void setSmartCurrentLimit(CANSparkMax canSparkMax, REVMotor sparkMaxBrand) {
-        if(sparkMaxBrand == REVMotor.NEO){
             canSparkMax.setSmartCurrentLimit(40);
+            Simulator.getInstance().addSparkMax(canSparkMax, DCMotor.getNEO(deviceId));
         }
         else{
             canSparkMax.setSmartCurrentLimit(20);
+            Simulator.getInstance().addSparkMax(canSparkMax, DCMotor.getNeo550(deviceId));
         }
+        
+        return canSparkMax;
     }
-
 }

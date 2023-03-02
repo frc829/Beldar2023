@@ -10,6 +10,8 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVPhysicsSim;
 
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
@@ -17,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import frc.robot.framework.mechanismsAdvanced.SwerveModule;
@@ -33,6 +36,10 @@ public class Simulator {
      */
     public static Simulator getInstance() {
         return sim;
+    }
+
+    public void addSparkMax(CANSparkMax sparkMax, DCMotor dcMotor){
+        REVPhysicsSim.getInstance().addSparkMax(sparkMax, dcMotor);
     }
 
     public void addCANCoder(

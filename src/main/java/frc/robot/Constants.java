@@ -17,7 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import frc.robot.framework.motors.Motor;
+import frc.robot.framework.motors.SparkMaxFactory;
 import frc.robot.subsystems.ElevatorTilt;
 import frc.robot.subsystems.ElevatorTilt.State;
 import edu.wpi.first.wpilibj.SPI;
@@ -93,7 +93,7 @@ public final class Constants {
 
             public static class MotorConfig {
               public static int deviceId = 10;
-              public static Motor.REVMotor revMotor = Motor.REVMotor.NEO;
+              public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO;
               public static boolean isInverted = false;
               public static IdleMode idleMode = IdleMode.kBrake;
               public static double velocityKP = 0;
@@ -109,7 +109,7 @@ public final class Constants {
 
             public static class MotorConfig {
               public static int deviceId = 20;
-              public static Motor.REVMotor revMotor = Motor.REVMotor.NEO;
+              public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO;
               public static boolean isInverted = false;
               public static IdleMode idleMode = IdleMode.kBrake;
               public static double velocityKP = 0;
@@ -149,7 +149,7 @@ public final class Constants {
 
             public static class MotorConfig {
               public static int deviceId = 11;
-              public static Motor.REVMotor revMotor = Motor.REVMotor.NEO;
+              public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO;
               public static boolean isInverted = false;
               public static IdleMode idleMode = IdleMode.kBrake;
               public static double velocityKP = 0;
@@ -165,7 +165,7 @@ public final class Constants {
 
             public static class MotorConfig {
               public static int deviceId = 21;
-              public static Motor.REVMotor revMotor = Motor.REVMotor.NEO;
+              public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO;
               public static boolean isInverted = false;
               public static IdleMode idleMode = IdleMode.kBrake;
               public static double velocityKP = 0;
@@ -205,7 +205,7 @@ public final class Constants {
 
             public static class MotorConfig {
               public static int deviceId = 12;
-              public static Motor.REVMotor revMotor = Motor.REVMotor.NEO;
+              public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO;
               public static boolean isInverted = false;
               public static IdleMode idleMode = IdleMode.kBrake;
               public static double velocityKP = 0;
@@ -221,7 +221,7 @@ public final class Constants {
 
             public static class MotorConfig {
               public static int deviceId = 22;
-              public static Motor.REVMotor revMotor = Motor.REVMotor.NEO;
+              public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO;
               public static boolean isInverted = false;
               public static IdleMode idleMode = IdleMode.kBrake;
               public static double velocityKP = 0;
@@ -261,7 +261,7 @@ public final class Constants {
 
             public static class MotorConfig {
               public static int deviceId = 13;
-              public static Motor.REVMotor revMotor = Motor.REVMotor.NEO;
+              public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO;
               public static boolean isInverted = false;
               public static IdleMode idleMode = IdleMode.kBrake;
               public static double velocityKP = 0;
@@ -277,7 +277,7 @@ public final class Constants {
 
             public static class MotorConfig {
               public static int deviceId = 23;
-              public static Motor.REVMotor revMotor = Motor.REVMotor.NEO;
+              public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO;
               public static boolean isInverted = false;
               public static IdleMode idleMode = IdleMode.kBrake;
               public static double velocityKP = 0;
@@ -316,7 +316,7 @@ public final class Constants {
 
         public static class MotorConfig {
           public static int deviceId = 16;
-          public static Motor.REVMotor revMotor = Motor.REVMotor.NEO;
+          public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO;
           public static boolean isInverted = false;
           public static IdleMode idleMode = IdleMode.kBrake;
           public static double velocityKP = 0;
@@ -362,7 +362,7 @@ public final class Constants {
 
         public static class MotorConfig {
           public static int deviceId = 15;
-          public static Motor.REVMotor revMotor = Motor.REVMotor.NEO;
+          public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO;
           public static boolean isInverted = true;
           public static IdleMode idleMode = IdleMode.kBrake;
           public static double velocityKP = 0;
@@ -425,7 +425,7 @@ public final class Constants {
 
           public static class MotorConfig {
             public static int deviceId = 14;
-            public static Motor.REVMotor revMotor = Motor.REVMotor.NEO550;
+            public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO550;
             public static boolean isInverted = false;
             public static IdleMode idleMode = IdleMode.kBrake;
             public static double velocityKP = 0;
@@ -443,7 +443,7 @@ public final class Constants {
 
           public static class MotorConfig {
             public static int deviceId = 24;
-            public static Motor.REVMotor revMotor = Motor.REVMotor.NEO550;
+            public static SparkMaxFactory.REVMotor revMotor = SparkMaxFactory.REVMotor.NEO550;
             public static boolean isInverted = false;
             public static IdleMode idleMode = IdleMode.kBrake;
             public static double velocityKP = 0;
