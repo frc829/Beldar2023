@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 public class PIDEndAtSetPointCommand extends PIDCommand{
 
     public PIDEndAtSetPointCommand(PIDController controller, DoubleSupplier measurementSource, double setpoint,
-            DoubleConsumer useOutput, Subsystem[] requirements) {
+            DoubleConsumer useOutput, Subsystem... requirements) {
         super(controller, measurementSource, setpoint, useOutput, requirements);
     }
 

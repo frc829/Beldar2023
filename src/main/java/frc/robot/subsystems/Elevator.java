@@ -91,7 +91,7 @@ public class Elevator extends SubsystemBase {
   }
 
   // Runnables
-  private void setElevatorSpeedManual() {
+  private void setVelocity() {
     double velocityMetersPerSecond = manualSpeedControl.getManualSpeed();
     velocityMetersPerSecond = velocityMetersPerSecond >= 0 && getPositionMeters() > elevatorMaximumPositionMeters ? 0
         : velocityMetersPerSecond;
@@ -127,7 +127,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public CommandBase createManualControlCommand() {
-    return Commands.run(this::setElevatorSpeedManual, this);
+    return Commands.run(this::setVelocity, this);
   }
 
   public PIDEndAtSetPointCommand createSetPositionCommand(double positionMeters) {
