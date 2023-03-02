@@ -56,10 +56,12 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -678,11 +680,11 @@ public class RobotContainer {
                 this.elevatorTilt = new DarthMaulCylinder(
                                 frontCylinder,
                                 backCylinder);
-                PIDController elevatorPIDController = PIDControllerFactory.create(
-                                Constants.Robot.Arm.Elevator.Control.PID.kP,
-                                Constants.Robot.Arm.Elevator.Control.PID.kI,
-                                Constants.Robot.Arm.Elevator.Control.PID.kD,
-                                Constants.Robot.Arm.Elevator.Control.PID.tolerance);
+                ProfiledPIDController elevatorProfiledPIDController = new ProfiledPIDController(
+                        0, 
+                        0, 
+                        0, 
+                        new Constraints(0, 0));
 
                 PIDController elbowPIDController = PIDControllerFactory.create(
                                 Constants.Robot.Arm.ElbowConstants.Control.PID.kP,

@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -93,72 +91,58 @@ public class Elevator extends SubsystemBase {
   }
 
   // Runnables
-  private void initializePIDController() {
-    elevatorPIDController.setSetpoint(getPositionMeters());
-  }
-
-  private void setElevatorToSetPoint() {
-    double velocityMetersPerSecond = elevatorPIDController.calculate(getPositionMeters());
-    velocityMetersPerSecond = elevatorPIDController.atSetpoint() ? 0 : velocityMetersPerSecond;
-    Rotation2d reductionRotationsPerSecond = chainSprocket.transformLinearToRotation(velocityMetersPerSecond);
-    Rotation2d motorRotationsPerSecond = motorReduction.expandMechanismRotations(reductionRotationsPerSecond);
-    motor.motorController.setVelocity(motorRotationsPerSecond);
-  }
-
   private void setElevatorSpeedManual() {
     double velocityMetersPerSecond = manualSpeedControl.getManualSpeed();
-    velocityMetersPerSecond = getPositionMeters() <= elevatorMinimumPositionMeters && velocityMetersPerSecond < 0.0
-        ? 0.0
+    velocityMetersPerSecond = velocityMetersPerSecond >= 0 && getPositionMeters() > elevatorMaximumPositionMeters ? 0
         : velocityMetersPerSecond;
-    velocityMetersPerSecond = getPositionMeters() >= elevatorMaximumPositionMeters && velocityMetersPerSecond > 0.0
-        ? 0.0
+    velocityMetersPerSecond = velocityMetersPerSecond <= 0 && getPositionMeters() < elevatorMinimumPositionMeters ? 0
         : velocityMetersPerSecond;
-    Rotation2d reductionRotationsPerSecond = chainSprocket.transformLinearToRotation(velocityMetersPerSecond);
-    Rotation2d motorRotationsPerSecond = motorReduction.expandMechanismRotations(reductionRotationsPerSecond);
-    motor.motorController.setVelocity(motorRotationsPerSecond);
+    Rotation2d mechRotationsPerSecond = chainSprocket.transformLinearToRotation(velocityMetersPerSecond);
+    Rotation2d motorRotations = motorReduction.expandMechanismRotations(mechRotationsPerSecond);
+    motor.motorController.setVelocity(motorRotations);
   }
 
   // Consumers
   private void setVelocity(double velocityMetersPerSecond) {
-    double rotationsPerSecond = chainSprocket.transformRotationToLinear(motorRotationsReduced);
-    Rotation2d motorRotationsReduced = motorReduction.reduceMotorRotations(motorRotations);
-    Rotation2d motorRotations = motor.motorEncoder.getPosition();
-    return linearPositionMeters;
+    velocityMetersPerSecond = velocityMetersPerSecond >= 0 && getPositionMeters() > elevatorMaximumPositionMeters ? 0
+        : velocityMetersPerSecond;
+    velocityMetersPerSecond = velocityMetersPerSecond <= 0 && getPositionMeters() < elevatorMinimumPositionMeters ? 0
+        : velocityMetersPerSecond;
+    Rotation2d mechRotationsPerSecond = chainSprocket.transformLinearToRotation(velocityMetersPerSecond);
+    Rotation2d motorRotations = motorReduction.expandMechanismRotations(mechRotationsPerSecond);
+    motor.motorController.setVelocity(motorRotations);
   }
 
   // Commands
-  public CommandBase createHoldCommand() {
-    CommandBase initializePIDControllerCommand = Commands.runOnce(this::initializePIDController, this);
-    CommandBase runElbowToPosition = Commands.run(this::setElevatorToSetPoint, this);
-    return Commands.sequence(initializePIDControllerCommand, runElbowToPosition);
+  public PIDCommand createHoldCommand() {
+
+    PIDCommand pidHoldCommand = new PIDCommand(
+        elevatorPIDController,
+        this::getPositionMeters,
+        getPositionMeters(),
+        this::setVelocity,
+        this);
+
+    return pidHoldCommand;
   }
 
   public CommandBase createManualControlCommand() {
     return Commands.run(this::setElevatorSpeedManual, this);
   }
 
-  public CommandBase createSetPositionCommand(double positionMeters) {
+  public PIDEndAtSetPointCommand createSetPositionCommand(double positionMeters) {
 
     PIDEndAtSetPointCommand pidEndAtSetPointCommand = new PIDEndAtSetPointCommand(
         elevatorPIDController,
         this::getPositionMeters,
         positionMeters,
-        null,
-        null);
+        this::setVelocity,
+        this);
 
-    return Commands.race(pidEndAtSetPointCommand);
-
+    return pidEndAtSetPointCommand;
   }
 
   public CommandBase createStopCommand() {
-    Runnable control = new Runnable() {
-
-      @Override
-      public void run() {
-        elevatorMech.stop();
-      }
-    };
-
-    return Commands.runOnce(control, this);
+    return Commands.runOnce(motor.motorController::stop, this);
   }
 }
