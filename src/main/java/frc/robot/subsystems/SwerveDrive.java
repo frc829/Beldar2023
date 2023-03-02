@@ -399,12 +399,12 @@ public class SwerveDrive extends SubsystemBase {
       @Override
       public void initialize() {
         Pose2d initialPose = swerveDrive.getSwerveDrivePosition();
-        if (DriverStation.getAlliance() == Alliance.Red) {
-          initialPose = new Pose2d(
-              initialPose.getX(),
-              8.02 - initialPose.getY(),
-              new Rotation2d().minus(initialPose.getRotation()));
-        }
+        // if (DriverStation.getAlliance() == Alliance.Red) {
+        //   initialPose = new Pose2d(
+        //       initialPose.getX(),
+        //       8.02 - initialPose.getY(),
+        //       new Rotation2d().minus(initialPose.getRotation()));
+        // }
 
         PathPoint initialPoint = PathPoint.fromCurrentHolonomicState(
             initialPose,
@@ -419,7 +419,7 @@ public class SwerveDrive extends SubsystemBase {
             initialPoint,
             goalPoint);
 
-        trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
+        //trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
 
         drivingCommand = new PPSwerveControllerCommand(
             trajectory,
@@ -545,7 +545,12 @@ public class SwerveDrive extends SubsystemBase {
   public static Pose2d getClosestPosition(SwerveDrive swerveDrive, List<Pose2d> positions) {
 
     Pose2d currentPosition = swerveDrive.getSwerveDrivePosition();
+
     Pose2d closestPosition = positions.get(0);
+
+    if(DriverStation.getAlliance() == Alliance.Red){
+      closestPosition = new Pose2d(closestPosition.getX(), 8.02 - closestPosition.getY(), closestPosition.getRotation());
+    }
     Translation2d closestPositionTranslation = closestPosition.getTranslation();
     Translation2d currentPositionTranslation = currentPosition.getTranslation();
 
@@ -553,6 +558,9 @@ public class SwerveDrive extends SubsystemBase {
 
     for (int i = 1; i < positions.size(); i++) {
       Pose2d position = positions.get(i);
+      if(DriverStation.getAlliance() == Alliance.Red){
+        position = new Pose2d(position.getX(), 8.02 - position.getY(), position.getRotation());
+      }
       Translation2d positionTranslation = position.getTranslation();
       double distance = positionTranslation.getDistance(currentPositionTranslation);
       if (distance < currentMinimumDistance) {

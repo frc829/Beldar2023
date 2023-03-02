@@ -1144,7 +1144,7 @@ public class RobotContainer {
                 driveController.povLeft().whileTrue(leftPortalAlign);
 
                 // INFO: Toggle Limelight Vision Adding
-                driveController.povUp().onTrue(nearestScoreAlign);
+                driveController.povUp().whileTrue(nearestScoreAlign);
 
                 // INFO: Reset Known
                 driveController.povRight().whileTrue(rightPortalAlign);
