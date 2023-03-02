@@ -1,0 +1,164 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "Compressor[19]": {
+        "header": {
+          "open": true
+        }
+      },
+      "DutyCycleEncoder[1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "REV_DoubleSolenoid[0,15]": {
+        "header": {
+          "open": true
+        }
+      },
+      "REV_Solenoid[11]": {
+        "header": {
+          "open": true
+        }
+      },
+      "REV_Solenoid[1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Solenoid[0]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Solenoid[11]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Solenoid[1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Solenoid[3]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Solenoid[4]": {
+        "header": {
+          "open": true
+        }
+      }
+    },
+    "Solenoids": {
+      "19": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
+      "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[11]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[12]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[13]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[14]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[15]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[16]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[17]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[18]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[19]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/Shuffleboard/MAIN/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Arm2d": "Mechanism2d",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/The Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Arm2d": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Field": {
+        "Trajectory": {
+          "arrowSize": 0,
+          "style": "Line"
+        },
+        "height": 8.0,
+        "width": 16.5,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/The Field": {
+        "Robot": {
+          "length": 0.7599999904632568,
+          "width": 0.6100000143051147
+        },
+        "Trajectory": {
+          "arrowSize": 0,
+          "style": "Line"
+        },
+        "WeirdPlacement": {
+          "arrowSize": 0,
+          "style": "Line"
+        },
+        "height": 8.020000457763672,
+        "width": 16.5,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Elevator Speed (m": {
+          "open": true
+        },
+        "Grabber Open": {
+          "open": true
+        },
+        "PPSwerveControllerCommand": {
+          "open": true
+        },
+        "The Field": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    }
+  }
+}
