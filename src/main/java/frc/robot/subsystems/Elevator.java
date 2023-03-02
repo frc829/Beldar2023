@@ -54,6 +54,8 @@ public class Elevator extends SubsystemBase {
     this.elevatorMaximumPositionMeters = elevatorMaximumPositionMeters;
     this.elevatorMech2d = elevatorMech2d;
     this.decimalFormat = decimalFormat;
+
+    setMotorEncoderFromSensor();
   }
 
   @Override
@@ -90,18 +92,6 @@ public class Elevator extends SubsystemBase {
     return linearPositionSensor.getPosition();
   }
 
-  // Runnables
-  private void setVelocity() {
-    double velocityMetersPerSecond = manualSpeedControl.getManualSpeed();
-    velocityMetersPerSecond = velocityMetersPerSecond >= 0 && getPositionMeters() > elevatorMaximumPositionMeters ? 0
-        : velocityMetersPerSecond;
-    velocityMetersPerSecond = velocityMetersPerSecond <= 0 && getPositionMeters() < elevatorMinimumPositionMeters ? 0
-        : velocityMetersPerSecond;
-    Rotation2d mechRotationsPerSecond = chainSprocket.transformLinearToRotation(velocityMetersPerSecond);
-    Rotation2d motorRotations = motorReduction.expandMechanismRotations(mechRotationsPerSecond);
-    motor.motorController.setVelocity(motorRotations);
-  }
-
   // Consumers
   private void setVelocity(double velocityMetersPerSecond) {
     velocityMetersPerSecond = velocityMetersPerSecond >= 0 && getPositionMeters() > elevatorMaximumPositionMeters ? 0
@@ -113,33 +103,51 @@ public class Elevator extends SubsystemBase {
     motor.motorController.setVelocity(motorRotations);
   }
 
+  private void setMotorEncoderFromSensor(){
+    double positionFromSensor = getPositionFromSensor();
+    Rotation2d mechRotations = chainSprocket.transformLinearToRotation(positionFromSensor);
+    Rotation2d motorRotations = motorReduction.expandMechanismRotations(mechRotations);
+    motor.motorEncoder.setPosition(motorRotations);
+  }
+
   // Commands
   public PIDCommand createHoldCommand() {
 
     PIDCommand pidHoldCommand = new PIDCommand(
-        elevatorPIDController,
-        this::getPositionMeters,
-        getPositionMeters(),
-        this::setVelocity,
-        this);
+      elevatorPIDController, 
+      this::getPositionMeters, 
+      this::getPositionMeters, 
+      this::setVelocity, 
+      this);
 
     return pidHoldCommand;
   }
 
   public CommandBase createManualControlCommand() {
-    return Commands.run(this::setVelocity, this);
+    return new CommandBase() {
+      @Override
+      public void execute() {
+          double velocityMetersPerSecond = manualSpeedControl.getManualSpeed();
+          setVelocity(velocityMetersPerSecond);
+      }
+    };
   }
 
-  public PIDEndAtSetPointCommand createSetPositionCommand(double positionMeters) {
+  public PIDCommand createSetPositionCommand(double positionMeters) {
 
-    PIDEndAtSetPointCommand pidEndAtSetPointCommand = new PIDEndAtSetPointCommand(
-        elevatorPIDController,
-        this::getPositionMeters,
-        positionMeters,
-        this::setVelocity,
-        this);
+    PIDCommand setPositionCommand = new PIDCommand(
+      elevatorPIDController, 
+      this::getPositionMeters, 
+      positionMeters, 
+      this::setVelocity, 
+      this){
+        @Override
+        public boolean isFinished() {
+            return elevatorPIDController.atSetpoint();
+        }
+      };
 
-    return pidEndAtSetPointCommand;
+      return setPositionCommand;
   }
 
   public CommandBase createStopCommand() {
