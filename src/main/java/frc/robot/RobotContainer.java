@@ -1031,16 +1031,24 @@ public class RobotContainer {
 
                 CommandBase zeroModulesCommand = swerveDrive.getZeroModuleCommand();
                 CommandBase setTelemetryFromCameraCommand = swerveDrive.setTelemetryFromCameraCommand();
-                CommandBase toggleAllowVisionMeasurementCommand = swerveDrive.toggleAllowVisionMeasurementCommand();
                 CommandBase dropPortalAlign = DriveAutoRoutines.create(
                                 swerveDrive,
                                 Constants.Auto.Drive.PortalPositions.dropPortal,
                                 fieldMap);
 
+                CommandBase leftPortalAlign = DriveAutoRoutines.create(
+                                swerveDrive,
+                                Constants.Auto.Drive.PortalPositions.leftPortal,
+                                fieldMap);
+
+                CommandBase rightPortalAlign = DriveAutoRoutines.create(
+                                swerveDrive,
+                                Constants.Auto.Drive.PortalPositions.rightPortal,
+                                fieldMap);
+
                 CommandBase nearestScoreAlign = swerveDrive.getOnTheFlyDriveCommand(
                                 Constants.Auto.Drive.ScoringPositions.positionsList,
                                 fieldMap);
-                CommandBase balanceCommand = swerveDrive.getBalanceCommand();
                 CommandBase alignHighCommand = ArmCommandFactories.Alignment.create(
                                 elevator,
                                 elbow,
@@ -1133,20 +1141,22 @@ public class RobotContainer {
                 driveController.rightBumper().onTrue(placeHighCommand);
 
                 // INFO: Test Targeting
-                driveController.povLeft().whileTrue(dropPortalAlign);
+                driveController.povLeft().whileTrue(leftPortalAlign);
 
                 // INFO: Toggle Limelight Vision Adding
-                driveController.povUp().onTrue(toggleAllowVisionMeasurementCommand);
+                driveController.povUp().onTrue(nearestScoreAlign);
 
                 // INFO: Reset Known
-                driveController.povRight().whileTrue(nearestScoreAlign);
+                driveController.povRight().whileTrue(rightPortalAlign);
 
                 // INFO: Auto Balance
-                driveController.povDown().whileTrue(balanceCommand);
+                driveController.povDown().whileTrue(dropPortalAlign);
 
         }
 
         private void configureOperatorBindings() {
+
+                CommandBase balanceTest = swerveDrive.getBalanceCommand();
 
                 CommandBase elementCarry = ArmCommandFactories.Carry.create(
                                 elevator,
@@ -1269,6 +1279,8 @@ public class RobotContainer {
                 operatorController.povLeft().onTrue(shortSaber);
                 operatorController.povRight().onTrue(tatooine);
                 operatorController.povUp().onTrue(duelOfTheFates);
+
+                operatorController.start().whileTrue(balanceTest);
         }
 
         /**
