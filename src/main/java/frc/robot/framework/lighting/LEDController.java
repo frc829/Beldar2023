@@ -85,6 +85,7 @@ public interface LEDController {
                     colorFlowConfig.numLED, 
                     colorFlowConfig.isReversed ? Direction.Forward : Direction.Backward, 
                     colorFlowConfig.ledOffset);  
+                candle.animate(colorFlowAnimation);
             }
 
             @Override
