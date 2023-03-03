@@ -102,6 +102,7 @@ public class Elevator extends SubsystemBase {
     motor.setVelocity(motorRotations);
   }
 
+  //Runnables
   private void setMotorEncoderFromSensor(){
     double positionFromSensor = getPositionFromSensor();
     Rotation2d mechRotations = chainSprocket.transformLinearToRotation(positionFromSensor);

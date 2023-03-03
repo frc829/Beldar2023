@@ -5,8 +5,6 @@
 package frc.robot.framework.mechanismsAdvanced;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.framework.mechanisms.MotorReduction;
 import frc.robot.framework.mechanisms.Wheel;
 import frc.robot.framework.motors.Motor;
@@ -34,11 +32,13 @@ public class SwerveModule {
     this.driveMotorReduction = driveMotorReduction;
     this.driveWheel = driveWheel;
     this.steeringSensor = steeringSensor;
+
+    setSteeringMechEncoderFromSensor();
   }
 
 
   //Suppliers
-  public Rotation2d getSteeringMotorPosition(){
+  public Rotation2d getSteeringMechPosition(){
     Rotation2d steeringMotorPosition = steeringMotor.getPosition();
     Rotation2d steeringMechPosition = steeringMotorReduction.reduceMotorRotations(steeringMotorPosition);
     double steeringMechPositionRotations = steeringMechPosition.getRotations();
@@ -48,48 +48,48 @@ public class SwerveModule {
     return steeringMechPosition;
   }
 
-  public double getDriveMotorPosition(){
-
+  public double getDriveMechPosition(){
+    Rotation2d driveMotorPosition = driveMotor.getPosition();
+    Rotation2d driveMechPosition = driveMotorReduction.reduceMotorRotations(driveMotorPosition);
+    double drivePosition = driveWheel.transformRotationToLinear(driveMechPosition);
+    return drivePosition;
   }
 
-  public double getDriveMotorSpeed(){
+  public double getDriveMechSpeed(){
+    Rotation2d driveMotorVelocity = driveMotor.getVelocity();
+    Rotation2d driveMechVelocity = driveMotorReduction.reduceMotorRotations(driveMotorVelocity);
+    double driveVelocity = driveWheel.transformRotationToLinear(driveMechVelocity);
+    return driveVelocity;
+  }
 
+  public Rotation2d getSteeringPositionFromSensor(){
+    return steeringSensor.getAbsoluteAngle();
+  }
+
+  //Runnables
+  
+  public void setSteeringMechEncoderFromSensor(){
+    Rotation2d positionFromSensor = getSteeringPositionFromSensor();
+    Rotation2d motorRotations = steeringMotorReduction.expandMechanismRotations(positionFromSensor);
+    steeringMotor.setPosition(motorRotations);
+  }
+  
+  public void stop(){
+    steeringMotor.stop();
+    driveMotor.stop();
   }
 
   //Consumers
-
-
-  public SwerveModulePosition getSwerveModulePosition() {
-    Rotation2d angle = steeringMechanism.getPositionRotations();
-    double angleRotations = angle.getRotations();
-    angleRotations %= 1.0;
-    angleRotations = angleRotations < 0.0 ? angleRotations + 1.0 : angleRotations;
-    angle = Rotation2d.fromRotations(angleRotations);
-    double drivepos = driveMechanism.getPositionMeters();
-    return new SwerveModulePosition(drivepos, angle);
+  public void setSteeringMechSpeed(Rotation2d velocityPerSecond){
+    Rotation2d motorVelocityPerSecond = steeringMotorReduction.expandMechanismRotations(velocityPerSecond);
+    steeringMotor.setVelocity(motorVelocityPerSecond);
   }
 
-  public SwerveModuleState getSwerveModuleState() {
-    Rotation2d angle = steeringMechanism.getPositionRotations();
-    double angleRotations = angle.getRotations();
-    angleRotations %= 1.0;
-    angleRotations = angleRotations < 0.0 ? angleRotations + 1.0 : angleRotations;
-    angle = Rotation2d.fromRotations(angleRotations);
-    double drivespeed = driveMechanism.getSpeedMetersPerSecond();
-    return new SwerveModuleState(drivespeed, angle);
+  public void setDriveMechSpeed(double velocityMetersPerSecond){
+    Rotation2d driveMechVelocity = driveWheel.transformLinearToRotation(velocityMetersPerSecond);
+    Rotation2d driveMotorVelocity = driveMotorReduction.expandMechanismRotations(driveMechVelocity);
+    driveMotor.setVelocity(driveMotorVelocity);
   }
 
-  public void setSwerveModuleState(Rotation2d steeringMechanismVelocityRPS, double driveMechanismVelocityMPS) {
-    this.steeringMechanism.setVelocityRotationsPerSecond(steeringMechanismVelocityRPS);
-    driveMechanism.setMechanismSpeedMetersPerSecond(driveMechanismVelocityMPS);
-  }
 
-  public void setSwerveModuleSteeringEncoder() {
-    this.steeringMechanism.setEncoderPositionFromSensor();
-  }
-
-  public void stop() {
-    this.steeringMotor.stop();
-    this.driveMotor.stop();
-  }
 }
