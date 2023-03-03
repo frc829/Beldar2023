@@ -18,7 +18,6 @@ import frc.robot.framework.mechanisms.MotorReduction;
 import frc.robot.framework.mechanisms.Wheel;
 import frc.robot.framework.motors.Motor;
 import frc.robot.framework.sensors.LinearPositionSensor;
-import frc.robot.types.PIDEndAtSetPointCommand;
 
 public class Elevator extends SubsystemBase {
 
@@ -75,14 +74,14 @@ public class Elevator extends SubsystemBase {
 
   // Suppliers
   private double getPositionMeters() {
-    Rotation2d motorRotations = motor.motorEncoder.getPosition();
+    Rotation2d motorRotations = motor.getPosition();
     Rotation2d motorRotationsReduced = motorReduction.reduceMotorRotations(motorRotations);
     double linearPositionMeters = chainSprocket.transformRotationToLinear(motorRotationsReduced);
     return linearPositionMeters;
   }
 
   private double getVelocity() {
-    Rotation2d motorRotationsPerSecond = motor.motorEncoder.getVelocityPerSecond();
+    Rotation2d motorRotationsPerSecond = motor.getVelocity();
     Rotation2d motorRotationsPerSecondReduced = motorReduction.reduceMotorRotations(motorRotationsPerSecond);
     double linearVelocityMetersPerSecond = chainSprocket.transformRotationToLinear(motorRotationsPerSecondReduced);
     return linearVelocityMetersPerSecond;
@@ -100,14 +99,14 @@ public class Elevator extends SubsystemBase {
         : velocityMetersPerSecond;
     Rotation2d mechRotationsPerSecond = chainSprocket.transformLinearToRotation(velocityMetersPerSecond);
     Rotation2d motorRotations = motorReduction.expandMechanismRotations(mechRotationsPerSecond);
-    motor.motorController.setVelocity(motorRotations);
+    motor.setVelocity(motorRotations);
   }
 
   private void setMotorEncoderFromSensor(){
     double positionFromSensor = getPositionFromSensor();
     Rotation2d mechRotations = chainSprocket.transformLinearToRotation(positionFromSensor);
     Rotation2d motorRotations = motorReduction.expandMechanismRotations(mechRotations);
-    motor.motorEncoder.setPosition(motorRotations);
+    motor.setPosition(motorRotations);
   }
 
   // Commands
@@ -151,6 +150,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public CommandBase createStopCommand() {
-    return Commands.runOnce(motor.motorController::stop, this);
+    return Commands.runOnce(motor::stop, this);
   }
 }

@@ -62,7 +62,7 @@ public class Simulator {
                 public void run() {
                     double deltaT = getPeriod();
                     double currentAngleDegrees = simPosition.get() * 360.0 / 4096.0;
-                    double deltaAngleDegrees = motor.getVelocityRotationPerSecond().getDegrees() * motorToMechConversion
+                    double deltaAngleDegrees = motor.getVelocity().getDegrees() * motorToMechConversion
                             * deltaT;
                     currentAngleDegrees += deltaAngleDegrees;
                     double currentAngleRotations = currentAngleDegrees / 360.0;
@@ -103,7 +103,7 @@ public class Simulator {
                 public void run() {
                     double deltaT = getPeriod();
                     double currentAngleDegrees = simPosition.get() * 360.0;
-                    double deltaAngleDegrees = motor.getVelocityRotationPerSecond().getDegrees() * motorToMechConversion
+                    double deltaAngleDegrees = motor.getVelocity().getDegrees() * motorToMechConversion
                             * deltaT;
                     currentAngleDegrees += deltaAngleDegrees;
                     double currentAngleRotations = currentAngleDegrees / 360.0;
@@ -141,7 +141,7 @@ public class Simulator {
                 if (motor != null) {
                     double currentPositionMillimeters = simRange.get();
                     double deltaT = getPeriod();
-                    double linearRate = motor.getVelocityRotationPerSecond().getRotations() * motorToMechConversion
+                    double linearRate = motor.getVelocity().getRotations() * motorToMechConversion
                             * rotationtoLinearConversion * 1000;
                     double deltaPos = linearRate * deltaT;
                     double newPos = currentPositionMillimeters + deltaPos;

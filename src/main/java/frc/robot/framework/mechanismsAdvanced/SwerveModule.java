@@ -7,20 +7,57 @@ package frc.robot.framework.mechanismsAdvanced;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.framework.mechanisms.LinearMech;
-import frc.robot.framework.mechanisms.RotationMech;
+import frc.robot.framework.mechanisms.MotorReduction;
+import frc.robot.framework.mechanisms.Wheel;
+import frc.robot.framework.motors.Motor;
+import frc.robot.framework.sensors.AngularPositionSensor;
 
 public class SwerveModule {
 
-  private final RotationMech steeringMechanism;
-  private final LinearMech driveMechanism;
+  private final Motor steeringMotor;
+  private final Motor driveMotor;
+  private final MotorReduction steeringMotorReduction;
+  private final MotorReduction driveMotorReduction;
+  private final Wheel driveWheel;
+  private final AngularPositionSensor steeringSensor;
 
   public SwerveModule(
-      RotationMech steeringMechanism,
-      LinearMech driveMechanism) {
-    this.driveMechanism = driveMechanism;
-    this.steeringMechanism = steeringMechanism;
+      Motor steeringMotor,
+      Motor driveMotor,
+      MotorReduction steeringMotorReduction,
+      MotorReduction driveMotorReduction,
+      Wheel driveWheel,
+      AngularPositionSensor steeringSensor) {
+    this.steeringMotor = steeringMotor;
+    this.driveMotor = driveMotor;
+    this.steeringMotorReduction = steeringMotorReduction;
+    this.driveMotorReduction = driveMotorReduction;
+    this.driveWheel = driveWheel;
+    this.steeringSensor = steeringSensor;
   }
+
+
+  //Suppliers
+  public Rotation2d getSteeringMotorPosition(){
+    Rotation2d steeringMotorPosition = steeringMotor.getPosition();
+    Rotation2d steeringMechPosition = steeringMotorReduction.reduceMotorRotations(steeringMotorPosition);
+    double steeringMechPositionRotations = steeringMechPosition.getRotations();
+    steeringMechPositionRotations %= 1.0;
+    steeringMechPositionRotations = steeringMechPositionRotations < 0 ? steeringMechPositionRotations + 1.0 : steeringMechPositionRotations;
+    steeringMechPosition = Rotation2d.fromRotations(steeringMechPositionRotations);
+    return steeringMechPosition;
+  }
+
+  public double getDriveMotorPosition(){
+
+  }
+
+  public double getDriveMotorSpeed(){
+
+  }
+
+  //Consumers
+
 
   public SwerveModulePosition getSwerveModulePosition() {
     Rotation2d angle = steeringMechanism.getPositionRotations();
@@ -52,7 +89,7 @@ public class SwerveModule {
   }
 
   public void stop() {
-    this.driveMechanism.stop();
-    this.steeringMechanism.stop();
+    this.steeringMotor.stop();
+    this.driveMotor.stop();
   }
 }
