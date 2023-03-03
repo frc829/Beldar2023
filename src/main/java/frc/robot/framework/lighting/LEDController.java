@@ -1,6 +1,8 @@
 package frc.robot.framework.lighting;
 
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.ColorFlowAnimation;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 
 import frc.robot.framework.lighting.AnimationConfig.ColorFlow;
 import frc.robot.framework.lighting.AnimationConfig.Fire;
@@ -74,7 +76,15 @@ public interface LEDController {
 
             @Override
             public void setColorFlow(ColorFlow colorFlowConfig) {
-                // TODO Auto-generated method stub                
+                ColorFlowAnimation colorFlowAnimation = new ColorFlowAnimation(
+                    colorFlowConfig.red, 
+                    colorFlowConfig.green, 
+                    colorFlowConfig.blue, 
+                    colorFlowConfig.white, 
+                    colorFlowConfig.speed, 
+                    colorFlowConfig.numLED, 
+                    colorFlowConfig.isReversed ? Direction.Forward : Direction.Backward, 
+                    colorFlowConfig.ledOffset);  
             }
 
             @Override
