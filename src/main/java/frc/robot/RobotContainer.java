@@ -136,6 +136,7 @@ public class RobotContainer {
         private final HashMap<String, List<PathPlannerTrajectory>> pathPlannerTrajectories;
         private final SendableChooser<String> autoChooser = new SendableChooser<>();
         private final BooleanSupplier elevatorManualControlSupplier;
+        private final BooleanSupplier grabberManualControlSupplier;
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -643,6 +644,15 @@ public class RobotContainer {
                                 grabberControlAxis,
                                 Constants.Robot.Arm.Claw.Control.maxManualSpeedRPS);
 
+                this.grabberManualControlSupplier = new BooleanSupplier() {
+
+                        @Override
+                        public boolean getAsBoolean() {
+                                return grabberManualControl.getManualSpeed() != 0;
+                        }
+
+                };
+
                 this.elbowMech = RotationMech.create(
                                 wristMotor,
                                 Constants.Robot.Arm.ElbowConstants.MechConfig.motorToMechConversion,
@@ -729,9 +739,6 @@ public class RobotContainer {
                 DecimalFormat decimalFormat = new DecimalFormat("###.###");
 
                 this.grabber = new Grabber(grabberMech, grabberManualControl, decimalFormat);
-
-                CommandBase grabberControlCommand = this.grabber.createControlCommand();
-                this.grabber.setDefaultCommand(grabberControlCommand);
 
                 this.elevator = new Elevator(
                                 elevatorMech,
@@ -1062,11 +1069,14 @@ public class RobotContainer {
                                 elbow,
                                 tilt);
 
-                CommandBase placeHighCommand = ArmCommandFactories.Placement.createHigh(elevator, elbow, grabber, claw, tilt);
+                CommandBase placeHighCommand = ArmCommandFactories.Placement.createHigh(elevator, elbow, grabber, claw,
+                                tilt);
 
-                CommandBase placeMiddleCommand = ArmCommandFactories.Placement.createMiddle(elevator, elbow, grabber, claw, tilt);
+                CommandBase placeMiddleCommand = ArmCommandFactories.Placement.createMiddle(elevator, elbow, grabber,
+                                claw, tilt);
 
-                CommandBase placeLowCommand = ArmCommandFactories.Placement.createLow(elevator, elbow, grabber, claw, tilt);
+                CommandBase placeLowCommand = ArmCommandFactories.Placement.createLow(elevator, elbow, grabber, claw,
+                                tilt);
 
                 // INFO: Zero Wheels Command
                 driveController.back().whileTrue(zeroModulesCommand);
@@ -1200,12 +1210,15 @@ public class RobotContainer {
 
                 Trigger elbowManualControlTrigger = new Trigger(elbowManualControlSupplier);
                 Trigger elevatorManualControlTrigger = new Trigger(elevatorManualControlSupplier);
+                Trigger grabberManualControlTrigger = new Trigger(grabberManualControlSupplier);
 
                 CommandBase elbowManualControlCommand = elbow.createControlCommand();
                 CommandBase elevatorManualControlCommand = elevator.createControlCommand();
+                CommandBase grabberManualControlCommand = grabber.createControlCommand();
 
                 elbowManualControlTrigger.whileTrue(elbowManualControlCommand);
                 elevatorManualControlTrigger.whileTrue(elevatorManualControlCommand);
+                grabberManualControlTrigger.whileTrue(grabberManualControlCommand);
 
                 // INFO: Manual Pickup Commands
                 operatorController.rightBumper().whileTrue(cubePickupFloor);

@@ -129,7 +129,10 @@
           "style": "Line"
         },
         "height": 8.0,
-        "width": 16.5
+        "width": 16.5,
+        "window": {
+          "visible": true
+        }
       },
       "/SmartDashboard/The Field": {
         "Robot": {
