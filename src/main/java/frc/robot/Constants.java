@@ -512,7 +512,7 @@ public final class Constants {
         public static class Low {
           public static double elevatorPositionMeters = 0.0;
           public static double elbowPositionDegrees = 115.0;
-          public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
+          public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.TWO;
           public static double waitForElevatorToTilt = 0.5;
         }
       }
@@ -525,18 +525,40 @@ public final class Constants {
         public static double grabberSpeedWaitTimeCube = 0.25;
 
         public static class High {
-          public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.EIGHT;
-          public static double waitForElevatorToTilt = 0.5;
+          public static class Cone {
+            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.EIGHT;
+            public static double waitForElevatorToTilt = 0.5;
+          }
+
+          public static class Cube {
+            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
+            public static double waitForElevatorToTilt = 0.25;
+          }
+
         }
 
         public static class Middle {
-          public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
-          public static double waitForElevatorToTilt = 0.5;
+          public static class Cone {
+            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
+            public static double waitForElevatorToTilt = 0.5;
+          }
+
+          public static class Cube {
+            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
+            public static double waitForElevatorToTilt = 0.25;
+          }
         }
 
         public static class Low {
-          public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
-          public static double waitForElevatorToTilt = 0.5;
+          public static class Cone {
+            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.TWO;
+            public static double waitForElevatorToTilt = 0.5;
+          }
+
+          public static class Cube {
+            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.TWO;
+            public static double waitForElevatorToTilt = 0.25;
+          }
         }
       }
 
@@ -589,7 +611,7 @@ public final class Constants {
 
   public static class AutoRoutines {
 
-    public static class Element2{
+    public static class Element2 {
       public static class position1 {
         public static String pathName = "2ElementPosition1";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);

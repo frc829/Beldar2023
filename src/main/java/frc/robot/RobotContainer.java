@@ -1049,72 +1049,24 @@ public class RobotContainer {
                 CommandBase nearestScoreAlign = swerveDrive.getOnTheFlyDriveCommand(
                                 Constants.Auto.Drive.ScoringPositions.positionsList,
                                 fieldMap);
-                CommandBase alignHighCommand = ArmCommandFactories.Alignment.create(
+                CommandBase alignHighCommand = ArmCommandFactories.Alignment.createHigh(
                                 elevator,
                                 elbow,
-                                tilt,
-                                Constants.Auto.Arm.Alignment.High.elevatorPositionMeters,
-                                Constants.Auto.Arm.Alignment.High.elbowPositionDegrees,
-                                Constants.Auto.Arm.Alignment.High.elevatorTiltState,
-                                Constants.Auto.Arm.Alignment.High.waitForElevatorToTilt);
-                CommandBase alignMiddleCommand = ArmCommandFactories.Alignment.create(
+                                tilt);
+                CommandBase alignMiddleCommand = ArmCommandFactories.Alignment.createMiddle(
                                 elevator,
                                 elbow,
-                                tilt,
-                                Constants.Auto.Arm.Alignment.Middle.elevatorPositionMeters,
-                                Constants.Auto.Arm.Alignment.Middle.elbowPositionDegrees,
-                                Constants.Auto.Arm.Alignment.Middle.elevatorTiltState,
-                                Constants.Auto.Arm.Alignment.Middle.waitForElevatorToTilt);
-                CommandBase alignLowCommand = ArmCommandFactories.Alignment.create(
+                                tilt);
+                CommandBase alignLowCommand = ArmCommandFactories.Alignment.createLow(
                                 elevator,
                                 elbow,
-                                tilt,
-                                Constants.Auto.Arm.Alignment.Low.elevatorPositionMeters,
-                                Constants.Auto.Arm.Alignment.Low.elbowPositionDegrees,
-                                Constants.Auto.Arm.Alignment.Low.elevatorTiltState,
-                                Constants.Auto.Arm.Alignment.Low.waitForElevatorToTilt);
+                                tilt);
 
-                CommandBase placeHighCommand = ArmCommandFactories.Placement.create(
-                                elevator,
-                                elbow,
-                                grabber,
-                                claw,
-                                tilt,
-                                Constants.Auto.Arm.Placement.grabberSpeedCubeRPM,
-                                Constants.Auto.Arm.Placement.grabberSpeedWaitTimeCube,
-                                Constants.Auto.Arm.Placement.High.waitForElevatorToTilt,
-                                Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement,
-                                Constants.Auto.Arm.Placement.elbowPositionAfterPlacement,
-                                Constants.Auto.Arm.Placement.High.elevatorTiltState,
-                                Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
+                CommandBase placeHighCommand = ArmCommandFactories.Placement.createHigh(elevator, elbow, grabber, claw, tilt);
 
-                CommandBase placeMiddleCommand = ArmCommandFactories.Placement.create(
-                                elevator,
-                                elbow,
-                                grabber,
-                                claw,
-                                tilt,
-                                Constants.Auto.Arm.Placement.grabberSpeedCubeRPM,
-                                Constants.Auto.Arm.Placement.grabberSpeedWaitTimeCube,
-                                Constants.Auto.Arm.Placement.Middle.waitForElevatorToTilt,
-                                Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement,
-                                Constants.Auto.Arm.Placement.elbowPositionAfterPlacement,
-                                Constants.Auto.Arm.Placement.Middle.elevatorTiltState,
-                                Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
+                CommandBase placeMiddleCommand = ArmCommandFactories.Placement.createMiddle(elevator, elbow, grabber, claw, tilt);
 
-                CommandBase placeLowCommand = ArmCommandFactories.Placement.create(
-                                elevator,
-                                elbow,
-                                grabber,
-                                claw,
-                                tilt,
-                                Constants.Auto.Arm.Placement.grabberSpeedCubeRPM,
-                                Constants.Auto.Arm.Placement.grabberSpeedWaitTimeCube,
-                                Constants.Auto.Arm.Placement.Low.waitForElevatorToTilt,
-                                Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement,
-                                Constants.Auto.Arm.Placement.elbowPositionAfterPlacement,
-                                Constants.Auto.Arm.Placement.Low.elevatorTiltState,
-                                Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
+                CommandBase placeLowCommand = ArmCommandFactories.Placement.createLow(elevator, elbow, grabber, claw, tilt);
 
                 // INFO: Zero Wheels Command
                 driveController.back().whileTrue(zeroModulesCommand);

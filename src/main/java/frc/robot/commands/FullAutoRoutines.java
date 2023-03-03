@@ -224,7 +224,10 @@ public class FullAutoRoutines {
                     Constants.Auto.Arm.Pickup.grabberSpeedRPM,
                     Constants.Auto.Arm.Pickup.Floor.elevatorTiltState,
                     Claw.State.CUBE);
-        } else if (name.contains("Carry")) {
+        } else if(name.contains("ResetTelemetry")){
+            return swerveDrive.setTelemetryFromCameraCommand();
+        }
+        else if (name.contains("Carry")) {
             return ArmCommandFactories.Carry.create(
                     elevator,
                     elbow,
