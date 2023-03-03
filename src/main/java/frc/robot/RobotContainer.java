@@ -739,7 +739,7 @@ public class RobotContainer {
                 DecimalFormat decimalFormat = new DecimalFormat("###.###");
 
                 this.grabber = new Grabber(grabberMech, grabberManualControl, decimalFormat);
-
+                this.grabber.setDefaultCommand(this.grabber.createStopCommand());
                 this.elevator = new Elevator(
                                 elevatorMech,
                                 elevatorManualSpeedControl,
@@ -939,6 +939,23 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element2.position1.translationConstants,
                                 Constants.AutoRoutines.Element2.position1.rotationConstants);
 
+                List<PathPlannerTrajectory> Element2DockPosition2Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
+                                Constants.AutoRoutines.Element2.position2.pathName,
+                                Constants.AutoRoutines.Element2.position2.firstPathConstraint,
+                                Constants.AutoRoutines.Element2.position2.remainingPathConstraints);
+
+                Command Element2DockPosition2Command = FullAutoRoutines.createFullAutoFromPathGroup(
+                                swerveDrive,
+                                elevator,
+                                elbow,
+                                grabber,
+                                claw,
+                                tilt,
+                                ledLighting,
+                                Element2DockPosition2Trajectory,
+                                Constants.AutoRoutines.Element2.position2.translationConstants,
+                                Constants.AutoRoutines.Element2.position2.rotationConstants);
+
                 BooleanSupplier ledPurpleBooleanSupplier = new BooleanSupplier() {
 
                         @Override
@@ -984,6 +1001,7 @@ public class RobotContainer {
                 pathPlannerTrajectories.put("1ElementPosition8", Element1DockPosition8Trajectory);
                 pathPlannerTrajectories.put("1ElementPosition9", Element1DockPosition9Trajectory);
                 pathPlannerTrajectories.put("2ElementPosition1", Element2DockPosition1Trajectory);
+                pathPlannerTrajectories.put("2ElementPosition2", Element2DockPosition2Trajectory);
 
                 autoCommands = new HashMap<>();
                 autoCommands.put("1ElementPosition1", Element1DockPosition1Command);
@@ -996,6 +1014,7 @@ public class RobotContainer {
                 autoCommands.put("1ElementPosition8", Element1DockPosition8Command);
                 autoCommands.put("1ElementPosition9", Element1DockPosition9Command);
                 autoCommands.put("2ElementPosition1", Element2DockPosition1Command);
+                autoCommands.put("2ElementPosition2", Element2DockPosition2Command);
 
                 this.autoChooser.addOption("1ElementPosition1", "1ElementPosition1");
                 this.autoChooser.addOption("1ElementPosition2", "1ElementPosition2");
@@ -1007,6 +1026,7 @@ public class RobotContainer {
                 this.autoChooser.addOption("1ElementPosition8", "1ElementPosition8");
                 this.autoChooser.addOption("1ElementPosition9", "1ElementPosition9");
                 this.autoChooser.addOption("2ElementPosition1", "2ElementPosition1");
+                this.autoChooser.addOption("2ElementPosition2", "2ElementPosition2");
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
                 SmartDashboard.putString("RIO Serial Number", RoboRioDataJNI.getSerialNumber());
@@ -1056,27 +1076,6 @@ public class RobotContainer {
                 CommandBase nearestScoreAlign = swerveDrive.getOnTheFlyDriveCommand(
                                 Constants.Auto.Drive.ScoringPositions.positionsList,
                                 fieldMap);
-                CommandBase alignHighCommand = ArmCommandFactories.Alignment.createHigh(
-                                elevator,
-                                elbow,
-                                tilt);
-                CommandBase alignMiddleCommand = ArmCommandFactories.Alignment.createMiddle(
-                                elevator,
-                                elbow,
-                                tilt);
-                CommandBase alignLowCommand = ArmCommandFactories.Alignment.createLow(
-                                elevator,
-                                elbow,
-                                tilt);
-
-                CommandBase placeHighCommand = ArmCommandFactories.Placement.createHigh(elevator, elbow, grabber, claw,
-                                tilt);
-
-                CommandBase placeMiddleCommand = ArmCommandFactories.Placement.createMiddle(elevator, elbow, grabber,
-                                claw, tilt);
-
-                CommandBase placeLowCommand = ArmCommandFactories.Placement.createLow(elevator, elbow, grabber, claw,
-                                tilt);
 
                 // INFO: Zero Wheels Command
                 driveController.back().whileTrue(zeroModulesCommand);
@@ -1085,22 +1084,26 @@ public class RobotContainer {
                 driveController.start().onTrue(setTelemetryFromCameraCommand);
 
                 // INFO: Align Low
-                driveController.b().onTrue(alignLowCommand);
+                driveController.b().onTrue(ArmCommandFactories.Alignment.createLow(elevator, elbow, tilt, claw));
 
                 // INFO: Align Middle
-                driveController.x().onTrue(alignMiddleCommand);
+                driveController.x().onTrue(ArmCommandFactories.Alignment.createMiddle(elevator, elbow, tilt, claw));
 
                 // INFO: Align High
-                driveController.y().onTrue(alignHighCommand);
+                driveController.y().onTrue(ArmCommandFactories.Alignment.createHigh(elevator, elbow, tilt, claw));
 
                 // INFO: Score Low
-                driveController.a().onTrue(placeLowCommand);
+                driveController.a()
+                                .onTrue(ArmCommandFactories.Placement.createLow(elevator, elbow, tilt, claw, grabber));
 
                 // INFO: Score Middle
-                driveController.leftBumper().onTrue(placeMiddleCommand);
+                driveController.leftBumper()
+                                .onTrue(ArmCommandFactories.Placement.createMiddle(elevator, elbow, tilt, claw,
+                                                grabber));
 
                 // INFO: Score High
-                driveController.rightBumper().onTrue(placeHighCommand);
+                driveController.rightBumper()
+                                .onTrue(ArmCommandFactories.Placement.createHigh(elevator, elbow, tilt, claw, grabber));
 
                 // INFO: Test Targeting
                 driveController.povLeft().whileTrue(leftPortalAlign);

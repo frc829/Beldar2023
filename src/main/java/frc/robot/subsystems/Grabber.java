@@ -81,7 +81,7 @@ public class Grabber extends SubsystemBase {
       }
     };
 
-    return Commands.runOnce(control, this);
+    return Commands.run(control, this);
   }
 
   public CommandBase createStopCommand() {

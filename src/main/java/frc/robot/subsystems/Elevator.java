@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -113,13 +111,13 @@ public class Elevator extends SubsystemBase {
     return Commands.run(control, this);
   }
 
-  public CommandBase createControlCommand(double positionDegrees) {
+  public CommandBase createControlCommand(double positionMeters) {
 
     Runnable initPIDController = new Runnable() {
 
       @Override
       public void run() {
-        elevatorPIDController.setSetpoint(positionDegrees);
+        elevatorPIDController.setSetpoint(positionMeters);
       }
 
     };
@@ -135,20 +133,10 @@ public class Elevator extends SubsystemBase {
       }
     };
 
-    BooleanSupplier finishCommand = new BooleanSupplier() {
-
-      @Override
-      public boolean getAsBoolean() {
-        return elevatorPIDController.atSetpoint();
-      }
-    };
-
     CommandBase initializePIDControllerCommand = Commands.runOnce(initPIDController, this);
     CommandBase runElbowToPosition = Commands.run(control, this);
-    CommandBase waitUntilPIDControllerAtSetPoint = Commands.waitUntil(finishCommand);
-    CommandBase runElbowUntilAtSetPoint = Commands.race(runElbowToPosition, waitUntilPIDControllerAtSetPoint);
 
-    return Commands.sequence(initializePIDControllerCommand, runElbowUntilAtSetPoint);
+    return Commands.sequence(initializePIDControllerCommand, runElbowToPosition);
 
   }
 

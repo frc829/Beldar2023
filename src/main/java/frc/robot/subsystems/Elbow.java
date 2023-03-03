@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -136,20 +134,11 @@ public class Elbow extends SubsystemBase {
       }
     };
 
-    BooleanSupplier finishCommand = new BooleanSupplier() {
-
-      @Override
-      public boolean getAsBoolean() {
-        return elbowPIDController.atSetpoint();
-      }
-    };
 
     CommandBase initializePIDControllerCommand = Commands.runOnce(initPIDController, this);
     CommandBase runElbowToPosition = Commands.run(control, this);
-    CommandBase waitUntilPIDControllerAtSetPoint = Commands.waitUntil(finishCommand);
-    CommandBase runElbowUntilAtSetPoint = Commands.race(runElbowToPosition, waitUntilPIDControllerAtSetPoint);
 
-    return Commands.sequence(initializePIDControllerCommand, runElbowUntilAtSetPoint);
+    return Commands.sequence(initializePIDControllerCommand, runElbowToPosition);
 
   }
 

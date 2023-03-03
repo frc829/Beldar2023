@@ -342,7 +342,7 @@ public final class Constants {
           public static double maxManualSpeedMPS = 0.79;
 
           public static class PID {
-            public static final double kP = 5;
+            public static final double kP = 4;
             public static final double kI = 0;
             public static final double kD = 0;
             public static final double minimumInput = Double.NaN;
@@ -373,8 +373,8 @@ public final class Constants {
 
         public static class Sensor {
           public static int dioChannel = 0;
-          // public static double offsetDegrees = 210.0; //practicebot
-          public static double offsetDegrees = 326; // compbot
+          public static double offsetDegrees = 210.0; //practicebot
+          //public static double offsetDegrees = 326; // compbot
         }
 
         public static class Control {
@@ -402,7 +402,7 @@ public final class Constants {
         public static class LimitSwitch {
           public static double stopPositionMeters = 0.005;
           public static double minTruePositionMeters = 0.00;
-          public static double maxTruePositionMeters = 0.07;
+          public static double maxTruePositionMeters = 0.03;
 
           public static class Sensor {
             public static int positionSensorID = 34;
@@ -498,6 +498,7 @@ public final class Constants {
         public static class High {
           public static double elevatorPositionMeters = 0.914;
           public static double elbowPositionDegrees = 16.6;
+          public static double elbowPositionCubeDegrees = 40.0;
           public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
           public static double waitForElevatorToTilt = 0.5;
         }
@@ -505,6 +506,7 @@ public final class Constants {
         public static class Middle {
           public static double elevatorPositionMeters = 0.495;
           public static double elbowPositionDegrees = 29.0;
+          public static double elbowPositionCubeDegrees = 29.0;
           public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
           public static double waitForElevatorToTilt = 0.5;
         }
@@ -512,6 +514,7 @@ public final class Constants {
         public static class Low {
           public static double elevatorPositionMeters = 0.0;
           public static double elbowPositionDegrees = 115.0;
+          public static double elbowPositionCubeDegrees = 115.0;
           public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.TWO;
           public static double waitForElevatorToTilt = 0.5;
         }
@@ -540,7 +543,7 @@ public final class Constants {
         public static class Middle {
           public static class Cone {
             public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
-            public static double waitForElevatorToTilt = 0.5;
+            public static double waitForElevatorToTilt = 1;
           }
 
           public static class Cube {
@@ -584,16 +587,16 @@ public final class Constants {
           public static double elevatorPositionMeters = 0.0;
 
           public static class Cone {
-            public static final double elbowPositionDegrees = 67.6;
+            public static final double elbowPositionDegrees = 54.97;
           }
 
           public static class Cube {
-            public static final double elbowPositionDegrees = 62.0;
+            public static final double elbowPositionDegrees = 46.84;
           }
         }
 
         public static class Sliding {
-          public static double elevatorPositionMeters = 0.604;
+          public static double elevatorPositionMeters = 0.620;
           public static final double elbowPositionDegrees = 90.0;
           public static ElevatorTilt.State elevatorTiltState = State.NONE;
 
@@ -614,6 +617,14 @@ public final class Constants {
     public static class Element2 {
       public static class position1 {
         public static String pathName = "2ElementPosition1";
+        public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
+        public static PathConstraints[] remainingPathConstraints = {};
+      }
+
+      public static class position2{
+        public static String pathName = "2ElementPosition2";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);

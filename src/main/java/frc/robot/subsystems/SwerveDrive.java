@@ -99,14 +99,10 @@ public class SwerveDrive extends SubsystemBase {
 
     this.telemetry.updateCurrentPosition(this.gyroscope.getYaw());
     double[] currentPoseFromCamera = this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
-    if (this.allowVisionMeasurements) {
-      this.telemetry.addVisionMeasurement(currentPoseFromCamera);
-    }
+    telemetry.addVisionMeasurement(currentPoseFromCamera);
     fieldMap.updateField(this.telemetry.getCurrentPosition());
 
-    String visionMeasurementAllowed = this.allowVisionMeasurements ? "Allowed" : "NotAllowed";
 
-    SmartDashboard.putString("VisionMeasurements", visionMeasurementAllowed);
     SmartDashboard.putBoolean("Gyro Connected", this.gyroscope.isConnected());
     SmartDashboard.putNumber("PoseFromCameraX", currentPoseFromCamera[0]);
     SmartDashboard.putNumber("PoseFromCameraY", currentPoseFromCamera[1]);
@@ -152,7 +148,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("RobotFieldPositionY", this.telemetry.getCurrentPosition().getY());
 
     SmartDashboard.putNumber("RobotFieldPositionYawDeg",
-        Math.toDegrees(this.telemetry.getCurrentPosition().getRotation().getDegrees()));
+    this.telemetry.getCurrentPosition().getRotation().getDegrees());
 
     SmartDashboard.putNumber("GyroRoll", (this.gyroscope.getRoll().getDegrees()));
     SmartDashboard.putNumber("GyroPitch", (this.gyroscope.getPitch().getDegrees()));
@@ -272,9 +268,12 @@ public class SwerveDrive extends SubsystemBase {
 
   public void setTelemetryFromCamera() {
 
-    // Pose3d currentPoseFromCamera =
-    // this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
-    // this.telemetry.addVisionMeasurement(currentPoseFromCamera.toPose2d());
+    double[] currentPoseFromCamera =
+    this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
+    Rotation2d yawFromCamera = Rotation2d.fromDegrees(currentPoseFromCamera[5]);
+    SmartDashboard.putNumber("YawFROMCAMERA", yawFromCamera.getDegrees());
+    Pose2d cameraPose = new Pose2d(currentPoseFromCamera[0], currentPoseFromCamera[1], yawFromCamera);
+    this.telemetry.resetCurrentPosition(cameraPose, gyroscope.getYaw());
   }
 
   public CommandBase getZeroModuleCommand() {

@@ -220,9 +220,11 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
+        "names": [
+          "ScoreCubeLow1"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "after",
         "waitTime": 0
       }
     },
@@ -249,5 +251,18 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 2.9454545454545453,
+      "names": [
+        "ScoreCubeMiddle1"
+      ]
+    },
+    {
+      "position": 7.3309090909091195,
+      "names": [
+        "ScoreCubeLow1"
+      ]
+    }
+  ]
 }

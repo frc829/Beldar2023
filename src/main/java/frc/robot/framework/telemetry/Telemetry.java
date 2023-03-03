@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.framework.mechanismsAdvanced.SwerveModule;
 
 /** Add your docs here. */
@@ -67,6 +68,7 @@ public interface Telemetry {
                 double yawDifferenceDegrees = yawDifference.getDegrees();
                 double yawDifferenceDegreesMag = Math.abs(yawDifferenceDegrees);               
 
+                SmartDashboard.putNumber("YAWFROMTELE", poseFromVision[5]);
 
                 if (poseDifferencesNorm <= 1.0 && yawDifferenceDegreesMag <= 2.0) {
                     swerveDrivePoseEstimator.addVisionMeasurement(

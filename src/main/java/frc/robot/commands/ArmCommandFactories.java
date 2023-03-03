@@ -6,11 +6,10 @@ package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
-import frc.robot.commands.ArmAutoFactories.ElementType;
-import frc.robot.commands.ArmAutoFactories.PlacementType;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
@@ -25,434 +24,280 @@ public class ArmCommandFactories {
                 public static CommandBase createHigh(
                                 Elevator elevator,
                                 Elbow elbow,
-                                ElevatorTilt tilt) {
+                                ElevatorTilt tilt,
+                                Claw claw) {
 
-                        CommandBase elevatorSetCommand = elevator
-                                        .createControlCommand(Constants.Auto.Arm.Alignment.High.elevatorPositionMeters);
-                        CommandBase elbowSetCommand = elbow
-                                        .createControlCommand(Constants.Auto.Arm.Alignment.High.elbowPositionDegrees);
-                        CommandBase elevatorAndArmAlignCommand = Commands.parallel(elevatorSetCommand, elbowSetCommand);
+                        BooleanSupplier coneOrCubeCondition = new BooleanSupplier() {
 
-                        CommandBase tiltSetCommand = tilt
-                                        .createSetStateCommand(Constants.Auto.Arm.Alignment.High.elevatorTiltState);
-                        CommandBase waitForElevatorToTiltCommand = Commands
-                                        .waitSeconds(Constants.Auto.Arm.Alignment.High.waitForElevatorToTilt);
+                                @Override
+                                public boolean getAsBoolean() {
+                                        return claw.getState() == Claw.State.CONE;
+                                }
+                        };
 
-                        return Commands.sequence(
-                                        elevatorAndArmAlignCommand,
-                                        tiltSetCommand,
-                                        waitForElevatorToTiltCommand);
+                        CommandBase elevatorSetCommand = elevator.createControlCommand(
+                                        Constants.Auto.Arm.Alignment.High.elevatorPositionMeters);
+
+                        CommandBase elbowConeCommand = elbow.createControlCommand(
+                                        Constants.Auto.Arm.Alignment.High.elbowPositionDegrees);
+
+                        CommandBase elbowCubeCommand = elbow.createControlCommand(
+                                        Constants.Auto.Arm.Alignment.High.elbowPositionCubeDegrees);
+
+                        CommandBase elbowCommand = Commands.either(elbowConeCommand, elbowCubeCommand,
+                                        coneOrCubeCondition);
+
+                        CommandBase tiltElevatorCommand = tilt.createSetStateCommand(
+                                        Constants.Auto.Arm.Alignment.High.elevatorTiltState);
+
+                        return Commands.parallel(
+                                        elevatorSetCommand,
+                                        elbowCommand,
+                                        tiltElevatorCommand);
                 }
 
                 public static CommandBase createMiddle(
                                 Elevator elevator,
                                 Elbow elbow,
-                                ElevatorTilt tilt) {
+                                ElevatorTilt tilt,
+                                Claw claw) {
+
+                        BooleanSupplier coneOrCubeCondition = new BooleanSupplier() {
+
+                                @Override
+                                public boolean getAsBoolean() {
+                                        return claw.getState() == Claw.State.CONE;
+                                }
+                        };
 
                         CommandBase elevatorSetCommand = elevator.createControlCommand(
                                         Constants.Auto.Arm.Alignment.Middle.elevatorPositionMeters);
-                        CommandBase elbowSetCommand = elbow
-                                        .createControlCommand(Constants.Auto.Arm.Alignment.Middle.elbowPositionDegrees);
-                        CommandBase elevatorAndArmAlignCommand = Commands.parallel(elevatorSetCommand, elbowSetCommand);
 
-                        CommandBase tiltSetCommand = tilt
-                                        .createSetStateCommand(Constants.Auto.Arm.Alignment.Middle.elevatorTiltState);
-                        CommandBase waitForElevatorToTiltCommand = Commands
-                                        .waitSeconds(Constants.Auto.Arm.Alignment.Middle.waitForElevatorToTilt);
+                        CommandBase elbowConeCommand = elbow.createControlCommand(
+                                        Constants.Auto.Arm.Alignment.Middle.elbowPositionDegrees);
 
-                        return Commands.sequence(
-                                        elevatorAndArmAlignCommand,
-                                        tiltSetCommand,
-                                        waitForElevatorToTiltCommand);
+                        CommandBase elbowCubeCommand = elbow.createControlCommand(
+                                        Constants.Auto.Arm.Alignment.Middle.elbowPositionCubeDegrees);
+
+                        CommandBase elbowCommand = Commands.either(elbowConeCommand, elbowCubeCommand,
+                                        coneOrCubeCondition);
+
+                        CommandBase tiltElevatorCommand = tilt.createSetStateCommand(
+                                        Constants.Auto.Arm.Alignment.Middle.elevatorTiltState);
+
+                        return Commands.parallel(
+                                        elevatorSetCommand,
+                                        elbowCommand,
+                                        tiltElevatorCommand);
                 }
 
                 public static CommandBase createLow(
                                 Elevator elevator,
                                 Elbow elbow,
-                                ElevatorTilt tilt) {
+                                ElevatorTilt tilt,
+                                Claw claw) {
+
+                        BooleanSupplier coneOrCubeCondition = new BooleanSupplier() {
+
+                                @Override
+                                public boolean getAsBoolean() {
+                                        return claw.getState() == Claw.State.CONE;
+                                }
+                        };
 
                         CommandBase elevatorSetCommand = elevator.createControlCommand(
                                         Constants.Auto.Arm.Alignment.Low.elevatorPositionMeters);
-                        CommandBase elbowSetCommand = elbow
-                                        .createControlCommand(Constants.Auto.Arm.Alignment.Low.elbowPositionDegrees);
-                        CommandBase elevatorAndArmAlignCommand = Commands.parallel(elevatorSetCommand, elbowSetCommand);
 
-                        CommandBase tiltSetCommand = tilt
-                                        .createSetStateCommand(Constants.Auto.Arm.Alignment.Low.elevatorTiltState);
-                        CommandBase waitForElevatorToTiltCommand = Commands
-                                        .waitSeconds(Constants.Auto.Arm.Alignment.Low.waitForElevatorToTilt);
+                        CommandBase elbowConeCommand = elbow.createControlCommand(
+                                        Constants.Auto.Arm.Alignment.Low.elbowPositionDegrees);
 
-                        return Commands.sequence(
-                                        elevatorAndArmAlignCommand,
-                                        tiltSetCommand,
-                                        waitForElevatorToTiltCommand);
+                        CommandBase elbowCubeCommand = elbow.createControlCommand(
+                                        Constants.Auto.Arm.Alignment.Low.elbowPositionCubeDegrees);
+
+                        CommandBase elbowCommand = Commands.either(elbowConeCommand, elbowCubeCommand,
+                                        coneOrCubeCondition);
+
+                        CommandBase tiltElevatorCommand = tilt.createSetStateCommand(
+                                        Constants.Auto.Arm.Alignment.Low.elevatorTiltState);
+
+                        CommandBase alignmentDeadline = Commands.waitSeconds(2);
+
+                        CommandBase setArm = Commands.parallel(
+                                        elevatorSetCommand,
+                                        elbowCommand,
+                                        tiltElevatorCommand);
+
+                        return Commands.deadline(alignmentDeadline, setArm);
                 }
 
         }
 
         public static class Placement {
 
-                public static CommandBase create(
+                public static Command createHigh(
                                 Elevator elevator,
                                 Elbow elbow,
-                                Grabber grabber,
-                                Claw claw,
                                 ElevatorTilt tilt,
-                                ElementType elementType,
-                                PlacementType placementType) {
-                        if (elementType == ElementType.CONE) {
-                                if (placementType == PlacementType.HIGH) {
-                                        return Cone.createHigh(elevator, elbow, grabber, claw, tilt);
-                                } else if (placementType == PlacementType.MIDDLE) {
-                                        return Cone.createMiddle(elevator, elbow, grabber, claw, tilt);
-                                } else {
-                                        return Cone.createLow(elevator, elbow, grabber, claw, tilt);
-                                }
-                        } else {
-                                if (placementType == PlacementType.HIGH) {
-                                        return Cube.createHigh(elevator, elbow, grabber, claw, tilt);
-                                } else if (placementType == PlacementType.MIDDLE) {
-                                        return Cube.createMiddle(elevator, elbow, grabber, claw, tilt);
-                                } else {
-                                        return Cube.createLow(elevator, elbow, grabber, claw, tilt);
-                                }
-                        }
-
-                }
-
-                public static class Cone {
-                        public static CommandBase createHigh(
-                                        Elevator elevator,
-                                        Elbow elbow,
-                                        Grabber grabber,
-                                        Claw claw,
-                                        ElevatorTilt tilt) {
-                                CommandBase tiltSetCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.High.Cone.elevatorTiltState);
-                                CommandBase waitForElevatorToTiltCommand = Commands.waitSeconds(
-                                                Constants.Auto.Arm.Placement.High.Cone.waitForElevatorToTilt);
-                                CommandBase clawReleaseCommand = claw.createSetStateCommand(Claw.State.CUBE);
-
-                                CommandBase elbowSetCommand = elbow.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elbowPositionAfterPlacement);
-                                CommandBase tiltSetAfterCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
-                                CommandBase elevatorSetCommand = elevator.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement);
-
-                                return Commands.sequence(
-                                                tiltSetCommand,
-                                                waitForElevatorToTiltCommand,
-                                                clawReleaseCommand,
-                                                elbowSetCommand,
-                                                tiltSetAfterCommand,
-                                                elevatorSetCommand);
-                        }
-
-                        public static CommandBase createMiddle(
-                                        Elevator elevator,
-                                        Elbow elbow,
-                                        Grabber grabber,
-                                        Claw claw,
-                                        ElevatorTilt tilt) {
-                                CommandBase tiltSetCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.Middle.Cone.elevatorTiltState);
-                                CommandBase waitForElevatorToTiltCommand = Commands.waitSeconds(
-                                                Constants.Auto.Arm.Placement.Middle.Cone.waitForElevatorToTilt);
-                                CommandBase clawReleaseCommand = claw.createSetStateCommand(Claw.State.CUBE);
-
-                                CommandBase elbowSetCommand = elbow.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elbowPositionAfterPlacement);
-                                CommandBase tiltSetAfterCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
-                                CommandBase elevatorSetCommand = elevator.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement);
-
-                                return Commands.sequence(
-                                                tiltSetCommand,
-                                                waitForElevatorToTiltCommand,
-                                                clawReleaseCommand,
-                                                elbowSetCommand,
-                                                tiltSetAfterCommand,
-                                                elevatorSetCommand);
-                        }
-
-                        public static CommandBase createLow(
-                                        Elevator elevator,
-                                        Elbow elbow,
-                                        Grabber grabber,
-                                        Claw claw,
-                                        ElevatorTilt tilt) {
-                                CommandBase tiltSetCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.Low.Cone.elevatorTiltState);
-                                CommandBase waitForElevatorToTiltCommand = Commands.waitSeconds(
-                                                Constants.Auto.Arm.Placement.Low.Cone.waitForElevatorToTilt);
-                                CommandBase clawReleaseCommand = claw.createSetStateCommand(Claw.State.CUBE);
-
-                                CommandBase elbowSetCommand = elbow.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elbowPositionAfterPlacement);
-                                CommandBase tiltSetAfterCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
-                                CommandBase elevatorSetCommand = elevator.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement);
-
-                                return Commands.sequence(
-                                                tiltSetCommand,
-                                                waitForElevatorToTiltCommand,
-                                                clawReleaseCommand,
-                                                elbowSetCommand,
-                                                tiltSetAfterCommand,
-                                                elevatorSetCommand);
-                        }
-
-                }
-
-                public static class Cube {
-                        public static CommandBase createHigh(
-                                        Elevator elevator,
-                                        Elbow elbow,
-                                        Grabber grabber,
-                                        Claw claw,
-                                        ElevatorTilt tilt) {
-                                CommandBase tiltSetCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.High.Cube.elevatorTiltState);
-                                CommandBase waitForElevatorToTiltCommand = Commands.waitSeconds(
-                                                Constants.Auto.Arm.Placement.High.Cube.waitForElevatorToTilt);
-
-                                CommandBase clawReleaseCommand = grabber
-                                                .createControlCommand(Constants.Auto.Arm.Placement.grabberSpeedCubeRPM);
-                                CommandBase afterGrabberSet = Commands.waitSeconds(0.2);
-                                CommandBase releaseCommand = Commands.race(clawReleaseCommand, afterGrabberSet);
-
-                                CommandBase elbowSetCommand = elbow.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elbowPositionAfterPlacement);
-                                CommandBase tiltSetAfterCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
-                                CommandBase grabberOffCommand1 = grabber
-                                                .createControlCommand(0);
-                                CommandBase afterGrabberSet1 = Commands.waitSeconds(0.2);
-                                CommandBase releaseCommand2 = Commands.race(grabberOffCommand1, afterGrabberSet1);
-
-                                CommandBase elevatorSetCommand = elevator.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement);
-
-                                return Commands.sequence(
-                                                tiltSetCommand,
-                                                waitForElevatorToTiltCommand,
-                                                releaseCommand,
-                                                elbowSetCommand,
-                                                tiltSetAfterCommand,
-                                                releaseCommand2,
-                                                elevatorSetCommand);
-                        }
-
-                        public static CommandBase createMiddle(
-                                        Elevator elevator,
-                                        Elbow elbow,
-                                        Grabber grabber,
-                                        Claw claw,
-                                        ElevatorTilt tilt) {
-                                CommandBase tiltSetCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.Middle.Cube.elevatorTiltState);
-                                CommandBase waitForElevatorToTiltCommand = Commands.waitSeconds(
-                                                Constants.Auto.Arm.Placement.Middle.Cube.waitForElevatorToTilt);
-                                CommandBase clawReleaseCommand = grabber
-                                                .createControlCommand(Constants.Auto.Arm.Placement.grabberSpeedCubeRPM);
-                                CommandBase afterGrabberSet = Commands.waitSeconds(0.2);
-                                CommandBase releaseCommand = Commands.race(clawReleaseCommand, afterGrabberSet);
-
-                                CommandBase elbowSetCommand = elbow.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elbowPositionAfterPlacement);
-                                CommandBase tiltSetAfterCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
-                                CommandBase grabberOffCommand1 = grabber
-                                                .createControlCommand(0);
-                                CommandBase afterGrabberSet1 = Commands.waitSeconds(0.2);
-                                CommandBase releaseCommand2 = Commands.race(grabberOffCommand1, afterGrabberSet1);
-                                CommandBase elevatorSetCommand = elevator.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement);
-
-                                return Commands.sequence(
-                                                tiltSetCommand,
-                                                waitForElevatorToTiltCommand,
-                                                releaseCommand,
-                                                elbowSetCommand,
-                                                tiltSetAfterCommand,
-                                                releaseCommand2,
-                                                elevatorSetCommand);
-                        }
-
-                        public static CommandBase createLow(
-                                        Elevator elevator,
-                                        Elbow elbow,
-                                        Grabber grabber,
-                                        Claw claw,
-                                        ElevatorTilt tilt) {
-                                CommandBase tiltSetCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.Low.Cube.elevatorTiltState);
-                                CommandBase waitForElevatorToTiltCommand = Commands.waitSeconds(
-                                                Constants.Auto.Arm.Placement.Low.Cube.waitForElevatorToTilt);
-                                CommandBase clawReleaseCommand = grabber
-                                                .createControlCommand(Constants.Auto.Arm.Placement.grabberSpeedCubeRPM);
-                                CommandBase afterGrabberSet = Commands.waitSeconds(0.2);
-                                CommandBase releaseCommand = Commands.race(clawReleaseCommand, afterGrabberSet);
-
-                                CommandBase elbowSetCommand = elbow.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elbowPositionAfterPlacement);
-                                CommandBase tiltSetAfterCommand = tilt.createSetStateCommand(
-                                                Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
-                                CommandBase grabberOffCommand1 = grabber
-                                                .createControlCommand(0);
-                                CommandBase afterGrabberSet1 = Commands.waitSeconds(0.2);
-                                CommandBase releaseCommand2 = Commands.race(grabberOffCommand1, afterGrabberSet1);
-                                CommandBase elevatorSetCommand = elevator.createControlCommand(
-                                                Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement);
-
-                                return Commands.sequence(
-                                                tiltSetCommand,
-                                                waitForElevatorToTiltCommand,
-                                                releaseCommand,
-                                                elbowSetCommand,
-                                                tiltSetAfterCommand,
-                                                releaseCommand2,
-                                                elevatorSetCommand);
-                        }
-
-                }
-
-                public static CommandBase createHigh(
-                                Elevator elevator,
-                                Elbow elbow,
-                                Grabber grabber,
                                 Claw claw,
-                                ElevatorTilt tilt) {
-                        CommandBase tiltSetCommand = tilt.createSetStateCommand(
+                                Grabber grabber) {
+
+                        BooleanSupplier coneOrCubeCondition = new BooleanSupplier() {
+
+                                @Override
+                                public boolean getAsBoolean() {
+                                        return claw.getState() == Claw.State.CONE;
+                                }
+                        };
+
+                        CommandBase tiltElevatorCone = tilt.createSetStateCommand(
                                         Constants.Auto.Arm.Placement.High.Cone.elevatorTiltState);
-                        CommandBase waitForElevatorToTiltCommand = Commands.waitSeconds(
-                                        Constants.Auto.Arm.Placement.High.Cone.waitForElevatorToTilt);
+                        CommandBase tiltElevatorCube = tilt.createSetStateCommand(
+                                        Constants.Auto.Arm.Placement.High.Cube.elevatorTiltState);
 
-                        BooleanSupplier clawOrPoof = new BooleanSupplier() {
+                        CommandBase tiltElevator = Commands.either(tiltElevatorCone, tiltElevatorCube, coneOrCubeCondition);
+
+                        CommandBase waitForTilt = Commands.waitSeconds(1.5);
+
+                        CommandBase openClaw = claw.createSetStateCommand(Claw.State.CUBE);
+                        CommandBase runGrabber = grabber.createControlCommand(-916);
+
+                        CommandBase releaseChoice = Commands.either(openClaw, runGrabber, coneOrCubeCondition);
+                        CommandBase releaseDeadline = Commands.waitSeconds(0.5);
+                        CommandBase release = Commands.deadline(releaseDeadline, releaseChoice);
+
+
+                        CommandBase elbowUpCommand = elbow.createControlCommand(15);
+                        CommandBase elbowUpDeadline = Commands.waitSeconds(0.5);
+                        CommandBase elbowUp = Commands.deadline(elbowUpDeadline, elbowUpCommand);
+
+
+                        CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
+                        CommandBase elevatorDown = elevator.createControlCommand(0);
+                        CommandBase grabberOff = grabber.createControlCommand(0);
+                        CommandBase tiltBackElevatorDown = Commands.parallel(tiltBack, elevatorDown, grabberOff);
+                        
+
+                        return Commands.sequence(
+                                tiltElevator, 
+                                waitForTilt,
+                                release,
+                                //elbowUp,
+                                tiltBackElevatorDown);
+
+
+
+
+                }
+
+                public static Command createMiddle(
+                                Elevator elevator,
+                                Elbow elbow,
+                                ElevatorTilt tilt,
+                                Claw claw,
+                                Grabber grabber) {
+
+                        BooleanSupplier coneOrCubeCondition = new BooleanSupplier() {
 
                                 @Override
                                 public boolean getAsBoolean() {
                                         return claw.getState() == Claw.State.CONE;
                                 }
-
                         };
 
-                        CommandBase clawReleaseCommand = claw.createSetStateCommand(Claw.State.CUBE);
-                        CommandBase grabberPoofCommand = grabber
-                                        .createControlCommand(Constants.Auto.Arm.Placement.grabberSpeedCubeRPM);
-
-                        CommandBase waitForPoof = Commands.waitSeconds(0.2);
-                        CommandBase poofCommand = Commands.race(grabberPoofCommand, waitForPoof);
-
-                        CommandBase releaseCommand = Commands.either(clawReleaseCommand, poofCommand, clawOrPoof);
-
-                        CommandBase elbowSetCommand = elbow.createControlCommand(
-                                        Constants.Auto.Arm.Placement.elbowPositionAfterPlacement);
-                        CommandBase tiltSetAfterCommand = tilt.createSetStateCommand(
-                                        Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
-                        CommandBase elevatorSetCommand = elevator.createControlCommand(
-                                        Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement);
-
-                        return Commands.sequence(
-                                        tiltSetCommand,
-                                        waitForElevatorToTiltCommand,
-                                        releaseCommand,
-                                        elbowSetCommand,
-                                        tiltSetAfterCommand,
-                                        elevatorSetCommand);
-                }
-
-                public static CommandBase createMiddle(
-                                Elevator elevator,
-                                Elbow elbow,
-                                Grabber grabber,
-                                Claw claw,
-                                ElevatorTilt tilt) {
-                        CommandBase tiltSetCommand = tilt.createSetStateCommand(
+                        CommandBase tiltElevatorCone = tilt.createSetStateCommand(
                                         Constants.Auto.Arm.Placement.Middle.Cone.elevatorTiltState);
-                        CommandBase waitForElevatorToTiltCommand = Commands.waitSeconds(
-                                        Constants.Auto.Arm.Placement.Middle.Cone.waitForElevatorToTilt);
+                        CommandBase tiltElevatorCube = tilt.createSetStateCommand(
+                                        Constants.Auto.Arm.Placement.Middle.Cube.elevatorTiltState);
 
-                        BooleanSupplier clawOrPoof = new BooleanSupplier() {
+                        CommandBase tiltElevator = Commands.either(tiltElevatorCone, tiltElevatorCube, coneOrCubeCondition);
 
-                                @Override
-                                public boolean getAsBoolean() {
-                                        return claw.getState() == Claw.State.CONE;
-                                }
+                        CommandBase waitForTilt = Commands.waitSeconds(1.0);
 
-                        };
+                        CommandBase openClaw = claw.createSetStateCommand(Claw.State.CUBE);
+                        CommandBase runGrabber = grabber.createControlCommand(-200);
 
-                        CommandBase clawReleaseCommand = claw.createSetStateCommand(Claw.State.CUBE);
-                        CommandBase grabberPoofCommand = grabber
-                                        .createControlCommand(Constants.Auto.Arm.Placement.grabberSpeedCubeRPM);
+                        CommandBase releaseChoice = Commands.either(openClaw, runGrabber, coneOrCubeCondition);
+                        CommandBase releaseDeadline = Commands.waitSeconds(0.5);
+                        CommandBase release = Commands.deadline(releaseDeadline, releaseChoice);
 
-                        CommandBase waitForPoof = Commands.waitSeconds(0.2);
-                        CommandBase poofCommand = Commands.race(grabberPoofCommand, waitForPoof);
-                        CommandBase releaseCommand = Commands.either(clawReleaseCommand, poofCommand, clawOrPoof);
 
-                        CommandBase elbowSetCommand = elbow.createControlCommand(
-                                        Constants.Auto.Arm.Placement.elbowPositionAfterPlacement);
-                        CommandBase tiltSetAfterCommand = tilt.createSetStateCommand(
-                                        Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
-                        CommandBase elevatorSetCommand = elevator.createControlCommand(
-                                        Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement);
+                        CommandBase elbowUpCommand = elbow.createControlCommand(15);
+                        CommandBase elbowUpDeadline = Commands.waitSeconds(0.5);
+                        CommandBase elbowUp = Commands.deadline(elbowUpDeadline, elbowUpCommand);
+
+
+                        CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
+                        CommandBase elevatorDown = elevator.createControlCommand(0);
+                        CommandBase grabberOff = grabber.createControlCommand(0);
+                        CommandBase tiltBackElevatorDown = Commands.parallel(tiltBack, elevatorDown, grabberOff);
+                        
 
                         return Commands.sequence(
-                                        tiltSetCommand,
-                                        waitForElevatorToTiltCommand,
-                                        releaseCommand,
-                                        elbowSetCommand,
-                                        tiltSetAfterCommand,
-                                        elevatorSetCommand);
+                                tiltElevator, 
+                                waitForTilt,
+                                release,
+                                //elbowUp,
+                                tiltBackElevatorDown);
+
+
+
+
                 }
 
-                public static CommandBase createLow(
+                public static Command createLow(
                                 Elevator elevator,
                                 Elbow elbow,
-                                Grabber grabber,
+                                ElevatorTilt tilt,
                                 Claw claw,
-                                ElevatorTilt tilt) {
-                        CommandBase tiltSetCommand = tilt.createSetStateCommand(
-                                        Constants.Auto.Arm.Placement.Low.Cone.elevatorTiltState);
-                        CommandBase waitForElevatorToTiltCommand = Commands.waitSeconds(
-                                        Constants.Auto.Arm.Placement.Low.Cone.waitForElevatorToTilt);
+                                Grabber grabber) {
 
-                        BooleanSupplier clawOrPoof = new BooleanSupplier() {
+                        BooleanSupplier coneOrCubeCondition = new BooleanSupplier() {
 
                                 @Override
                                 public boolean getAsBoolean() {
                                         return claw.getState() == Claw.State.CONE;
                                 }
-
                         };
 
-                        CommandBase clawReleaseCommand = claw.createSetStateCommand(Claw.State.CUBE);
-                        CommandBase grabberPoofCommand = grabber
-                                        .createControlCommand(Constants.Auto.Arm.Placement.grabberSpeedCubeRPM);
+                        CommandBase tiltElevatorCone = tilt.createSetStateCommand(
+                                        Constants.Auto.Arm.Placement.Low.Cone.elevatorTiltState);
+                        CommandBase tiltElevatorCube = tilt.createSetStateCommand(
+                                        Constants.Auto.Arm.Placement.Low.Cube.elevatorTiltState);
 
-                        CommandBase waitForPoof = Commands.waitSeconds(0.2);
-                        CommandBase poofCommand = Commands.race(grabberPoofCommand, waitForPoof);
-                        CommandBase releaseCommand = Commands.either(clawReleaseCommand, poofCommand, clawOrPoof);
+                        CommandBase tiltElevator = Commands.either(tiltElevatorCone, tiltElevatorCube, coneOrCubeCondition);
 
-                        CommandBase elbowSetCommand = elbow.createControlCommand(
-                                        Constants.Auto.Arm.Placement.elbowPositionAfterPlacement);
-                        CommandBase tiltSetAfterCommand = tilt.createSetStateCommand(
-                                        Constants.Auto.Arm.Placement.elevatorTiltStateAfterPlacement);
-                        CommandBase elevatorSetCommand = elevator.createControlCommand(
-                                        Constants.Auto.Arm.Placement.elevatorPositionAfterPlacement);
+                        CommandBase waitForTilt = Commands.waitSeconds(0.5);
+
+                        CommandBase openClaw = claw.createSetStateCommand(Claw.State.CUBE);
+                        CommandBase runGrabber = grabber.createControlCommand(-100);
+
+                        CommandBase releaseChoice = Commands.either(openClaw, runGrabber, coneOrCubeCondition);
+                        CommandBase releaseDeadline = Commands.waitSeconds(0.5);
+                        CommandBase release = Commands.deadline(releaseDeadline, releaseChoice);
+
+
+                        CommandBase elbowUpCommand = elbow.createControlCommand(15);
+                        CommandBase elbowUpDeadline = Commands.waitSeconds(0.5);
+                        CommandBase elbowUp = Commands.deadline(elbowUpDeadline, elbowUpCommand);
+
+
+                        CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
+                        CommandBase elevatorDown = elevator.createControlCommand(0);
+                        CommandBase grabberOff = grabber.createControlCommand(0);
+                        CommandBase tiltBackElevatorDown = Commands.parallel(tiltBack, elevatorDown, grabberOff);
+                        
 
                         return Commands.sequence(
-                                        tiltSetCommand,
-                                        waitForElevatorToTiltCommand,
-                                        releaseCommand,
-                                        elbowSetCommand,
-                                        tiltSetAfterCommand,
-                                        elevatorSetCommand);
-                }
+                                tiltElevator, 
+                                waitForTilt,
+                                release,
+                                //elbowUp,
+                                tiltBackElevatorDown);
 
+
+
+
+                }
         }
 
         public static class Pickup {
@@ -469,9 +314,22 @@ public class ArmCommandFactories {
                                 ElevatorTilt.State elevatorTiltState,
                                 Claw.State clawState) {
 
+                        BooleanSupplier coneOrCube = new BooleanSupplier() {
+
+                                @Override
+                                public boolean getAsBoolean() {
+                                        return claw.getState() == Claw.State.CONE;
+                                }
+
+                        };
+
                         CommandBase elevatorSetCommand = elevator.createControlCommand(elevatorPositionMeters);
                         CommandBase elbowSetCommand = elbow.createControlCommand(elbowPositionDegrees);
-                        CommandBase grabberSetCommand = grabber.createControlCommand(grabberSpeedRPM);
+
+                        CommandBase coneGrabberSet = grabber.createControlCommand(grabberSpeedRPM);
+                        CommandBase cubeGrabberSEt = grabber.createControlCommand(500);
+
+                        CommandBase grabberSetCommand = Commands.either(coneGrabberSet, cubeGrabberSEt, coneOrCube);
                         CommandBase tiltSetCommand = tilt.createSetStateCommand(elevatorTiltState);
                         CommandBase clawSetCommand = claw.createSetStateCommand(clawState);
 

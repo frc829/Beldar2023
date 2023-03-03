@@ -21,11 +21,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants;
-import frc.robot.commands.ArmAutoFactories.ElementType;
-import frc.robot.commands.ArmAutoFactories.PlacementType;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
@@ -98,11 +93,11 @@ public class FullAutoRoutines {
             }
         }
 
-        for (String name : commandNames) {
-            CommandBase command = createCommandForAuto(name, swerveDrive, elevator, elbow, grabber, claw, tilt,
-                    ledLighting);
-            eventMap.put(name, command);
-        }
+        // for (String name : commandNames) {
+        //     CommandBase command = createCommandForAuto(name, swerveDrive, elevator, elbow, grabber, claw, tilt,
+        //             ledLighting);
+        //     eventMap.put(name, command);
+        // }
 
         return createFullAuto(
                 swerveDrive,
@@ -133,116 +128,6 @@ public class FullAutoRoutines {
 
         return fullAuto;
 
-    }
-
-    private static CommandBase createCommandForAuto(
-            String name,
-            SwerveDrive swerveDrive,
-            Elevator elevator,
-            Elbow elbow,
-            Grabber grabber,
-            Claw claw,
-            ElevatorTilt tilt,
-            LEDLighting ledLighting) {
-        if (name.contains("Balance")) {
-            return swerveDrive.getBalanceCommand();
-        } else if (name.contains("ScoreConeHigh")) {
-            return ArmAutoFactories.AlignmentAndPlacement.create(
-                    elevator,
-                    elbow,
-                    grabber,
-                    claw,
-                    tilt,
-                    ElementType.CONE,
-                    PlacementType.HIGH);
-        } else if (name.contains("ScoreCubeHigh")) {
-            return ArmAutoFactories.AlignmentAndPlacement.create(
-                    elevator,
-                    elbow,
-                    grabber,
-                    claw,
-                    tilt,
-                    ElementType.CUBE,
-                    PlacementType.HIGH);
-        } else if (name.contains("ScoreConeMiddle")) {
-            return ArmAutoFactories.AlignmentAndPlacement.create(
-                    elevator,
-                    elbow,
-                    grabber,
-                    claw,
-                    tilt,
-                    ElementType.CONE,
-                    PlacementType.MIDDLE);
-        } else if (name.contains("ScoreCubeMiddle")) {
-            return ArmAutoFactories.AlignmentAndPlacement.create(
-                    elevator,
-                    elbow,
-                    grabber,
-                    claw,
-                    tilt,
-                    ElementType.CUBE,
-                    PlacementType.MIDDLE);
-        } else if (name.contains("ScoreConeLow")) {
-            return ArmAutoFactories.AlignmentAndPlacement.create(
-                    elevator,
-                    elbow,
-                    grabber,
-                    claw,
-                    tilt,
-                    ElementType.CONE,
-                    PlacementType.LOW);
-        } else if (name.contains("ScoreCubeLow")) {
-            return ArmAutoFactories.AlignmentAndPlacement.create(
-                    elevator,
-                    elbow,
-                    grabber,
-                    claw,
-                    tilt,
-                    ElementType.CUBE,
-                    PlacementType.LOW);
-        } else if (name.contains("PickupCone")) {
-            return ArmCommandFactories.Pickup.create(
-                    elevator,
-                    elbow,
-                    grabber,
-                    claw,
-                    tilt,
-                    Constants.Auto.Arm.Pickup.Floor.elevatorPositionMeters,
-                    Constants.Auto.Arm.Pickup.Floor.Cone.elbowPositionDegrees,
-                    Constants.Auto.Arm.Pickup.grabberSpeedRPM,
-                    Constants.Auto.Arm.Pickup.Floor.elevatorTiltState,
-                    Claw.State.CONE);
-        } else if (name.contains("PickupCube")) {
-            return ArmCommandFactories.Pickup.create(
-                    elevator,
-                    elbow,
-                    grabber,
-                    claw,
-                    tilt,
-                    Constants.Auto.Arm.Pickup.Floor.elevatorPositionMeters,
-                    Constants.Auto.Arm.Pickup.Floor.Cube.elbowPositionDegrees,
-                    Constants.Auto.Arm.Pickup.grabberSpeedRPM,
-                    Constants.Auto.Arm.Pickup.Floor.elevatorTiltState,
-                    Claw.State.CUBE);
-        } else if(name.contains("ResetTelemetry")){
-            return swerveDrive.setTelemetryFromCameraCommand();
-        }
-        else if (name.contains("Carry")) {
-            return ArmCommandFactories.Carry.create(
-                    elevator,
-                    elbow,
-                    grabber,
-                    tilt,
-                    Constants.Auto.Arm.Carry.elevatorPositionMeters,
-                    Constants.Auto.Arm.Carry.elbowPositionDegrees,
-                    Constants.Auto.Arm.Carry.elevatorTiltState);
-        } else if (name.contains("ElevatorUp")) {
-            return elevator.createControlCommand(0.5);
-        } else if (name.contains("DanceParty")) {
-            return ledLighting.getDanceParty();
-        } else {
-            return Commands.none();
-        }
     }
 
 }
