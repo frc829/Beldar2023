@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.framework.controls.ManualSpeedControl;
 import frc.robot.framework.mechanisms.LinearMech;
@@ -111,9 +112,21 @@ public class Elevator extends SubsystemBase {
     return Commands.run(control, this);
   }
 
-  public CommandBase createControlCommand(double positionMeters) {
+  public PIDCommand createControlCommand(double positionMeters) {
 
+    PIDCommand pidCommand = new PIDCommand(
+        elevatorPIDController,
+        this::getPosition,
+        positionMeters,
+        this.elevatorMech::setMechanismSpeedMetersPerSecond,
+        this) {
+      @Override
+      public boolean isFinished() {
+        return elevatorPIDController.atSetpoint();
+      }
+    };
 
+    return pidCommand;
 
   }
 

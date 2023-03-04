@@ -174,7 +174,7 @@ public class ArmCommandFactories {
 
                         CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
                         CommandBase elevatorDown = elevator.createControlCommand(0);
-                        CommandBase grabberOff = grabber.createControlCommand(0);
+                        CommandBase grabberOff = grabber.createStopCommand();
                         
                         CommandBase elbowAdjust = elbow.createControlCommand(35);
                         CommandBase waitForAdjust = Commands.waitSeconds(0.25);
@@ -235,7 +235,7 @@ public class ArmCommandFactories {
 
                         CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
                         CommandBase elevatorDown = elevator.createControlCommand(0);
-                        CommandBase grabberOff = grabber.createControlCommand(0);
+                        CommandBase grabberOff = grabber.createStopCommand();
                         CommandBase tiltBackElevatorDown = Commands.parallel(tiltBack, elevatorDown, grabberOff);
                         
 
@@ -290,7 +290,7 @@ public class ArmCommandFactories {
 
                         CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
                         CommandBase elevatorDown = elevator.createControlCommand(0);
-                        CommandBase grabberOff = grabber.createControlCommand(0);
+                        CommandBase grabberOff = grabber.createStopCommand();
                         CommandBase tiltBackElevatorDown = Commands.parallel(tiltBack, elevatorDown, grabberOff);
                         
 

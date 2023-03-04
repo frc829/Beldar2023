@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.framework.controls.ManualSpeedControl;
 import frc.robot.framework.mechanisms.RotationMech;
@@ -60,12 +61,21 @@ public class Elbow extends SubsystemBase {
     return elbowMech.getPositionRotations();
   }
 
+  private double getPositionRotations() {
+    return getPosition().getRotations();
+  }
+
   private Rotation2d getVelocity() {
     return elbowMech.getVelocityRotationPerSecond();
   }
 
   private Rotation2d getPositionFromSensor() {
     return elbowMech.getAngularPostionFromSensor();
+  }
+
+  private void setVelocityRotationsPerSecond(double rotationsPerSecond){
+    Rotation2d rps = Rotation2d.fromRotations(rotationsPerSecond);
+    this.elbowMech.setVelocityRotationsPerSecond(rps);
   }
 
   public CommandBase createHoldCommand() {
@@ -115,30 +125,21 @@ public class Elbow extends SubsystemBase {
 
   public CommandBase createControlCommand(double positionDegrees) {
 
-    Runnable initPIDController = new Runnable() {
+    
+
+    PIDCommand pidCommand = new PIDCommand(
+        elbowPIDController,
+        this::getPositionRotations,
+        positionDegrees / 360.0,
+        this::setVelocityRotationsPerSecond,
+        this) {
       @Override
-      public void run() {
-        elbowPIDController.setSetpoint(positionDegrees / 360.0);
+      public boolean isFinished() {
+        return elbowPIDController.atSetpoint();
       }
     };
 
-    Runnable control = new Runnable() {
-
-      @Override
-      public void run() {
-
-        double velocityRPS = elbowPIDController.calculate(getPosition().getRotations());
-        velocityRPS = elbowPIDController.atSetpoint() ? 0 : velocityRPS;
-        Rotation2d velocityRotationsPerSecond = Rotation2d.fromRotations(velocityRPS);
-        elbowMech.setVelocityRotationsPerSecond(velocityRotationsPerSecond);
-      }
-    };
-
-
-    CommandBase initializePIDControllerCommand = Commands.runOnce(initPIDController, this);
-    CommandBase runElbowToPosition = Commands.run(control, this);
-
-    return Commands.sequence(initializePIDControllerCommand, runElbowToPosition);
+    return pidCommand;
 
   }
 
