@@ -113,30 +113,7 @@ public class Elevator extends SubsystemBase {
 
   public CommandBase createControlCommand(double positionMeters) {
 
-    Runnable initPIDController = new Runnable() {
 
-      @Override
-      public void run() {
-        elevatorPIDController.setSetpoint(positionMeters);
-      }
-
-    };
-
-    Runnable control = new Runnable() {
-
-      @Override
-      public void run() {
-        double velocityMetersPerSecond = elevatorPIDController.calculate(getPosition());
-        velocityMetersPerSecond = elevatorPIDController.atSetpoint() ? 0 : velocityMetersPerSecond;
-        elevatorMech.setMechanismSpeedMetersPerSecond(velocityMetersPerSecond);
-        
-      }
-    };
-
-    CommandBase initializePIDControllerCommand = Commands.runOnce(initPIDController, this);
-    CommandBase runElbowToPosition = Commands.run(control, this);
-
-    return Commands.sequence(initializePIDControllerCommand, runElbowToPosition);
 
   }
 
