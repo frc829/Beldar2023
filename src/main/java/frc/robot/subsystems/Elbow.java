@@ -96,6 +96,10 @@ public class Elbow extends SubsystemBase {
         double velocityRotationsPerSecond = elbowPIDController.calculate(getPosition().getRotations());
         Rotation2d velocityRotation2dPerSecond = Rotation2d.fromRotations(velocityRotationsPerSecond);
         elbowMech.setVelocityRotationsPerSecond(velocityRotation2dPerSecond);
+        velocityRotationsPerSecond = elbowPIDController.atSetpoint() ? 0 : velocityRotationsPerSecond;
+        velocityRotation2dPerSecond = Rotation2d.fromRotations(velocityRotationsPerSecond);
+        elbowMech.setVelocityRotationsPerSecond(velocityRotation2dPerSecond);
+
       }
     };
 

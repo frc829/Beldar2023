@@ -978,9 +978,9 @@ public class RobotContainer {
                 Trigger ledGoldTrigger = new Trigger(ledGoldBooleanSupplier);
 
                 CommandBase ledPurpleCommand = ledLighting.getSetLEDCommand(
-                                0XA0,
-                                0XF0,
-                                0X20);
+                                0X3C,
+                                0X09,
+                                0X49);
 
                 CommandBase ledGoldCommand = ledLighting.getSetLEDCommand(
                                 0XFF,
