@@ -168,7 +168,7 @@ public class ArmCommandFactories {
 
                         CommandBase elbowUpCommand = elbow.createControlCommand(15);
                         CommandBase elbowUpDeadline = Commands.waitSeconds(0.5);
-                        CommandBase elbowUp = Commands.deadline(elbowUpDeadline, elbowUpCommand);
+
 
 
                         CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
