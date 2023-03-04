@@ -373,8 +373,8 @@ public final class Constants {
 
         public static class Sensor {
           public static int dioChannel = 0;
-          public static double offsetDegrees = 210.0; //practicebot
-          //public static double offsetDegrees = 326; // compbot
+          //public static double offsetDegrees = 210.0; //practicebot
+        public static double offsetDegrees = 326; // compbot
         }
 
         public static class Control {
