@@ -112,6 +112,16 @@ public class Elevator extends SubsystemBase {
     return Commands.run(control, this);
   }
 
+  public PIDCommand createPickupControlCommand(double positionMeters) {
+    PIDCommand pidCommand = new PIDCommand(
+        elevatorPIDController,
+        this::getPosition,
+        positionMeters,
+        this.elevatorMech::setMechanismSpeedMetersPerSecond,
+        this);
+    return pidCommand;
+  }
+
   public PIDCommand createControlCommand(double positionMeters) {
 
     PIDCommand pidCommand = new PIDCommand(

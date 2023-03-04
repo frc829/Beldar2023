@@ -73,7 +73,7 @@ public class Elbow extends SubsystemBase {
     return elbowMech.getAngularPostionFromSensor();
   }
 
-  private void setVelocityRotationsPerSecond(double rotationsPerSecond){
+  private void setVelocityRotationsPerSecond(double rotationsPerSecond) {
     Rotation2d rps = Rotation2d.fromRotations(rotationsPerSecond);
     this.elbowMech.setVelocityRotationsPerSecond(rps);
   }
@@ -115,10 +115,10 @@ public class Elbow extends SubsystemBase {
       @Override
       public void run() {
         double velocityRPS = manualSpeedControl.getManualSpeed();
-        velocityRPS = getPosition().getDegrees() <= elbowMinimumPositionDegrees && velocityRPS < 0.0 ? 0.0
-            : velocityRPS;
-        velocityRPS = getPosition().getDegrees() >= elbowMaximumPositionDegrees && velocityRPS > 0.0 ? 0.0
-            : velocityRPS;
+        // velocityRPS = getPosition().getDegrees() <= elbowMinimumPositionDegrees && velocityRPS < 0.0 ? 0.0
+        //     : velocityRPS;
+        // velocityRPS = getPosition().getDegrees() >= elbowMaximumPositionDegrees && velocityRPS > 0.0 ? 0.0
+        //     : velocityRPS;
         Rotation2d velocityRotationsPerSecond = Rotation2d.fromRotations(velocityRPS);
         elbowMech.setVelocityRotationsPerSecond(velocityRotationsPerSecond);
       }
@@ -127,9 +127,17 @@ public class Elbow extends SubsystemBase {
     return Commands.run(control, this);
   }
 
-  public CommandBase createControlCommand(double positionDegrees) {
+  public CommandBase createPickupControlCommand(double positionDegrees) {
+    PIDCommand pidCommand = new PIDCommand(
+        elbowPIDController,
+        this::getPositionRotations,
+        positionDegrees / 360.0,
+        this::setVelocityRotationsPerSecond,
+        this);
+    return pidCommand;
+  }
 
-    
+  public CommandBase createControlCommand(double positionDegrees) {
 
     PIDCommand pidCommand = new PIDCommand(
         elbowPIDController,

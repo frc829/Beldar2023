@@ -115,7 +115,7 @@ public class FullAutoRoutines {
             return swerveDrive.getBalanceCommand();
         }
         else if(name.contains("ScoreHigh")){
-            CommandBase alignment = ArmCommandFactories.Alignment.createHigh(elevator, elbow, tilt, claw);
+            CommandBase alignment = ArmCommandFactories.AlignmentAuto.createHigh(elevator, elbow, tilt, claw);
             CommandBase placement = ArmCommandFactories.Placement.createHigh(elevator, elbow, tilt, claw, grabber);
             return Commands.sequence(alignment, placement);
         }

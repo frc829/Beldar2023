@@ -12,6 +12,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -488,7 +489,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public CommandBase getBalanceCommand() {
-    return new CommandBase() {
+    CommandBase balance = new CommandBase() {
 
       @Override
       public void initialize() {
@@ -502,7 +503,9 @@ public class SwerveDrive extends SubsystemBase {
         double pitchDistanceFrom0Radians = pitchDistanceFrom0.getRadians();
 
         double vxMetersPerSecond = -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
-            * Math.sin(pitchDistanceFrom0Radians) / 2;
+            * Math.sin(pitchDistanceFrom0Radians) / 1.3;
+
+            vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
         setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
       }
 
@@ -513,14 +516,18 @@ public class SwerveDrive extends SubsystemBase {
 
       @Override
       public boolean isFinished() {
-        Rotation2d pitchAngle = gyroscope.getPitch();
-        Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
-        double pitchDistanceFrom0Value = Math.abs(pitchDistanceFrom0.getDegrees());
+        // // Rotation2d pitchAngle = gyroscope.getPitch();
+        // // Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
+        // // double pitchDistanceFrom0Value = Math.abs(pitchDistanceFrom0.getDegrees());
 
 
-        return pitchDistanceFrom0Value < 2.5;
+        // return pitchDistanceFrom0Value < 2.5;
+        return false;
       }
     };
+
+    balance.addRequirements(this);
+    return balance;
   }
 
   public CommandBase setTelemetryFromCameraCommand() {
