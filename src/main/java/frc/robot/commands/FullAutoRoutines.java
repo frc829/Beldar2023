@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -112,12 +113,40 @@ public class FullAutoRoutines {
     private static CommandBase createCommandForAuto(String name, SwerveDrive swerveDrive, Elevator elevator,
             Elbow elbow, Grabber grabber, Claw claw, ElevatorTilt tilt, LEDLighting ledLighting) {
         if(name == "Balance"){
-            return swerveDrive.getBalanceCommand();
+            CommandBase balance = swerveDrive.getBalanceCommand();
+            CommandBase danceParty = ledLighting.getDanceParty();
+
+
+            
+            BooleanSupplier gyroAtValue = new BooleanSupplier() {
+
+                @Override
+                public boolean getAsBoolean() {
+                    double gyroPitchDegrees = swerveDrive.getGyroPitch();
+                    if(gyroPitchDegrees > 180){
+                        return 360.0 - gyroPitchDegrees < 2.0;
+                    }
+                    else{
+                        return gyroPitchDegrees < 2.0;
+                    }
+                }                
+            };
+
+            CommandBase maybeDanceParty = Commands.either(danceParty, Commands.none(), gyroAtValue);
+
+            return Commands.parallel(balance, maybeDanceParty);
         }
         else if(name.contains("ScoreHigh")){
             CommandBase alignment = ArmCommandFactories.AlignmentAuto.createHigh(elevator, elbow, tilt, claw);
             CommandBase placement = ArmCommandFactories.Placement.createHigh(elevator, elbow, tilt, claw, grabber);
             return Commands.sequence(alignment, placement);
+        }
+        else if(name.contains("ScoreMiddle")){
+            CommandBase alignment = ArmCommandFactories.AlignmentAuto.createMiddle(elevator, elbow, tilt, claw);
+            CommandBase waitTinyAmount = Commands.waitSeconds(2);
+            CommandBase alignAndWaith = Commands.race(alignment, waitTinyAmount);
+            CommandBase placement = ArmCommandFactories.Placement.createMiddle(elevator, elbow, tilt, claw, grabber);
+            return Commands.sequence(alignAndWaith, placement);
         }
         else{
             CommandBase none = Commands.none();

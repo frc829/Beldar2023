@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "ScoreHigh1"
+          "ScoreMiddle1"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -69,7 +69,7 @@
           "Balance"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "none",
+        "waitBehavior": "after",
         "waitTime": 0
       }
     }

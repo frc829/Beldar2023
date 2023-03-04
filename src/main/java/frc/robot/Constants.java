@@ -40,7 +40,7 @@ public final class Constants {
     public static final class DriverController {
       public static final int kDriverControllerPort = 0;
       public static final double kDeadband = 0.1;
-      public static final double maxTranslationalSpeedMPS = 3.0;
+      public static final double maxTranslationalSpeedMPS = 4.0;
       public static final double maxRotationalSpeedRadPS = 4.0;
       public static final int kOperatorControllerPort = 1;
     }
@@ -374,7 +374,7 @@ public final class Constants {
         public static class Sensor {
           public static int dioChannel = 0;
           public static double offsetDegrees = 210.0; //practicebot
-          //public static double offsetDegrees = 326; // compbot
+          //public static double offsetDegrees = 317.0; // compbot
         }
 
         public static class Control {
@@ -573,7 +573,7 @@ public final class Constants {
           public static ElevatorTilt.State elevatorTiltState = State.TWO;
 
           public static class Cone {
-            public static final double elbowPositionDegrees = 115.0;
+            public static final double elbowPositionDegrees = 115;
           }
 
           public static class Cube {
@@ -597,6 +597,7 @@ public final class Constants {
 
         public static class Sliding {
           public static double elevatorPositionMeters = 0.620;
+          public static double elevatorPositionCubeMeters = 0.650;
           public static final double elbowPositionDegrees = 90.0;
           public static ElevatorTilt.State elevatorTiltState = State.NONE;
 

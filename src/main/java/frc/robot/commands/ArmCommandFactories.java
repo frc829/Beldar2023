@@ -49,7 +49,7 @@ public class ArmCommandFactories {
 
                         CommandBase tiltElevatorCommand = tilt.createSetStateCommand(
                                         Constants.Auto.Arm.Alignment.High.elevatorTiltState);
-                                        
+
                         return Commands.parallel(
                                         elevatorSetCommand,
                                         elbowCommand,
@@ -132,7 +132,6 @@ public class ArmCommandFactories {
 
         }
 
-
         public static class Alignment {
 
                 public static CommandBase createHigh(
@@ -163,7 +162,7 @@ public class ArmCommandFactories {
 
                         CommandBase tiltElevatorCommand = tilt.createSetStateCommand(
                                         Constants.Auto.Arm.Alignment.High.elevatorTiltState);
-                                        
+
                         return Commands.parallel(
                                         elevatorSetCommand,
                                         elbowCommand,
@@ -268,8 +267,8 @@ public class ArmCommandFactories {
                         CommandBase tiltElevatorCube = tilt.createSetStateCommand(
                                         Constants.Auto.Arm.Placement.High.Cube.elevatorTiltState);
 
-                        CommandBase tiltElevator = Commands.either(tiltElevatorCone, tiltElevatorCube, coneOrCubeCondition);
-
+                        CommandBase tiltElevator = Commands.either(tiltElevatorCone, tiltElevatorCube,
+                                        coneOrCubeCondition);
 
                         CommandBase waitForCone = Commands.waitSeconds(1.0);
                         CommandBase waitForCube = Commands.waitSeconds(0.0);
@@ -282,36 +281,35 @@ public class ArmCommandFactories {
                         CommandBase releaseDeadline = Commands.waitSeconds(0.5);
                         CommandBase release = Commands.deadline(releaseDeadline, releaseChoice);
 
-
                         CommandBase elbowHold = elbow.createHoldCommand();
-                        
 
-
-                        CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
+                        CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.TWO);
                         CommandBase elevatorDown = elevator.createControlCommand(0);
                         CommandBase grabberOff = grabber.createStopCommand();
-                        
-                        CommandBase elbowAdjust = elbow.createControlCommand(15);
+
+                        CommandBase elbowAdjust = elbow.createControlCommand(30);
                         CommandBase waitForAdjust = Commands.waitSeconds(0.15);
                         CommandBase waitThenAdjustElbow = Commands.sequence(waitForAdjust, elbowAdjust);
-                        
-                        CommandBase tiltBackElevatorDown = Commands.parallel(waitThenAdjustElbow, tiltBack, elevatorDown, grabberOff);
-                        
 
+                        CommandBase waitTiltUp = Commands.waitSeconds(0.5);
+
+                        CommandBase tiltBackElevatorDown = Commands.parallel(
+                                        waitThenAdjustElbow,
+                                        tiltBack,
+                                        waitTiltUp,
+                                        elevatorDown,
+                                        grabberOff);
 
                         return Commands.sequence(
-                                tiltElevator, 
-                                waitForTilt,
-                                release,
-                                //elbowUp,
-                                tiltBackElevatorDown);
-
-
-
+                                        tiltElevator,
+                                        waitForTilt,
+                                        release,
+                                        // elbowUp,
+                                        tiltBackElevatorDown);
 
                 }
 
-                public static Command createMiddle(
+                public static CommandBase createMiddle(
                                 Elevator elevator,
                                 Elbow elbow,
                                 ElevatorTilt tilt,
@@ -331,7 +329,8 @@ public class ArmCommandFactories {
                         CommandBase tiltElevatorCube = tilt.createSetStateCommand(
                                         Constants.Auto.Arm.Placement.Middle.Cube.elevatorTiltState);
 
-                        CommandBase tiltElevator = Commands.either(tiltElevatorCone, tiltElevatorCube, coneOrCubeCondition);
+                        CommandBase tiltElevator = Commands.either(tiltElevatorCone, tiltElevatorCube,
+                                        coneOrCubeCondition);
 
                         CommandBase waitForTilt = Commands.waitSeconds(1.0);
 
@@ -342,27 +341,21 @@ public class ArmCommandFactories {
                         CommandBase releaseDeadline = Commands.waitSeconds(0.5);
                         CommandBase release = Commands.deadline(releaseDeadline, releaseChoice);
 
-
                         CommandBase elbowUpCommand = elbow.createControlCommand(15);
                         CommandBase elbowUpDeadline = Commands.waitSeconds(0.5);
                         CommandBase elbowUp = Commands.deadline(elbowUpDeadline, elbowUpCommand);
-
 
                         CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
                         CommandBase elevatorDown = elevator.createControlCommand(0);
                         CommandBase grabberOff = grabber.createStopCommand();
                         CommandBase tiltBackElevatorDown = Commands.parallel(tiltBack, elevatorDown, grabberOff);
-                        
 
                         return Commands.sequence(
-                                tiltElevator, 
-                                //waitForTilt,
-                                release,
-                                //elbowUp,
-                                tiltBackElevatorDown);
-
-
-
+                                        tiltElevator,
+                                        // waitForTilt,
+                                        release,
+                                        // elbowUp,
+                                        tiltBackElevatorDown);
 
                 }
 
@@ -386,7 +379,8 @@ public class ArmCommandFactories {
                         CommandBase tiltElevatorCube = tilt.createSetStateCommand(
                                         Constants.Auto.Arm.Placement.Low.Cube.elevatorTiltState);
 
-                        CommandBase tiltElevator = Commands.either(tiltElevatorCone, tiltElevatorCube, coneOrCubeCondition);
+                        CommandBase tiltElevator = Commands.either(tiltElevatorCone, tiltElevatorCube,
+                                        coneOrCubeCondition);
 
                         CommandBase waitForTilt = Commands.waitSeconds(0.5);
 
@@ -397,27 +391,21 @@ public class ArmCommandFactories {
                         CommandBase releaseDeadline = Commands.waitSeconds(0.5);
                         CommandBase release = Commands.deadline(releaseDeadline, releaseChoice);
 
-
                         CommandBase elbowUpCommand = elbow.createControlCommand(15);
                         CommandBase elbowUpDeadline = Commands.waitSeconds(0.5);
                         CommandBase elbowUp = Commands.deadline(elbowUpDeadline, elbowUpCommand);
-
 
                         CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
                         CommandBase elevatorDown = elevator.createControlCommand(0);
                         CommandBase grabberOff = grabber.createStopCommand();
                         CommandBase tiltBackElevatorDown = Commands.parallel(tiltBack, elevatorDown, grabberOff);
-                        
 
                         return Commands.sequence(
-                                tiltElevator, 
-                                //waitForTilt,
-                                release,
-                                //elbowUp,
-                                tiltBackElevatorDown);
-
-
-
+                                        tiltElevator,
+                                        // waitForTilt,
+                                        release,
+                                        // elbowUp,
+                                        tiltBackElevatorDown);
 
                 }
         }

@@ -580,4 +580,8 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
+  public double getGyroPitch(){
+    return gyroscope.getPitch().getDegrees();
+  }
+
 }

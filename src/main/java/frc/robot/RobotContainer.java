@@ -34,6 +34,7 @@ import frc.robot.framework.switches.LimitSwitch;
 import frc.robot.framework.telemetry.FieldMap;
 import frc.robot.framework.telemetry.SwervePoseEstimatorFactory;
 import frc.robot.framework.telemetry.Telemetry;
+import frc.robot.framework.vision.DumbOldCamera;
 import frc.robot.framework.vision.TrackingCamera;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elbow;
@@ -143,7 +144,7 @@ public class RobotContainer {
          */
         public RobotContainer() {
 
-                // DumbOldCamera dumbOldCamera = new DumbOldCamera();
+                DumbOldCamera dumbOldCamera = new DumbOldCamera();
 
                 CANSparkMax frontLeftSteeringMotorSparkMax = SparkMaxFactory.create(
                                 Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.deviceId,
@@ -1174,7 +1175,7 @@ public class RobotContainer {
                                 grabber,
                                 claw,
                                 tilt,
-                                Constants.Auto.Arm.Pickup.Sliding.elevatorPositionMeters,
+                                Constants.Auto.Arm.Pickup.Sliding.elevatorPositionCubeMeters,
                                 Constants.Auto.Arm.Pickup.Sliding.elbowPositionDegrees,
                                 Constants.Auto.Arm.Pickup.grabberSpeedRPM,
                                 Constants.Auto.Arm.Pickup.Sliding.elevatorTiltState,
