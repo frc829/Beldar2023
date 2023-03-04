@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "ScoreConeHigh1"
+          "ScoreHigh1"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -74,12 +74,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.07272727272727272,
-      "names": [
-        "Carry1"
-      ]
-    }
-  ]
+  "markers": []
 }

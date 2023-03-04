@@ -347,7 +347,7 @@ public final class Constants {
             public static final double kD = 0;
             public static final double minimumInput = Double.NaN;
             public static final double maximumInput = Double.NaN;
-            public static final double tolerance = 0.01;
+            public static final double tolerance = 0.03;
           }
         }
 

@@ -21,6 +21,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
@@ -93,11 +95,11 @@ public class FullAutoRoutines {
             }
         }
 
-        // for (String name : commandNames) {
-        //     CommandBase command = createCommandForAuto(name, swerveDrive, elevator, elbow, grabber, claw, tilt,
-        //             ledLighting);
-        //     eventMap.put(name, command);
-        // }
+        for (String name : commandNames) {
+            CommandBase command = createCommandForAuto(name, swerveDrive, elevator, elbow, grabber, claw, tilt,
+                    ledLighting);
+            eventMap.put(name, command);
+        }
 
         return createFullAuto(
                 swerveDrive,
@@ -105,6 +107,22 @@ public class FullAutoRoutines {
                 pathGroup,
                 translationConstants,
                 rotationConstants);
+    }
+
+    private static CommandBase createCommandForAuto(String name, SwerveDrive swerveDrive, Elevator elevator,
+            Elbow elbow, Grabber grabber, Claw claw, ElevatorTilt tilt, LEDLighting ledLighting) {
+        if(name == "Balance"){
+            return swerveDrive.getBalanceCommand();
+        }
+        else if(name.contains("ScoreHigh")){
+            CommandBase alignment = ArmCommandFactories.Alignment.createHigh(elevator, elbow, tilt, claw);
+            CommandBase placement = ArmCommandFactories.Placement.createHigh(elevator, elbow, tilt, claw, grabber);
+            return Commands.sequence(alignment, placement);
+        }
+        else{
+            CommandBase none = Commands.none();
+            return none;
+        }
     }
 
     private static Command createFullAuto(

@@ -49,6 +49,7 @@ public class ArmCommandFactories {
 
                         CommandBase tiltElevatorCommand = tilt.createSetStateCommand(
                                         Constants.Auto.Arm.Alignment.High.elevatorTiltState);
+                                        
 
                         return Commands.parallel(
                                         elevatorSetCommand,
@@ -134,7 +135,7 @@ public class ArmCommandFactories {
 
         public static class Placement {
 
-                public static Command createHigh(
+                public static CommandBase createHigh(
                                 Elevator elevator,
                                 Elbow elbow,
                                 ElevatorTilt tilt,
@@ -174,8 +175,14 @@ public class ArmCommandFactories {
                         CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
                         CommandBase elevatorDown = elevator.createControlCommand(0);
                         CommandBase grabberOff = grabber.createControlCommand(0);
-                        CommandBase tiltBackElevatorDown = Commands.parallel(tiltBack, elevatorDown, grabberOff);
                         
+                        CommandBase elbowAdjust = elbow.createControlCommand(35);
+                        CommandBase waitForAdjust = Commands.waitSeconds(0.25);
+                        CommandBase waitThenAdjustElbow = Commands.sequence(waitForAdjust, elbowAdjust);
+                        
+                        CommandBase tiltBackElevatorDown = Commands.parallel(waitThenAdjustElbow, tiltBack, elevatorDown, grabberOff);
+                        
+
 
                         return Commands.sequence(
                                 tiltElevator, 
