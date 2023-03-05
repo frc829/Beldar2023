@@ -40,7 +40,7 @@ public final class Constants {
     public static final class DriverController {
       public static final int kDriverControllerPort = 0;
       public static final double kDeadband = 0.1;
-      public static final double maxTranslationalSpeedMPS = 4.0;
+      public static final double maxTranslationalSpeedMPS = 5;
       public static final double maxRotationalSpeedRadPS = 4.0;
       public static final int kOperatorControllerPort = 1;
     }
@@ -71,7 +71,7 @@ public final class Constants {
         public static double steeringMotorToRotationMechConversion = -7.0 / 150.0;
         public static double driveMotorMotorToRotationMechConversion = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
         public static double driveMotorRotationToLinearConversion = Units.inchesToMeters(4.0) * Math.PI;
-        public static double maxModuleSpeedMPS = 4.21;
+        public static double maxModuleSpeedMPS = 5;
 
         public static class FrontLeft {
           private static double xPositionFromCenter = robotLength / 2;
@@ -373,8 +373,8 @@ public final class Constants {
 
         public static class Sensor {
           public static int dioChannel = 0;
-          public static double offsetDegrees = 210.0; //practicebot
-          //public static double offsetDegrees = 317.0; // compbot
+          //public static double offsetDegrees = 210.0; //practicebot
+          public static double offsetDegrees = 317.0; // compbot
         }
 
         public static class Control {

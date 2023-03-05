@@ -100,9 +100,14 @@ public class SwerveDrive extends SubsystemBase {
 
     this.telemetry.updateCurrentPosition(this.gyroscope.getYaw());
     double[] currentPoseFromCamera = this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
+    if (currentPoseFromCamera[0] != 0) {
+      SmartDashboard.putBoolean("LimeLightGood", true);
+    } else {
+      SmartDashboard.putBoolean("LimeLightGood", false);
+    }
+
     telemetry.addVisionMeasurement(currentPoseFromCamera);
     fieldMap.updateField(this.telemetry.getCurrentPosition());
-
 
     SmartDashboard.putBoolean("Gyro Connected", this.gyroscope.isConnected());
     SmartDashboard.putNumber("PoseFromCameraX", currentPoseFromCamera[0]);
@@ -149,7 +154,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("RobotFieldPositionY", this.telemetry.getCurrentPosition().getY());
 
     SmartDashboard.putNumber("RobotFieldPositionYawDeg",
-    this.telemetry.getCurrentPosition().getRotation().getDegrees());
+        this.telemetry.getCurrentPosition().getRotation().getDegrees());
 
     SmartDashboard.putNumber("GyroRoll", (this.gyroscope.getRoll().getDegrees()));
     SmartDashboard.putNumber("GyroPitch", (this.gyroscope.getPitch().getDegrees()));
@@ -269,8 +274,7 @@ public class SwerveDrive extends SubsystemBase {
 
   public void setTelemetryFromCamera() {
 
-    double[] currentPoseFromCamera =
-    this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
+    double[] currentPoseFromCamera = this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
     Rotation2d yawFromCamera = Rotation2d.fromDegrees(currentPoseFromCamera[5]);
     SmartDashboard.putNumber("YawFROMCAMERA", yawFromCamera.getDegrees());
     Pose2d cameraPose = new Pose2d(currentPoseFromCamera[0], currentPoseFromCamera[1], yawFromCamera);
@@ -400,10 +404,10 @@ public class SwerveDrive extends SubsystemBase {
       public void initialize() {
         Pose2d initialPose = swerveDrive.getSwerveDrivePosition();
         // if (DriverStation.getAlliance() == Alliance.Red) {
-        //   initialPose = new Pose2d(
-        //       initialPose.getX(),
-        //       8.02 - initialPose.getY(),
-        //       new Rotation2d().minus(initialPose.getRotation()));
+        // initialPose = new Pose2d(
+        // initialPose.getX(),
+        // 8.02 - initialPose.getY(),
+        // new Rotation2d().minus(initialPose.getRotation()));
         // }
 
         PathPoint initialPoint = PathPoint.fromCurrentHolonomicState(
@@ -419,7 +423,8 @@ public class SwerveDrive extends SubsystemBase {
             initialPoint,
             goalPoint);
 
-        //trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
+        // trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory,
+        // DriverStation.getAlliance());
 
         drivingCommand = new PPSwerveControllerCommand(
             trajectory,
@@ -465,14 +470,26 @@ public class SwerveDrive extends SubsystemBase {
   public CommandBase getOnRampCommand() {
 
     CommandBase wait = Commands.waitSeconds(1.0);
-    CommandBase drive = Commands.run(
-      () -> {
-        this.setSwerveDriveChassisSpeed(new ChassisSpeeds(4/1.4 * Math.sin(Math.toRadians(15)), 0, 0));
-      }, 
-      this);
 
-    return Commands.race(wait, drive);
+    CommandBase onRamp = new CommandBase() {
+      @Override
+      public void execute() {
+        setSwerveDriveChassisSpeed(new ChassisSpeeds(4 / 1.4 * Math.sin(Math.toRadians(15)), 0, 0));
+      }
 
+      @Override
+          public boolean isFinished() {
+              double degrees = gyroscope.getPitch().getDegrees();
+              if(degrees > 180){
+                return (360 - degrees) >= 10; 
+              }
+              else{
+                return degrees >= 10;
+              }
+          }
+    };
+
+    return onRamp;
 
   }
 
@@ -483,6 +500,7 @@ public class SwerveDrive extends SubsystemBase {
       public void initialize() {
         SmartDashboard.putBoolean("Balancing", true);
       }
+
       @Override
       public void execute() {
         SmartDashboard.putBoolean("Balancing", false);
@@ -493,7 +511,7 @@ public class SwerveDrive extends SubsystemBase {
         double vxMetersPerSecond = -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
             * Math.sin(pitchDistanceFrom0Radians) / 1.3;
 
-            vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
+        vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
         setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
       }
 
@@ -506,8 +524,8 @@ public class SwerveDrive extends SubsystemBase {
       public boolean isFinished() {
         // // Rotation2d pitchAngle = gyroscope.getPitch();
         // // Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
-        // // double pitchDistanceFrom0Value = Math.abs(pitchDistanceFrom0.getDegrees());
-
+        // // double pitchDistanceFrom0Value =
+        // Math.abs(pitchDistanceFrom0.getDegrees());
 
         // return pitchDistanceFrom0Value < 2.5;
         return false;
@@ -542,8 +560,9 @@ public class SwerveDrive extends SubsystemBase {
 
     Pose2d closestPosition = positions.get(0);
 
-    if(DriverStation.getAlliance() == Alliance.Red){
-      closestPosition = new Pose2d(closestPosition.getX(), 8.02 - closestPosition.getY(), closestPosition.getRotation());
+    if (DriverStation.getAlliance() == Alliance.Red) {
+      closestPosition = new Pose2d(closestPosition.getX(), 8.02 - closestPosition.getY(),
+          closestPosition.getRotation());
     }
     Translation2d closestPositionTranslation = closestPosition.getTranslation();
     Translation2d currentPositionTranslation = currentPosition.getTranslation();
@@ -552,7 +571,7 @@ public class SwerveDrive extends SubsystemBase {
 
     for (int i = 1; i < positions.size(); i++) {
       Pose2d position = positions.get(i);
-      if(DriverStation.getAlliance() == Alliance.Red){
+      if (DriverStation.getAlliance() == Alliance.Red) {
         position = new Pose2d(position.getX(), 8.02 - position.getY(), position.getRotation());
       }
       Translation2d positionTranslation = position.getTranslation();
@@ -568,7 +587,7 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
-  public double getGyroPitch(){
+  public double getGyroPitch() {
     return gyroscope.getPitch().getDegrees();
   }
 

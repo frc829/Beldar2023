@@ -297,7 +297,7 @@ public class ArmCommandFactories {
                                         waitThenAdjustElbow,
                                         tiltBack,
                                         waitTiltUp,
-                                        elevatorDown,
+                                        //elevatorDown,
                                         grabberOff);
 
                         return Commands.sequence(
@@ -334,12 +334,14 @@ public class ArmCommandFactories {
 
                         CommandBase waitForTilt = Commands.waitSeconds(1.0);
 
-                        CommandBase openClaw = claw.createSetStateCommand(Claw.State.CUBE);
+                        CommandBase openClawCommand = claw.createSetStateCommand(Claw.State.CUBE);
+                        CommandBase openClawWait = Commands.waitSeconds(0.2);
+                        CommandBase openClaw = Commands.race(openClawWait, openClawCommand);
                         CommandBase runGrabber = grabber.createControlCommand(-200);
 
                         CommandBase releaseChoice = Commands.either(openClaw, runGrabber, coneOrCubeCondition);
                         CommandBase releaseDeadline = Commands.waitSeconds(0.5);
-                        CommandBase release = Commands.deadline(releaseDeadline, releaseChoice);
+                        CommandBase release = Commands.race(releaseDeadline, releaseChoice);
 
                         CommandBase elbowUpCommand = elbow.createControlCommand(15);
                         CommandBase elbowUpDeadline = Commands.waitSeconds(0.5);

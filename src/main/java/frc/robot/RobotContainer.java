@@ -790,7 +790,8 @@ public class RobotContainer {
 
                 Command driveForwardABit = swerveDrive.getOnRampCommand();
                 Command balance = swerveDrive.getBalanceCommand();
-                Element1DockPosition1Command = Commands.sequence(Element1DockPosition1Command, driveForwardABit, balance);
+                Command danceParty = ledLighting.getDanceParty();
+                Element1DockPosition1Command = Commands.sequence(Element1DockPosition1Command, driveForwardABit, balance, danceParty);
 
                 List<PathPlannerTrajectory> Element1DockPosition2Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
                                 Constants.AutoRoutines.Element1.position2.pathName,
