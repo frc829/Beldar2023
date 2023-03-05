@@ -464,28 +464,16 @@ public class SwerveDrive extends SubsystemBase {
 
   public CommandBase getOnRampCommand() {
 
-    return new CommandBase() {
+    CommandBase wait = Commands.waitSeconds(1.0);
+    CommandBase drive = Commands.run(
+      () -> {
+        this.setSwerveDriveChassisSpeed(new ChassisSpeeds(4/1.4, 0, 0));
+      }, 
+      this);
 
-      @Override
-      public void execute() {
-        setSwerveDriveChassisSpeed(new ChassisSpeeds(2, 0, 0));
-      }
+    return Commands.race(wait, drive);
 
-      @Override
-      public void end(boolean interrupted) {
-        stopDrive();
-      }
 
-      @Override
-      public boolean isFinished() {
-        Rotation2d pitchAngle = gyroscope.getPitch();
-        Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
-        double pitchDistanceFrom0Value = Math.abs(pitchDistanceFrom0.getDegrees());
-
-        return pitchDistanceFrom0Value > 15;
-      }
-
-    };
   }
 
   public CommandBase getBalanceCommand() {

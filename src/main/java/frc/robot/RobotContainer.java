@@ -74,6 +74,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -786,6 +787,10 @@ public class RobotContainer {
                                 Element1DockPosition1Trajectory,
                                 Constants.AutoRoutines.Element1.position1.translationConstants,
                                 Constants.AutoRoutines.Element1.position1.rotationConstants);
+
+                Command driveForwardABit = swerveDrive.getOnRampCommand();
+                Command balance = swerveDrive.getBalanceCommand();
+                Element1DockPosition1Command = Commands.sequence(Element1DockPosition1Command, driveForwardABit, balance);
 
                 List<PathPlannerTrajectory> Element1DockPosition2Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
                                 Constants.AutoRoutines.Element1.position2.pathName,
