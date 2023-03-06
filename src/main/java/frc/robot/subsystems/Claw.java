@@ -49,16 +49,30 @@ public class Claw extends SubsystemBase {
   }
 
   public CommandBase createSetStateCommand(Claw.State clawState) {
-    Runnable setState = new Runnable() {
 
+    CommandBase setStateCommand = new CommandBase() {
       @Override
-      public void run() {
-        JediCylinder.State jediCylinderState = clawState == State.CUBE ? JediCylinder.State.Extended
+          public void execute() {
+            JediCylinder.State jediCylinderState = clawState == State.CUBE ? JediCylinder.State.Extended
             : JediCylinder.State.Retracted;
         claw.setExtendedState(jediCylinderState);
-      }
-    };
-    return Commands.runOnce(setState, this);
+          }
 
+      @Override
+          public boolean isFinished() {
+              return true;
+          }
+    };
+
+    setStateCommand.addRequirements(this);
+
+    return setStateCommand;
+
+  }
+
+  public CommandBase createOpenCommand(){
+    return Commands.runOnce(
+      () -> claw.setExtendedState(JediCylinder.State.Extended), 
+      this);
   }
 }

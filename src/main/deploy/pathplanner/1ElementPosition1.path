@@ -17,10 +17,10 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "ScoreMiddle1"
+          "ScoreMiddleCone1"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
+        "waitBehavior": "before",
         "waitTime": 0
       }
     },

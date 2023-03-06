@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.framework.pneumatics.DarthMaulCylinder;
 
@@ -85,10 +84,10 @@ public class ElevatorTilt extends SubsystemBase {
 
   public CommandBase createSetStateCommand(State elevatorTiltState) {
 
-    Runnable elevatorTiltSet = new Runnable() {
 
+    CommandBase setCommand = new CommandBase() {
       @Override
-      public void run() {
+      public void execute() {
         if (elevatorTiltState == State.NONE) {
           elevatorTilt.setDarthMaulCylinderState(DarthMaulCylinder.State.NoLegs);
         } else if (elevatorTiltState == State.TWO) {
@@ -99,9 +98,15 @@ public class ElevatorTilt extends SubsystemBase {
           elevatorTilt.setDarthMaulCylinderState(DarthMaulCylinder.State.DuelOfTheFates);
         }
       }
+      @Override
+          public boolean isFinished() {
+              return true;
+          }
     };
 
-    return Commands.runOnce(elevatorTiltSet, this);
+    setCommand.addRequirements(this);
+
+    return setCommand;
 
   }
 }

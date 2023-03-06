@@ -27,22 +27,14 @@ public interface JediCylinder {
 
     public static JediCylinder getSingleSolenoidBased(Solenoid solenoid) {
 
-        SolenoidSim solenoidSim = new SolenoidSim(
-            19, 
-            PneumaticsModuleType.REVPH, 
-            solenoid.getChannel());
-
         return new JediCylinder() {
 
             @Override
             public State getExtendedState() {
 
-                if(RobotBase.isSimulation()){
-                    return solenoidSim.getOutput() ? JediCylinder.State.Extended : JediCylinder.State.Retracted;
-                }
-                else{
+
                     return solenoid.get() ? JediCylinder.State.Extended : JediCylinder.State.Retracted;
-                }
+
 
 
             }
@@ -50,14 +42,11 @@ public interface JediCylinder {
             @Override
             public void setExtendedState(State jediCylinderState) {
 
-                if(RobotBase.isSimulation()){
-                    boolean isSolenoidOn = jediCylinderState == JediCylinder.State.Extended ? true : false;
-                    solenoidSim.setOutput(isSolenoidOn);
-                }
-                else{
+
+
                     boolean isSolenoidOn = jediCylinderState == JediCylinder.State.Extended ? true : false;
                     solenoid.set(isSolenoidOn);
-                }
+
 
 
             }
@@ -66,26 +55,12 @@ public interface JediCylinder {
 
     public static JediCylinder getDoubleSolenoidBased(DoubleSolenoid doubleSolenoid) {
 
-        DoubleSolenoidSim doubleSolenoidSim = new DoubleSolenoidSim(
-            19, 
-            PneumaticsModuleType.REVPH, 
-            doubleSolenoid.getFwdChannel(), 
-            doubleSolenoid.getRevChannel());
 
         return new JediCylinder() {
 
             @Override
             public State getExtendedState() {
-                if(RobotBase.isSimulation()){
-                    if (doubleSolenoidSim.get() == Value.kForward) {
-                        return JediCylinder.State.Extended;
-                    } else if (doubleSolenoidSim.get() == Value.kReverse) {
-                        return JediCylinder.State.Retracted;
-                    } else {
-                        return JediCylinder.State.Unknown;
-                    }
-                }
-                else{
+
                     if (doubleSolenoid.get() == Value.kForward) {
                         return JediCylinder.State.Extended;
                     } else if (doubleSolenoid.get() == Value.kReverse) {
@@ -93,22 +68,13 @@ public interface JediCylinder {
                     } else {
                         return JediCylinder.State.Unknown;
                     }
-                }
+
 
             }
 
             @Override
             public void setExtendedState(State jediCylinderState) {
-                if(RobotBase.isSimulation()){
-                    if (jediCylinderState == JediCylinder.State.Extended) {
-                        doubleSolenoidSim.set(Value.kForward);
-                    } else if (jediCylinderState == JediCylinder.State.Retracted) {
-                        doubleSolenoidSim.set(Value.kReverse);
-                    } else {
-                        doubleSolenoidSim.set(Value.kOff);
-                    }
-                }
-                else{
+
                     if (jediCylinderState == JediCylinder.State.Extended) {
                         doubleSolenoid.set(Value.kForward);
                     } else if (jediCylinderState == JediCylinder.State.Retracted) {
@@ -116,7 +82,7 @@ public interface JediCylinder {
                     } else {
                         doubleSolenoid.set(Value.kOff);
                     }
-                }
+
 
             }
         };

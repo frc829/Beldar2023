@@ -474,7 +474,9 @@ public class SwerveDrive extends SubsystemBase {
     CommandBase onRamp = new CommandBase() {
       @Override
       public void execute() {
-        setSwerveDriveChassisSpeed(new ChassisSpeeds(4 / 1.4 * Math.sin(Math.toRadians(15)), 0, 0));
+        ChassisSpeeds fieldCentric = new ChassisSpeeds(-4 / 1.4 * Math.sin(Math.toRadians(15)), 0, 0);
+        ChassisSpeeds robotCentric = ChassisSpeeds.fromFieldRelativeSpeeds(fieldCentric, telemetry.getCurrentPosition().getRotation());
+        setSwerveDriveChassisSpeed(robotCentric);
       }
 
       @Override
