@@ -219,15 +219,7 @@ public class RobotContainer {
                                 Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.velocityKI,
                                 Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.velocityKD,
                                 Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.velocityKF);
-                CANSparkMax elevatorMotorSparkMax = SparkMaxFactory.create(
-                                Constants.Robot.Arm.Elevator.MotorConfig.deviceId,
-                                Constants.Robot.Arm.Elevator.MotorConfig.revMotor,
-                                Constants.Robot.Arm.Elevator.MotorConfig.isInverted,
-                                Constants.Robot.Arm.Elevator.MotorConfig.idleMode,
-                                Constants.Robot.Arm.Elevator.MotorConfig.velocityKP,
-                                Constants.Robot.Arm.Elevator.MotorConfig.velocityKI,
-                                Constants.Robot.Arm.Elevator.MotorConfig.velocityKD,
-                                Constants.Robot.Arm.Elevator.MotorConfig.velocityKF);
+
                 CANSparkMax wristMotorSparkMax = SparkMaxFactory.create(
                                 Constants.Robot.Arm.ElbowConstants.MotorConfig.deviceId,
                                 Constants.Robot.Arm.ElbowConstants.MotorConfig.revMotor,
