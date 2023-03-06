@@ -353,7 +353,7 @@ public class ArmCommandFactories {
                                         tiltElevator,
                                         // waitForTilt,
                                         release,
-                                        // elbowUp,
+                                        elbowUp,
                                         tiltBackElevatorDown);
 
                 }

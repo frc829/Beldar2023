@@ -373,8 +373,8 @@ public final class Constants {
 
         public static class Sensor {
           public static int dioChannel = 0;
-          public static double offsetDegrees = 210.0; //practicebot
-          //public static double offsetDegrees = 317.0; // compbot
+          //public static double offsetDegrees = 210.0; //practicebot
+          public static double offsetDegrees = 317.0; // compbot
         }
 
         public static class Control {
@@ -402,7 +402,7 @@ public final class Constants {
         public static class LimitSwitch {
           public static double stopPositionMeters = 0.005;
           public static double minTruePositionMeters = 0.00;
-          public static double maxTruePositionMeters = 0.03;
+          public static double maxTruePositionMeters = 0.05;
 
           public static class Sensor {
             public static int positionSensorID = 34;

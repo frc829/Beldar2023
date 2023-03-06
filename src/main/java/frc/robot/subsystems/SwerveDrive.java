@@ -424,9 +424,9 @@ public class SwerveDrive extends SubsystemBase {
         drivingCommand = new PPSwerveControllerCommand(
             trajectory,
             swerveDrive::getSwerveDrivePosition,
-            new PIDController(4, 0, 0),
-            new PIDController(4, 0, 0),
-            new PIDController(5, 0, 0),
+            new PIDController(10, 0, 0),
+            new PIDController(10, 0, 0),
+            new PIDController(10, 0, 0),
             swerveDrive::setSwerveDriveChassisSpeed,
             true);
 
@@ -464,10 +464,24 @@ public class SwerveDrive extends SubsystemBase {
 
   public CommandBase getOnRampCommand() {
 
-    CommandBase wait = Commands.waitSeconds(2.0);
+    CommandBase wait = Commands.waitSeconds(0.5);
     CommandBase drive = Commands.run(
       () -> {
         this.setSwerveDriveChassisSpeed(new ChassisSpeeds(4/1.4 * Math.sin(Math.toRadians(15)), 0, 0));
+      }, 
+      this);
+
+    return Commands.race(wait, drive);
+
+
+  }
+
+  public CommandBase getOnRampBackwardCommand() {
+
+    CommandBase wait = Commands.waitSeconds(0.5);
+    CommandBase drive = Commands.run(
+      () -> {
+        this.setSwerveDriveChassisSpeed(new ChassisSpeeds(-4/1.4 * Math.sin(Math.toRadians(15)), 0, 0));
       }, 
       this);
 
@@ -491,7 +505,7 @@ public class SwerveDrive extends SubsystemBase {
         double pitchDistanceFrom0Radians = pitchDistanceFrom0.getRadians();
 
         double vxMetersPerSecond = -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
-            * Math.sin(pitchDistanceFrom0Radians) / 1.3;
+            * Math.sin(pitchDistanceFrom0Radians) / 2.5;
 
             vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
         setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));

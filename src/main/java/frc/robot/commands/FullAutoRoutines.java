@@ -139,10 +139,12 @@ public class FullAutoRoutines {
             return Commands.sequence(alignment, placement);
         } else if (name.contains("ScoreMiddle")) {
             CommandBase alignment = ArmCommandFactories.AlignmentAuto.createMiddle(elevator, elbow, tilt, claw);
-            // CommandBase waitTinyAmount = Commands.waitSeconds(2);
-            // CommandBase alignAndWaith = Commands.race(alignment, waitTinyAmount);
+            CommandBase waitTinyAmount = Commands.waitSeconds(1);
+            CommandBase alignAndWaith = Commands.race(alignment, waitTinyAmount);
             CommandBase placement = ArmCommandFactories.Placement.createMiddle(elevator, elbow, tilt, claw, grabber);
-            return Commands.sequence(alignment, placement);
+            CommandBase placementWait = Commands.waitSeconds(1.5);
+            CommandBase placementAndWait = Commands.race(placement, placementWait);
+            return Commands.sequence(alignAndWaith, placementAndWait);
         } else if(name.contains("ScoreLow")){
             CommandBase alignment = ArmCommandFactories.AlignmentAuto.createLow(elevator, elbow, tilt, claw);
             // CommandBase waitTinyAmount = Commands.waitSeconds(2);
