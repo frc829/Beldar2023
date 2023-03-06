@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "ScoreCubeHigh1"
+          "ScoreMiddle1"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -26,15 +26,15 @@
     },
     {
       "anchorPoint": {
-        "x": 6.621116211820975,
+        "x": 6.0,
         "y": 2.75
       },
       "prevControl": {
-        "x": 5.97580043102841,
+        "x": 5.354684219207435,
         "y": 2.75
       },
       "nextControl": {
-        "x": 7.073293060555865,
+        "x": 6.45217684873489,
         "y": 2.75
       },
       "holonomicAngle": 180.0,

@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
@@ -120,7 +119,7 @@ public class ArmCommandFactories {
                         CommandBase tiltElevatorCommand = tilt.createSetStateCommand(
                                         Constants.Auto.Arm.Alignment.Low.elevatorTiltState);
 
-                        CommandBase alignmentDeadline = Commands.waitSeconds(2);
+                        CommandBase alignmentDeadline = Commands.waitSeconds(0.25);
 
                         CommandBase setArm = Commands.parallel(
                                         elevatorSetCommand,
@@ -359,7 +358,7 @@ public class ArmCommandFactories {
 
                 }
 
-                public static Command createLow(
+                public static CommandBase createLow(
                                 Elevator elevator,
                                 Elbow elbow,
                                 ElevatorTilt tilt,
@@ -388,11 +387,11 @@ public class ArmCommandFactories {
                         CommandBase runGrabber = grabber.createControlCommand(-100);
 
                         CommandBase releaseChoice = Commands.either(openClaw, runGrabber, coneOrCubeCondition);
-                        CommandBase releaseDeadline = Commands.waitSeconds(0.5);
+                        CommandBase releaseDeadline = Commands.waitSeconds(0.2);
                         CommandBase release = Commands.deadline(releaseDeadline, releaseChoice);
 
                         CommandBase elbowUpCommand = elbow.createControlCommand(15);
-                        CommandBase elbowUpDeadline = Commands.waitSeconds(0.5);
+                        CommandBase elbowUpDeadline = Commands.waitSeconds(0.2);
                         CommandBase elbowUp = Commands.deadline(elbowUpDeadline, elbowUpCommand);
 
                         CommandBase tiltBack = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
@@ -404,6 +403,7 @@ public class ArmCommandFactories {
                                         tiltElevator,
                                         // waitForTilt,
                                         release,
+                                        elbowUp,
                                         tiltBackElevatorDown);
 
                 }

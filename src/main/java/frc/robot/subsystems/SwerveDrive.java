@@ -464,7 +464,7 @@ public class SwerveDrive extends SubsystemBase {
 
   public CommandBase getOnRampCommand() {
 
-    CommandBase wait = Commands.waitSeconds(1.0);
+    CommandBase wait = Commands.waitSeconds(2.0);
     CommandBase drive = Commands.run(
       () -> {
         this.setSwerveDriveChassisSpeed(new ChassisSpeeds(4/1.4 * Math.sin(Math.toRadians(15)), 0, 0));

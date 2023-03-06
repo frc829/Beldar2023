@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
@@ -112,43 +113,67 @@ public class FullAutoRoutines {
 
     private static CommandBase createCommandForAuto(String name, SwerveDrive swerveDrive, Elevator elevator,
             Elbow elbow, Grabber grabber, Claw claw, ElevatorTilt tilt, LEDLighting ledLighting) {
-        if(name == "Balance"){
+        if (name == "Balance") {
             CommandBase balance = swerveDrive.getBalanceCommand();
             CommandBase danceParty = ledLighting.getDanceParty();
 
-
-            
             BooleanSupplier gyroAtValue = new BooleanSupplier() {
 
                 @Override
                 public boolean getAsBoolean() {
                     double gyroPitchDegrees = swerveDrive.getGyroPitch();
-                    if(gyroPitchDegrees > 180){
+                    if (gyroPitchDegrees > 180) {
                         return 360.0 - gyroPitchDegrees < 2.0;
-                    }
-                    else{
+                    } else {
                         return gyroPitchDegrees < 2.0;
                     }
-                }                
+                }
             };
 
             CommandBase maybeDanceParty = Commands.either(danceParty, Commands.none(), gyroAtValue);
 
             return Commands.parallel(balance, maybeDanceParty);
-        }
-        else if(name.contains("ScoreHigh")){
+        } else if (name.contains("ScoreHigh")) {
             CommandBase alignment = ArmCommandFactories.AlignmentAuto.createHigh(elevator, elbow, tilt, claw);
             CommandBase placement = ArmCommandFactories.Placement.createHigh(elevator, elbow, tilt, claw, grabber);
             return Commands.sequence(alignment, placement);
-        }
-        else if(name.contains("ScoreMiddle")){
+        } else if (name.contains("ScoreMiddle")) {
             CommandBase alignment = ArmCommandFactories.AlignmentAuto.createMiddle(elevator, elbow, tilt, claw);
             // CommandBase waitTinyAmount = Commands.waitSeconds(2);
             // CommandBase alignAndWaith = Commands.race(alignment, waitTinyAmount);
             CommandBase placement = ArmCommandFactories.Placement.createMiddle(elevator, elbow, tilt, claw, grabber);
             return Commands.sequence(alignment, placement);
-        }
-        else{
+        } else if(name.contains("ScoreLow")){
+            CommandBase alignment = ArmCommandFactories.AlignmentAuto.createLow(elevator, elbow, tilt, claw);
+            // CommandBase waitTinyAmount = Commands.waitSeconds(2);
+            // CommandBase alignAndWaith = Commands.race(alignment, waitTinyAmount);
+            CommandBase placement = ArmCommandFactories.Placement.createLow(elevator, elbow, tilt, claw, grabber);
+            return Commands.sequence(alignment, placement);
+        } 
+        else if (name.contains("ConePickup")) {
+            CommandBase conePickup = ArmCommandFactories.Pickup.create(
+                    elevator,
+                    elbow,
+                    grabber,
+                    claw,
+                    tilt,
+                    Constants.Auto.Arm.Pickup.Floor.elevatorPositionMeters,
+                    Constants.Auto.Arm.Pickup.Floor.Cone.elbowPositionDegrees,
+                    Constants.Auto.Arm.Pickup.grabberSpeedRPM,
+                    ElevatorTilt.State.TWO,
+                    Claw.State.CONE);
+            return conePickup;
+        } else if (name.contains("Carry")) {
+            CommandBase carry = ArmCommandFactories.Carry.create(
+                    elevator,
+                    elbow,
+                    grabber,
+                    tilt,
+                    Constants.Auto.Arm.Carry.elevatorPositionMeters,
+                    Constants.Auto.Arm.Carry.elbowPositionDegrees,
+                    ElevatorTilt.State.NONE);
+            return carry;
+        } else {
             CommandBase none = Commands.none();
             return none;
         }

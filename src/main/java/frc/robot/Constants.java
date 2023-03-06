@@ -40,7 +40,7 @@ public final class Constants {
     public static final class DriverController {
       public static final int kDriverControllerPort = 0;
       public static final double kDeadband = 0.1;
-      public static final double maxTranslationalSpeedMPS = 4.0;
+      public static final double maxTranslationalSpeedMPS = 6.0;
       public static final double maxRotationalSpeedRadPS = 4.0;
       public static final int kOperatorControllerPort = 1;
     }
@@ -71,7 +71,7 @@ public final class Constants {
         public static double steeringMotorToRotationMechConversion = -7.0 / 150.0;
         public static double driveMotorMotorToRotationMechConversion = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
         public static double driveMotorRotationToLinearConversion = Units.inchesToMeters(4.0) * Math.PI;
-        public static double maxModuleSpeedMPS = 4.21;
+        public static double maxModuleSpeedMPS = 6;
 
         public static class FrontLeft {
           private static double xPositionFromCenter = robotLength / 2;
@@ -615,17 +615,35 @@ public final class Constants {
 
   public static class AutoRoutines {
 
-    public static class Element2 {
-      public static class position1 {
-        public static String pathName = "2ElementPosition1";
+    public static class Element3 {
+      public static class position2 {
+        public static String pathName = "3ElementPosition2";
+        public static PIDConstants translationConstants = new PIDConstants(5, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(5, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
+        public static PathConstraints[] remainingPathConstraints = {};
+      }
+
+      public static class position8{
+        public static String pathName = "3ElementPosition8";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
         public static PathConstraints[] remainingPathConstraints = {};
       }
+    }
 
-      public static class position2{
+    public static class Element2 {
+      public static class position2 {
         public static String pathName = "2ElementPosition2";
+        public static PIDConstants translationConstants = new PIDConstants(5, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(5, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
+        public static PathConstraints[] remainingPathConstraints = {};
+      }
+
+      public static class position8{
+        public static String pathName = "2ElementPosition8";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
