@@ -297,7 +297,7 @@ public class ArmCommandFactories {
                                         waitThenAdjustElbow,
                                         tiltBack,
                                         waitTiltUp,
-                                        elevatorDown,
+                                        //elevatorDown,
                                         grabberOff);
 
                         return Commands.sequence(
