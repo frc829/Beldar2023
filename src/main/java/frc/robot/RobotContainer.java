@@ -944,6 +944,23 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element3.position2.translationConstants,
                                 Constants.AutoRoutines.Element3.position2.rotationConstants);
 
+                List<PathPlannerTrajectory> Element3DockPosition8Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
+                                Constants.AutoRoutines.Element3.position8.pathName,
+                                Constants.AutoRoutines.Element3.position8.firstPathConstraint,
+                                Constants.AutoRoutines.Element3.position8.remainingPathConstraints);
+
+                Command Element3DockPosition8Command = FullAutoRoutines.createFullAutoFromPathGroup(
+                                swerveDrive,
+                                elevator,
+                                elbow,
+                                grabber,
+                                claw,
+                                tilt,
+                                ledLighting,
+                                Element3DockPosition8Trajectory,
+                                Constants.AutoRoutines.Element3.position8.translationConstants,
+                                Constants.AutoRoutines.Element3.position8.rotationConstants);
+
                 // List<PathPlannerTrajectory> Element1DockPosition9Trajectory =
                 // FullAutoRoutines.getPathPlannerTrajectory(
                 // Constants.AutoRoutines.Element1.position9.pathName,
@@ -1054,6 +1071,7 @@ public class RobotContainer {
                 pathPlannerTrajectories.put("2ElementPosition2", Element2DockPosition2Trajectory);
                 pathPlannerTrajectories.put("2ElementPosition8", Element2DockPosition8Trajectory);
                 pathPlannerTrajectories.put("3ElementPosition2", Element3DockPosition2Trajectory);
+                pathPlannerTrajectories.put("3ElementPosition8", Element3DockPosition8Trajectory);
 
                 autoCommands = new HashMap<>();
                 // autoCommands.put("1ElementPosition1", Element1DockPosition1Command);
@@ -1068,6 +1086,7 @@ public class RobotContainer {
                 autoCommands.put("2ElementPosition2", Element2DockPosition2Command);
                 autoCommands.put("2ElementPosition8", Element2DockPosition8Command);
                 autoCommands.put("3ElementPosition2", Element3DockPosition2Command);
+                autoCommands.put("3ElementPosition8", Element3DockPosition8Command);
 
                 // this.autoChooser.addOption("1ElementPosition1", "1ElementPosition1");
                 // this.autoChooser.addOption("1ElementPosition2", "1ElementPosition2");
@@ -1081,6 +1100,7 @@ public class RobotContainer {
                 this.autoChooser.addOption("2ElementPosition2", "2ElementPosition2");
                 this.autoChooser.addOption("2ElementPosition8", "2ElementPosition8");
                 this.autoChooser.addOption("3ElementPosition2", "3ElementPosition2");
+                this.autoChooser.addOption("3ElementPosition8", "3ElementPosition8");
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
                 SmartDashboard.putString("RIO Serial Number", RoboRioDataJNI.getSerialNumber());

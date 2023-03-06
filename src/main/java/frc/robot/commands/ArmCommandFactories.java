@@ -442,12 +442,13 @@ public class ArmCommandFactories {
                         CommandBase tiltSetCommand = tilt.createSetStateCommand(elevatorTiltState);
                         CommandBase clawSetCommand = claw.createSetStateCommand(clawState);
 
-                        return Commands.parallel(
+                        CommandBase Pickup = Commands.parallel(
                                         elevatorSetCommand,
                                         elbowSetCommand,
                                         grabberSetCommand,
-                                        tiltSetCommand,
-                                        clawSetCommand);
+                                        tiltSetCommand);
+
+                        return Commands.sequence(clawSetCommand, Pickup);
 
                 }
         }
