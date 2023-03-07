@@ -771,29 +771,27 @@ public class RobotContainer {
                                 "CANIVORE",
                                 300);
 
-                List<PathPlannerTrajectory> Element1DockPosition1Trajectory =
-                FullAutoRoutines.getPathPlannerTrajectory(
-                Constants.AutoRoutines.Element1.position1.pathName,
-                Constants.AutoRoutines.Element1.position1.firstPathConstraint,
-                Constants.AutoRoutines.Element1.position1.remainingPathConstraints);
+                List<PathPlannerTrajectory> Element1DockPosition1Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
+                                Constants.AutoRoutines.Element1.position1.pathName,
+                                Constants.AutoRoutines.Element1.position1.firstPathConstraint,
+                                Constants.AutoRoutines.Element1.position1.remainingPathConstraints);
 
-                Command Element1DockPosition1Command =
-                FullAutoRoutines.createFullAutoFromPathGroup(
-                swerveDrive,
-                elevator,
-                elbow,
-                grabber,
-                claw,
-                tilt,
-                ledLighting,
-                Element1DockPosition1Trajectory,
-                Constants.AutoRoutines.Element1.position1.translationConstants,
-                Constants.AutoRoutines.Element1.position1.rotationConstants);
+                Command Element1DockPosition1Command = FullAutoRoutines.createFullAutoFromPathGroup(
+                                swerveDrive,
+                                elevator,
+                                elbow,
+                                grabber,
+                                claw,
+                                tilt,
+                                ledLighting,
+                                Element1DockPosition1Trajectory,
+                                Constants.AutoRoutines.Element1.position1.translationConstants,
+                                Constants.AutoRoutines.Element1.position1.rotationConstants);
 
                 Command driveForwardABit = swerveDrive.getOnRampCommand();
                 Command balance = swerveDrive.getBalanceCommand();
-                Element1DockPosition1Command =
-                Commands.sequence(Element1DockPosition1Command, driveForwardABit, balance);
+                Element1DockPosition1Command = Commands.sequence(Element1DockPosition1Command, driveForwardABit,
+                                balance);
 
                 List<PathPlannerTrajectory> Element2DockPosition2Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
                                 Constants.AutoRoutines.Element2.position2.pathName,
@@ -850,8 +848,32 @@ public class RobotContainer {
 
                 Command driveBackwardABit = swerveDrive.getOnRampBackwardCommand();
                 Command balance14 = swerveDrive.getBalanceCommand();
-                Element1DockPosition4Command =
-                Commands.sequence(Element1DockPosition4Command, driveBackwardABit, balance14);
+                Element1DockPosition4Command = Commands.sequence(Element1DockPosition4Command, driveBackwardABit,
+                                balance14);
+
+                List<PathPlannerTrajectory> Element1DockPosition5ShortTrajectory = FullAutoRoutines
+                                .getPathPlannerTrajectory(
+                                                Constants.AutoRoutines.Element1.position5Short.pathName,
+                                                Constants.AutoRoutines.Element1.position5Short.firstPathConstraint,
+                                                Constants.AutoRoutines.Element1.position5Short.remainingPathConstraints);
+
+                Command Element1DockPosition5ShortCommand = FullAutoRoutines.createFullAutoFromPathGroup(
+                                swerveDrive,
+                                elevator,
+                                elbow,
+                                grabber,
+                                claw,
+                                tilt,
+                                ledLighting,
+                                Element1DockPosition5ShortTrajectory,
+                                Constants.AutoRoutines.Element1.position5Short.translationConstants,
+                                Constants.AutoRoutines.Element1.position5Short.rotationConstants);
+
+                Command driveBackwardABit2 = swerveDrive.getOnRampBackwardCommand();
+                Command balance15 = swerveDrive.getBalanceCommand();
+                Element1DockPosition5ShortCommand = Commands.sequence(Element1DockPosition5ShortCommand,
+                                driveBackwardABit2,
+                                balance15);
 
                 List<PathPlannerTrajectory> Element1DockPosition5Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
                                 Constants.AutoRoutines.Element1.position5.pathName,
@@ -870,8 +892,8 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position5.translationConstants,
                                 Constants.AutoRoutines.Element1.position5.rotationConstants);
 
-                Command balance15 = swerveDrive.getBalanceCommand();
-                Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, balance15);
+                Command balance152 = swerveDrive.getBalanceCommand();
+                Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, balance152);
 
                 List<PathPlannerTrajectory> Element1DockPosition6Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
                                 Constants.AutoRoutines.Element1.position6.pathName,
@@ -1056,13 +1078,14 @@ public class RobotContainer {
 
                 pathPlannerTrajectories = new HashMap<>();
                 pathPlannerTrajectories.put("1ElementPosition1",
-                Element1DockPosition1Trajectory);
+                                Element1DockPosition1Trajectory);
                 // pathPlannerTrajectories.put("1ElementPosition2",
                 // Element1DockPosition2Trajectory);
                 // pathPlannerTrajectories.put("1ElementPosition3",
                 // Element1DockPosition3Trajectory);
                 pathPlannerTrajectories.put("1ElementPosition4", Element1DockPosition4Trajectory);
                 pathPlannerTrajectories.put("1ElementPosition5", Element1DockPosition5Trajectory);
+                pathPlannerTrajectories.put("1ElementPosition5Short", Element1DockPosition5ShortTrajectory);
                 pathPlannerTrajectories.put("1ElementPosition6", Element1DockPosition6Trajectory);
                 // pathPlannerTrajectories.put("1ElementPosition7",
                 // Element1DockPosition7Trajectory);
@@ -1081,6 +1104,7 @@ public class RobotContainer {
                 // autoCommands.put("1ElementPosition3", Element1DockPosition3Command);
                 autoCommands.put("1ElementPosition4", Element1DockPosition4Command);
                 autoCommands.put("1ElementPosition5", Element1DockPosition5Command);
+                autoCommands.put("1ElementPosition5Short", Element1DockPosition5ShortCommand);
                 autoCommands.put("1ElementPosition6", Element1DockPosition6Command);
                 // autoCommands.put("1ElementPosition7", Element1DockPosition7Command);
                 // autoCommands.put("1ElementPosition8", Element1DockPosition8Command);
@@ -1095,6 +1119,7 @@ public class RobotContainer {
                 // this.autoChooser.addOption("1ElementPosition3", "1ElementPosition3");
                 this.autoChooser.addOption("1ElementPosition4", "1ElementPosition4");
                 this.autoChooser.addOption("1ElementPosition5", "1ElementPosition5");
+                this.autoChooser.addOption("1ElementPosition5Short", "1ElementPosition5Short");
                 this.autoChooser.addOption("1ElementPosition6", "1ElementPosition6");
                 // this.autoChooser.addOption("1ElementPosition7", "1ElementPosition7");
                 // this.autoChooser.addOption("1ElementPosition8", "1ElementPosition8");
