@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -17,6 +19,10 @@ public class ElevatorTilt extends SubsystemBase {
   private final MechanismLigament2d fakeElevatorMech2d;
   private final MechanismLigament2d elevatorMech2d;
   private double tiltAngleDegreesSim = 0;
+
+  public enum State {
+    NONE, TWO, SIX, EIGHT
+  }
 
   public ElevatorTilt(DarthMaulCylinder elevatorTilt, MechanismLigament2d fakeElevatorMech2d,
       MechanismLigament2d elevatorMech2d) {
@@ -35,10 +41,6 @@ public class ElevatorTilt extends SubsystemBase {
 
     this.elevatorMech2d.setAngle(90 + tiltAngleDegreesSim);
     this.fakeElevatorMech2d.setAngle(90 + tiltAngleDegreesSim);
-  }
-
-  public enum State {
-    NONE, TWO, SIX, EIGHT
   }
 
   private void adjustTile(State elevatorTiltState) {
@@ -70,6 +72,7 @@ public class ElevatorTilt extends SubsystemBase {
     }
   }
 
+  // Suppliers
   public State getState() {
     DarthMaulCylinder.State darthMaulCylinderState = elevatorTilt.getDarthMaulCylinderState();
     if (darthMaulCylinderState == DarthMaulCylinder.State.NoLegs) {
@@ -83,25 +86,72 @@ public class ElevatorTilt extends SubsystemBase {
     }
   }
 
-  public CommandBase createSetStateCommand(State elevatorTiltState) {
+  // Consumers
+  public void setState(ElevatorTilt.State elevatorTiltState) {
+    if (elevatorTiltState == State.NONE) {
+      elevatorTilt.setDarthMaulCylinderState(DarthMaulCylinder.State.NoLegs);
+    } else if (elevatorTiltState == State.TWO) {
+      elevatorTilt.setDarthMaulCylinderState(DarthMaulCylinder.State.ShortSaber);
+    } else if (elevatorTiltState == State.SIX) {
+      elevatorTilt.setDarthMaulCylinderState(DarthMaulCylinder.State.Tatooine);
+    } else {
+      elevatorTilt.setDarthMaulCylinderState(DarthMaulCylinder.State.DuelOfTheFates);
+    }
+  }
 
-    Runnable elevatorTiltSet = new Runnable() {
+  // Commands
+
+  public CommandBase createIdleCommand() {
+    CommandBase idleCommand = new CommandBase() {
 
       @Override
-      public void run() {
-        if (elevatorTiltState == State.NONE) {
-          elevatorTilt.setDarthMaulCylinderState(DarthMaulCylinder.State.NoLegs);
-        } else if (elevatorTiltState == State.TWO) {
-          elevatorTilt.setDarthMaulCylinderState(DarthMaulCylinder.State.ShortSaber);
-        } else if (elevatorTiltState == State.SIX) {
-          elevatorTilt.setDarthMaulCylinderState(DarthMaulCylinder.State.Tatooine);
-        } else {
-          elevatorTilt.setDarthMaulCylinderState(DarthMaulCylinder.State.DuelOfTheFates);
-        }
+      public void initialize() {
+        String lastCommand = SmartDashboard.getString("Elevator Tilt Command Current", "Idle");
+        SmartDashboard.putString("Elevator Tilt Command Last", lastCommand);
+        SmartDashboard.putString("Elevator Tilt Command Current", "Idle");
+      }
+
+    };
+
+    idleCommand.addRequirements(this);
+    return idleCommand;
+  }
+
+  public CommandBase createSetStateCommand(State elevatorTiltState) {
+
+    CommandBase setStateCommand = new CommandBase() {
+
+      @Override
+      public void initialize() {
+        String lastCommand = SmartDashboard.getString("Elevator Tilt Command Current", "Idle");
+        SmartDashboard.putString("Elevator Tilt Command Last", lastCommand);
+        SmartDashboard.putString("Elevator Tilt Command Current", "SetState: " + elevatorTiltState.name());
+      }
+
+      @Override
+      public void execute() {
+        setState(elevatorTiltState);
+      }
+
+      @Override
+      public boolean isFinished() {
+        return true;
       }
     };
 
-    return Commands.runOnce(elevatorTiltSet, this);
+    setStateCommand.addRequirements(this);
+    return setStateCommand;
 
+  }
+
+  public CommandBase createConeCubeCommand(
+      State elevatorTiltStateCone,
+      State elevatorTiltStateCube,
+      BooleanSupplier hasConeSupplier) {
+
+    CommandBase elevatorTiltSetCone = createSetStateCommand(elevatorTiltStateCone);
+    CommandBase elevatorTiltSetCube = createSetStateCommand(elevatorTiltStateCube);
+
+    return Commands.either(elevatorTiltSetCone, elevatorTiltSetCube, hasConeSupplier);
   }
 }

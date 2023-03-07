@@ -5,10 +5,14 @@
 package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.framework.controls.ManualSpeedControl;
@@ -19,8 +23,6 @@ public class Elevator extends SubsystemBase {
   private final LinearMech elevatorMech;
   private final ManualSpeedControl manualSpeedControl;
   private final PIDController elevatorPIDController;
-  private final double elevatorMinimumPositionMeters;
-  private final double elevatorMaximumPositionMeters;
   private final MechanismLigament2d elevatorMech2d;
   private final DecimalFormat decimalFormat;
 
@@ -28,15 +30,11 @@ public class Elevator extends SubsystemBase {
       LinearMech elevatorMech,
       ManualSpeedControl manualSpeedControl,
       PIDController elevatorPIDController,
-      double elevatorMinimumPositionMeters,
-      double elevatorMaximumPositionMeters,
       MechanismLigament2d elevatorMech2d,
       DecimalFormat decimalFormat) {
     this.elevatorMech = elevatorMech;
     this.manualSpeedControl = manualSpeedControl;
     this.elevatorPIDController = elevatorPIDController;
-    this.elevatorMinimumPositionMeters = elevatorMinimumPositionMeters;
-    this.elevatorMaximumPositionMeters = elevatorMaximumPositionMeters;
     this.elevatorMech2d = elevatorMech2d;
     this.decimalFormat = decimalFormat;
   }
@@ -69,6 +67,10 @@ public class Elevator extends SubsystemBase {
     return elevatorMech.getLinearPositionFromSensor();
   }
 
+  public boolean atSetpoint() {
+    return elevatorPIDController.atSetpoint();
+  }
+
   // Runnable
   private void stop() {
     this.elevatorMech.stop();
@@ -76,6 +78,9 @@ public class Elevator extends SubsystemBase {
 
   // Consumers
   private void setVelocity(double speedMetersPerSecond) {
+    if (RobotBase.isSimulation()) {
+      speedMetersPerSecond -= 0.1;
+    }
     this.elevatorMech.setMechanismSpeedMetersPerSecond(speedMetersPerSecond);
   }
 
@@ -89,9 +94,18 @@ public class Elevator extends SubsystemBase {
         this) {
       @Override
       public void initialize() {
-        this.m_setpoint = () -> getPosition();
+        double setPoint = getPosition();
+        this.m_setpoint = () -> setPoint;
         SmartDashboard.putString("Elevator Command Current", "Hold at " + this.m_setpoint.getAsDouble() + " m");
         super.initialize();
+      }
+
+      @Override
+      public void execute() {
+        double output = m_controller.calculate(m_measurement.getAsDouble(), m_setpoint.getAsDouble());
+        SmartDashboard.putNumber("CurrentElevatorSetpoint", m_setpoint.getAsDouble());
+        SmartDashboard.putNumber("Hold Elevator Output", output);
+        m_useOutput.accept(output);
       }
     };
 
@@ -134,11 +148,6 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putString("Elevator Command Current", "Go To " + positionMeters + " meters");
         super.initialize();
       }
-
-      @Override
-      public boolean isFinished() {
-        return elevatorPIDController.atSetpoint();
-      }
     };
 
     return pidCommand;
@@ -169,4 +178,16 @@ public class Elevator extends SubsystemBase {
 
     return stopCommand;
   }
+
+  public CommandBase createConeCubeCommand(
+      double elevatorPositionConeMeters,
+      double elevatorPositionCubeMeters,
+      BooleanSupplier hasConeSupplier) {
+
+    CommandBase positionElevatorCone = createControlCommand(elevatorPositionConeMeters);
+    CommandBase positionElevatorCube = createControlCommand(elevatorPositionCubeMeters);
+
+    return Commands.either(positionElevatorCone, positionElevatorCube, hasConeSupplier);
+  }
+
 }

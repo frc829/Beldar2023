@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,6 +30,10 @@ public class Grabber extends SubsystemBase {
     this.decimalFormat = decimalFormat;
   }
 
+  public enum State {
+    ENABLED, DISABLED
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putString(
@@ -40,10 +45,7 @@ public class Grabber extends SubsystemBase {
         decimalFormat.format(getAverageVelocityPerSecond().getRotations() * 60.0));
   }
 
-  public enum State {
-    ENABLED, DISABLED
-  }
-
+  // Suppliers
   public State getState() {
     boolean isLimitSwitchOn = grabberMech.getLimitSwitchState();
     return isLimitSwitchOn ? State.ENABLED : State.DISABLED;
@@ -53,46 +55,94 @@ public class Grabber extends SubsystemBase {
     return grabberMech.getAverageVelocityRotationPerSecond();
   }
 
+  // Runnables
+  public void stop() {
+    grabberMech.stop();
+  }
+
+  // Consumers
+  public void setAverageVelocityPerSecond(double rotationsPerSecond) {
+    Rotation2d rps = Rotation2d.fromRotations(rotationsPerSecond);
+    grabberMech.setAverageVelocityRotationsPerSecond(rps);
+  }
+
+  // Commands
   public CommandBase createControlCommand() {
 
-    Runnable control = new Runnable() {
+    CommandBase manualControlCommand = new CommandBase() {
 
       @Override
-      public void run() {
-
-        double velocityRPS = manualSpeedControl.getManualSpeed();
-        Rotation2d velocityRotationsPerSecond = Rotation2d.fromRotations(velocityRPS);
-        grabberMech.setAverageVelocityRotationsPerSecond(velocityRotationsPerSecond);
+      public void initialize() {
+        SmartDashboard.putString("Grabber Command Current", "Manual Control");
       }
+
+      @Override
+      public void execute() {
+        double manualSpeed = manualSpeedControl.getManualSpeed();
+        setAverageVelocityPerSecond(manualSpeed);
+      }
+
     };
 
-    return Commands.run(control, this);
+    manualControlCommand.addRequirements(this);
+    return manualControlCommand;
   }
 
   public CommandBase createControlCommand(double velocityRPM) {
 
-    Runnable control = new Runnable() {
+    CommandBase setGrabberSpeedCommand = new CommandBase() {
 
       @Override
-      public void run() {
-        double velocityRPS = velocityRPM / 60.0;
-        Rotation2d velocityRotationsPerSecond = Rotation2d.fromRotations(velocityRPS);
-        grabberMech.setAverageVelocityRotationsPerSecond(velocityRotationsPerSecond);
+      public void initialize() {
+        SmartDashboard.putString("Grabber Command Current", "Set Speed: " + velocityRPM + " rpm");
+      }
+
+      @Override
+      public void execute() {
+        double rps = velocityRPM / 60.0;
+        Rotation2d rotationsPerSecond = Rotation2d.fromRotations(rps);
+        grabberMech.setAverageVelocityRotationsPerSecond(rotationsPerSecond);
       }
     };
 
-    return Commands.run(control, this);
+    setGrabberSpeedCommand.addRequirements(this);
+
+    return setGrabberSpeedCommand;
+
   }
 
   public CommandBase createStopCommand() {
-    Runnable control = new Runnable() {
+
+    CommandBase stopCommand = new CommandBase() {
+      @Override
+      public void initialize() {
+        SmartDashboard.putString("Grabber Command Current", "Stop");
+      }
 
       @Override
-      public void run() {
-        grabberMech.stop();
+      public void execute() {
+        stop();
+      }
+
+      @Override
+      public boolean isFinished() {
+        return true;
       }
     };
 
-    return Commands.runOnce(control, this);
+    stopCommand.addRequirements(this);
+
+    return stopCommand;
+  }
+
+  public CommandBase createConeCubeCommand(
+      double grabberSpeedConeRPM,
+      double grabberSpeedCubeRPM,
+      BooleanSupplier hasConeSupplier) {
+
+    CommandBase grabberSetCone = createControlCommand(grabberSpeedConeRPM);
+    CommandBase grabberSetCube = createControlCommand(grabberSpeedCubeRPM);
+
+    return Commands.either(grabberSetCone, grabberSetCube, hasConeSupplier);
   }
 }

@@ -5,22 +5,14 @@
 package frc.robot.framework.vision;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.CvSink;
-import edu.wpi.first.cscore.CvSource;
 
 /** Add your docs here. */
 public class DumbOldCamera {
 
-    public DumbOldCamera() {
+    public static void start() {
 
         // Creates UsbCamera and MjpegServer [1] and connects them
         CameraServer.startAutomaticCapture();
-
-        // Creates the CvSink and connects it to the UsbCamera
-        CvSink cvSink = CameraServer.getVideo();
-
-        // Creates the CvSource and MjpegServer [2] and connects them
-        CvSource outputStream = CameraServer.putVideo("Blur", 640, 480);
     }
 
 }

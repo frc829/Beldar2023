@@ -5,8 +5,11 @@
 package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -21,8 +24,6 @@ public class Elbow extends SubsystemBase {
   private final RotationMech elbowMech;
   private final ManualSpeedControl manualSpeedControl;
   private final PIDController elbowPIDController;
-  private final double elbowMinimumPositionDegrees;
-  private final double elbowMaximumPositionDegrees;
   private final MechanismLigament2d elbowMech2d;
   private final DecimalFormat decimalFormat;
 
@@ -30,15 +31,11 @@ public class Elbow extends SubsystemBase {
       RotationMech elbowMech,
       ManualSpeedControl manualSpeedControl,
       PIDController elbowPIDController,
-      double elbowMinimumPositionDegrees,
-      double elbowMaximumPositionDegrees,
       MechanismLigament2d elbowMech2d,
       DecimalFormat decimalFormat) {
     this.elbowMech = elbowMech;
     this.manualSpeedControl = manualSpeedControl;
     this.elbowPIDController = elbowPIDController;
-    this.elbowMinimumPositionDegrees = elbowMinimumPositionDegrees;
-    this.elbowMaximumPositionDegrees = elbowMaximumPositionDegrees;
     this.elbowMech2d = elbowMech2d;
     this.decimalFormat = decimalFormat;
   }
@@ -74,6 +71,10 @@ public class Elbow extends SubsystemBase {
     return elbowMech.getAngularPostionFromSensor();
   }
 
+  public boolean atSetpoint() {
+    return elbowPIDController.atSetpoint();
+  }
+
   // Runnables
   private void stop() {
     this.elbowMech.stop();
@@ -81,10 +82,14 @@ public class Elbow extends SubsystemBase {
 
   // Consumers
   private void setVelocityRotationsPerSecond(double rotationsPerSecond) {
+    if (RobotBase.isSimulation()) {
+      rotationsPerSecond += 0.01;
+    }
     Rotation2d rps = Rotation2d.fromRotations(rotationsPerSecond);
     this.elbowMech.setVelocityRotationsPerSecond(rps);
   }
 
+  // Commands
   public CommandBase createHoldCommand() {
 
     PIDCommand pidCommand = new PIDCommand(
@@ -95,9 +100,18 @@ public class Elbow extends SubsystemBase {
         this) {
       @Override
       public void initialize() {
-        this.m_setpoint = () -> getPositionRotations();
+        double setPoint = getPositionRotations();
+        this.m_setpoint = () -> setPoint;
         SmartDashboard.putString("Elbow Command Current", "Hold at " + this.m_setpoint.getAsDouble() * 360.0 + " degs");
         super.initialize();
+      }
+
+      @Override
+      public void execute() {
+        double output = m_controller.calculate(m_measurement.getAsDouble(), m_setpoint.getAsDouble());
+        SmartDashboard.putNumber("CurrentElbowSetpoint", m_setpoint.getAsDouble());
+        SmartDashboard.putNumber("Hold Elbow Output", output);
+        m_useOutput.accept(output);
       }
     };
 
@@ -139,11 +153,6 @@ public class Elbow extends SubsystemBase {
         SmartDashboard.putString("Elbow Command Current", "Go To " + positionDegrees + " degrees");
         super.initialize();
       }
-
-      @Override
-      public boolean isFinished() {
-        return elbowPIDController.atSetpoint();
-      }
     };
 
     return pidCommand;
@@ -172,5 +181,16 @@ public class Elbow extends SubsystemBase {
     stopCommand.addRequirements(this);
 
     return stopCommand;
+  }
+
+  public CommandBase createConeCubeCommand(
+      double elbowPositionConeDegrees,
+      double elbowPositionCubeDegrees,
+      BooleanSupplier hasConeSupplier) {
+
+    CommandBase positionElbowCone = createControlCommand(elbowPositionConeDegrees);
+    CommandBase positionElbowCube = createControlCommand(elbowPositionCubeDegrees);
+
+    return Commands.either(positionElbowCone, positionElbowCube, hasConeSupplier);
   }
 }

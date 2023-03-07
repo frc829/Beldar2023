@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
@@ -34,7 +33,7 @@ import frc.robot.subsystems.LEDLighting;
 import frc.robot.subsystems.SwerveDrive;
 
 /** Add your docs here. */
-public class FullAutoRoutines {
+public class PathPlannerToAuto {
 
     public static List<PathPlannerTrajectory> getPathPlannerTrajectory(
             String pathName,
@@ -134,46 +133,39 @@ public class FullAutoRoutines {
 
             return Commands.parallel(balance, maybeDanceParty);
         } else if (name.contains("ScoreHigh")) {
-            CommandBase alignment = ArmCommandFactories.AlignmentAuto.createHigh(elevator, elbow, tilt, claw);
-            CommandBase placement = ArmCommandFactories.Placement.createHigh(elevator, elbow, tilt, claw, grabber);
+            CommandBase alignment = Arm.Alignment.createHigh(elevator, elbow, tilt, claw);
+            CommandBase placement = Arm.Placement.createHigh(elevator, elbow, tilt, claw, grabber);
             return Commands.sequence(alignment, placement);
         } else if (name.contains("ScoreMiddle")) {
-            CommandBase alignment = ArmCommandFactories.AlignmentAuto.createMiddle(elevator, elbow, tilt, claw);
+            CommandBase alignment = Arm.Alignment.createMiddle(elevator, elbow, tilt, claw);
             CommandBase waitTinyAmount = Commands.waitSeconds(1);
             CommandBase alignAndWaith = Commands.race(alignment, waitTinyAmount);
-            CommandBase placement = ArmCommandFactories.Placement.createMiddle(elevator, elbow, tilt, claw, grabber);
+            CommandBase placement = Arm.Placement.createMiddle(elevator, elbow, tilt, claw, grabber);
             CommandBase placementWait = Commands.waitSeconds(1.5);
             CommandBase placementAndWait = Commands.race(placement, placementWait);
             return Commands.sequence(alignAndWaith, placementAndWait);
-        } else if(name.contains("ScoreLow")){
-            CommandBase alignment = ArmCommandFactories.AlignmentAuto.createLow(elevator, elbow, tilt, claw);
+        } else if (name.contains("ScoreLow")) {
+            CommandBase alignment = Arm.Alignment.createLow(elevator, elbow, tilt, claw);
             // CommandBase waitTinyAmount = Commands.waitSeconds(2);
             // CommandBase alignAndWaith = Commands.race(alignment, waitTinyAmount);
-            CommandBase placement = ArmCommandFactories.Placement.createLow(elevator, elbow, tilt, claw, grabber);
+            CommandBase placement = Arm.Placement.createLow(elevator, elbow, tilt, claw, grabber);
             return Commands.sequence(alignment, placement);
-        } 
-        else if (name.contains("ConePickup")) {
-            CommandBase conePickup = ArmCommandFactories.Pickup.create(
+        } else if (name.contains("ConePickup")) {
+            CommandBase conePickup = Arm.Pickup.createFloor(
                     elevator,
                     elbow,
                     grabber,
                     claw,
                     tilt,
-                    Constants.Auto.Arm.Pickup.Floor.elevatorPositionMeters,
-                    Constants.Auto.Arm.Pickup.Floor.Cone.elbowPositionDegrees,
-                    Constants.Auto.Arm.Pickup.grabberSpeedRPM,
-                    ElevatorTilt.State.TWO,
                     Claw.State.CONE);
             return conePickup;
         } else if (name.contains("Carry")) {
-            CommandBase carry = ArmCommandFactories.Carry.create(
+            CommandBase carry = Arm.Carry.create(
                     elevator,
                     elbow,
                     grabber,
                     tilt,
-                    Constants.Auto.Arm.Carry.elevatorPositionMeters,
-                    Constants.Auto.Arm.Carry.elbowPositionDegrees,
-                    ElevatorTilt.State.NONE);
+                    claw);
             return carry;
         } else {
             CommandBase none = Commands.none();

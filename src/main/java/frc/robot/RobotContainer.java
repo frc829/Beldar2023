@@ -5,9 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ArmCommandFactories;
-import frc.robot.commands.DriveAutoRoutines;
-import frc.robot.commands.FullAutoRoutines;
+import frc.robot.commands.Arm;
+import frc.robot.commands.PathPlannerToAuto;
 import frc.robot.framework.controls.ControllerAxis;
 import frc.robot.framework.controls.HalfControllerAxis;
 import frc.robot.framework.controls.ManualChassisSpeedControl;
@@ -145,7 +144,7 @@ public class RobotContainer {
          */
         public RobotContainer() {
 
-                DumbOldCamera dumbOldCamera = new DumbOldCamera();
+                DumbOldCamera.start();
 
                 CANSparkMax frontLeftSteeringMotorSparkMax = SparkMaxFactory.create(
                                 Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.deviceId,
@@ -735,8 +734,12 @@ public class RobotContainer {
                 SmartDashboard.putData("Arm2d", mech);
 
                 this.tilt = new ElevatorTilt(elevatorTilt, fakeElevatorMech2d, elevatorMech2d);
+                CommandBase defaultElevatorTiltCommand = tilt.createIdleCommand();
+                this.tilt.setDefaultCommand(defaultElevatorTiltCommand);
 
                 this.claw = new Claw(grabberClaw);
+                CommandBase clawDefaultCommand = claw.createIdleCommand();
+                claw.setDefaultCommand(clawDefaultCommand);
 
                 DecimalFormat decimalFormat = new DecimalFormat("###.###");
 
@@ -746,8 +749,6 @@ public class RobotContainer {
                                 elevatorMech,
                                 elevatorManualSpeedControl,
                                 elevatorPIDController,
-                                Constants.Robot.Arm.Elevator.Control.minPosition,
-                                Constants.Robot.Arm.Elevator.Control.maxPosition,
                                 elevatorMech2d,
                                 decimalFormat);
 
@@ -758,8 +759,6 @@ public class RobotContainer {
                                 elbowMech,
                                 elbowManualSpeedControl,
                                 elbowPIDController,
-                                Constants.Robot.Arm.ElbowConstants.Control.minAngleDegrees,
-                                Constants.Robot.Arm.ElbowConstants.Control.maxAngleDegrees,
                                 elbowMech2d,
                                 decimalFormat);
 
@@ -771,36 +770,36 @@ public class RobotContainer {
                                 "CANIVORE",
                                 300);
 
-                List<PathPlannerTrajectory> Element1DockPosition1Trajectory =
-                FullAutoRoutines.getPathPlannerTrajectory(
-                Constants.AutoRoutines.Element1.position1.pathName,
-                Constants.AutoRoutines.Element1.position1.firstPathConstraint,
-                Constants.AutoRoutines.Element1.position1.remainingPathConstraints);
+                List<PathPlannerTrajectory> Element1DockPosition1Trajectory = PathPlannerToAuto
+                                .getPathPlannerTrajectory(
+                                                Constants.AutoRoutines.Element1.position1.pathName,
+                                                Constants.AutoRoutines.Element1.position1.firstPathConstraint,
+                                                Constants.AutoRoutines.Element1.position1.remainingPathConstraints);
 
-                Command Element1DockPosition1Command =
-                FullAutoRoutines.createFullAutoFromPathGroup(
-                swerveDrive,
-                elevator,
-                elbow,
-                grabber,
-                claw,
-                tilt,
-                ledLighting,
-                Element1DockPosition1Trajectory,
-                Constants.AutoRoutines.Element1.position1.translationConstants,
-                Constants.AutoRoutines.Element1.position1.rotationConstants);
+                Command Element1DockPosition1Command = PathPlannerToAuto.createFullAutoFromPathGroup(
+                                swerveDrive,
+                                elevator,
+                                elbow,
+                                grabber,
+                                claw,
+                                tilt,
+                                ledLighting,
+                                Element1DockPosition1Trajectory,
+                                Constants.AutoRoutines.Element1.position1.translationConstants,
+                                Constants.AutoRoutines.Element1.position1.rotationConstants);
 
                 Command driveForwardABit = swerveDrive.getOnRampCommand();
                 Command balance = swerveDrive.getBalanceCommand();
-                Element1DockPosition1Command =
-                Commands.sequence(Element1DockPosition1Command, driveForwardABit, balance);
+                Element1DockPosition1Command = Commands.sequence(Element1DockPosition1Command, driveForwardABit,
+                                balance);
 
-                List<PathPlannerTrajectory> Element2DockPosition2Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
-                                Constants.AutoRoutines.Element2.position2.pathName,
-                                Constants.AutoRoutines.Element2.position2.firstPathConstraint,
-                                Constants.AutoRoutines.Element2.position2.remainingPathConstraints);
+                List<PathPlannerTrajectory> Element2DockPosition2Trajectory = PathPlannerToAuto
+                                .getPathPlannerTrajectory(
+                                                Constants.AutoRoutines.Element2.position2.pathName,
+                                                Constants.AutoRoutines.Element2.position2.firstPathConstraint,
+                                                Constants.AutoRoutines.Element2.position2.remainingPathConstraints);
 
-                Command Element2DockPosition2Command = FullAutoRoutines.createFullAutoFromPathGroup(
+                Command Element2DockPosition2Command = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
                                 elevator,
                                 elbow,
@@ -831,12 +830,13 @@ public class RobotContainer {
                 // Constants.AutoRoutines.Element1.position3.translationConstants,
                 // Constants.AutoRoutines.Element1.position3.rotationConstants);
 
-                List<PathPlannerTrajectory> Element1DockPosition4Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
-                                Constants.AutoRoutines.Element1.position4.pathName,
-                                Constants.AutoRoutines.Element1.position4.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.position4.remainingPathConstraints);
+                List<PathPlannerTrajectory> Element1DockPosition4Trajectory = PathPlannerToAuto
+                                .getPathPlannerTrajectory(
+                                                Constants.AutoRoutines.Element1.position4.pathName,
+                                                Constants.AutoRoutines.Element1.position4.firstPathConstraint,
+                                                Constants.AutoRoutines.Element1.position4.remainingPathConstraints);
 
-                Command Element1DockPosition4Command = FullAutoRoutines.createFullAutoFromPathGroup(
+                Command Element1DockPosition4Command = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
                                 elevator,
                                 elbow,
@@ -850,15 +850,16 @@ public class RobotContainer {
 
                 Command driveBackwardABit = swerveDrive.getOnRampBackwardCommand();
                 Command balance14 = swerveDrive.getBalanceCommand();
-                Element1DockPosition4Command =
-                Commands.sequence(Element1DockPosition4Command, driveBackwardABit, balance14);
+                Element1DockPosition4Command = Commands.sequence(Element1DockPosition4Command, driveBackwardABit,
+                                balance14);
 
-                List<PathPlannerTrajectory> Element1DockPosition5Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
-                                Constants.AutoRoutines.Element1.position5.pathName,
-                                Constants.AutoRoutines.Element1.position5.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.position5.remainingPathConstraints);
+                List<PathPlannerTrajectory> Element1DockPosition5Trajectory = PathPlannerToAuto
+                                .getPathPlannerTrajectory(
+                                                Constants.AutoRoutines.Element1.position5.pathName,
+                                                Constants.AutoRoutines.Element1.position5.firstPathConstraint,
+                                                Constants.AutoRoutines.Element1.position5.remainingPathConstraints);
 
-                Command Element1DockPosition5Command = FullAutoRoutines.createFullAutoFromPathGroup(
+                Command Element1DockPosition5Command = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
                                 elevator,
                                 elbow,
@@ -873,12 +874,13 @@ public class RobotContainer {
                 Command balance15 = swerveDrive.getBalanceCommand();
                 Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, balance15);
 
-                List<PathPlannerTrajectory> Element1DockPosition6Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
-                                Constants.AutoRoutines.Element1.position6.pathName,
-                                Constants.AutoRoutines.Element1.position6.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.position6.remainingPathConstraints);
+                List<PathPlannerTrajectory> Element1DockPosition6Trajectory = PathPlannerToAuto
+                                .getPathPlannerTrajectory(
+                                                Constants.AutoRoutines.Element1.position6.pathName,
+                                                Constants.AutoRoutines.Element1.position6.firstPathConstraint,
+                                                Constants.AutoRoutines.Element1.position6.remainingPathConstraints);
 
-                Command Element1DockPosition6Command = FullAutoRoutines.createFullAutoFromPathGroup(
+                Command Element1DockPosition6Command = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
                                 elevator,
                                 elbow,
@@ -912,12 +914,13 @@ public class RobotContainer {
                 // Constants.AutoRoutines.Element1.position7.translationConstants,
                 // Constants.AutoRoutines.Element1.position7.rotationConstants);
 
-                List<PathPlannerTrajectory> Element2DockPosition8Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
-                                Constants.AutoRoutines.Element2.position8.pathName,
-                                Constants.AutoRoutines.Element2.position8.firstPathConstraint,
-                                Constants.AutoRoutines.Element2.position8.remainingPathConstraints);
+                List<PathPlannerTrajectory> Element2DockPosition8Trajectory = PathPlannerToAuto
+                                .getPathPlannerTrajectory(
+                                                Constants.AutoRoutines.Element2.position8.pathName,
+                                                Constants.AutoRoutines.Element2.position8.firstPathConstraint,
+                                                Constants.AutoRoutines.Element2.position8.remainingPathConstraints);
 
-                Command Element2DockPosition8Command = FullAutoRoutines.createFullAutoFromPathGroup(
+                Command Element2DockPosition8Command = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
                                 elevator,
                                 elbow,
@@ -929,12 +932,13 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element2.position8.translationConstants,
                                 Constants.AutoRoutines.Element2.position8.rotationConstants);
 
-                List<PathPlannerTrajectory> Element3DockPosition2Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
-                                Constants.AutoRoutines.Element3.position2.pathName,
-                                Constants.AutoRoutines.Element3.position2.firstPathConstraint,
-                                Constants.AutoRoutines.Element3.position2.remainingPathConstraints);
+                List<PathPlannerTrajectory> Element3DockPosition2Trajectory = PathPlannerToAuto
+                                .getPathPlannerTrajectory(
+                                                Constants.AutoRoutines.Element3.position2.pathName,
+                                                Constants.AutoRoutines.Element3.position2.firstPathConstraint,
+                                                Constants.AutoRoutines.Element3.position2.remainingPathConstraints);
 
-                Command Element3DockPosition2Command = FullAutoRoutines.createFullAutoFromPathGroup(
+                Command Element3DockPosition2Command = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
                                 elevator,
                                 elbow,
@@ -946,12 +950,13 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element3.position2.translationConstants,
                                 Constants.AutoRoutines.Element3.position2.rotationConstants);
 
-                List<PathPlannerTrajectory> Element3DockPosition8Trajectory = FullAutoRoutines.getPathPlannerTrajectory(
-                                Constants.AutoRoutines.Element3.position8.pathName,
-                                Constants.AutoRoutines.Element3.position8.firstPathConstraint,
-                                Constants.AutoRoutines.Element3.position8.remainingPathConstraints);
+                List<PathPlannerTrajectory> Element3DockPosition8Trajectory = PathPlannerToAuto
+                                .getPathPlannerTrajectory(
+                                                Constants.AutoRoutines.Element3.position8.pathName,
+                                                Constants.AutoRoutines.Element3.position8.firstPathConstraint,
+                                                Constants.AutoRoutines.Element3.position8.remainingPathConstraints);
 
-                Command Element3DockPosition8Command = FullAutoRoutines.createFullAutoFromPathGroup(
+                Command Element3DockPosition8Command = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
                                 elevator,
                                 elbow,
@@ -1056,7 +1061,7 @@ public class RobotContainer {
 
                 pathPlannerTrajectories = new HashMap<>();
                 pathPlannerTrajectories.put("1ElementPosition1",
-                Element1DockPosition1Trajectory);
+                                Element1DockPosition1Trajectory);
                 // pathPlannerTrajectories.put("1ElementPosition2",
                 // Element1DockPosition2Trajectory);
                 // pathPlannerTrajectories.put("1ElementPosition3",
@@ -1134,18 +1139,15 @@ public class RobotContainer {
 
                 CommandBase zeroModulesCommand = swerveDrive.getZeroModuleCommand();
                 CommandBase setTelemetryFromCameraCommand = swerveDrive.setTelemetryFromCameraCommand();
-                CommandBase dropPortalAlign = DriveAutoRoutines.create(
-                                swerveDrive,
+                CommandBase dropPortalAlign = swerveDrive.getOnTheFlyDriveCommand(
                                 Constants.Auto.Drive.PortalPositions.dropPortal,
                                 fieldMap);
 
-                CommandBase leftPortalAlign = DriveAutoRoutines.create(
-                                swerveDrive,
+                CommandBase leftPortalAlign = swerveDrive.getOnTheFlyDriveCommand(
                                 Constants.Auto.Drive.PortalPositions.leftPortal,
                                 fieldMap);
 
-                CommandBase rightPortalAlign = DriveAutoRoutines.create(
-                                swerveDrive,
+                CommandBase rightPortalAlign = swerveDrive.getOnTheFlyDriveCommand(
                                 Constants.Auto.Drive.PortalPositions.rightPortal,
                                 fieldMap);
 
@@ -1160,26 +1162,39 @@ public class RobotContainer {
                 driveController.start().onTrue(setTelemetryFromCameraCommand);
 
                 // INFO: Align Low
-                driveController.b().onTrue(ArmCommandFactories.Alignment.createLow(elevator, elbow, tilt, claw));
+                driveController.b().onTrue(Arm.Alignment.createLow(elevator, elbow, tilt, claw));
 
                 // INFO: Align Middle
-                driveController.x().onTrue(ArmCommandFactories.Alignment.createMiddle(elevator, elbow, tilt, claw));
+                driveController.x().onTrue(Arm.Alignment.createMiddle(elevator, elbow, tilt, claw));
 
                 // INFO: Align High
-                driveController.y().onTrue(ArmCommandFactories.Alignment.createHigh(elevator, elbow, tilt, claw));
+                driveController.y().onTrue(Arm.Alignment.createHigh(elevator, elbow, tilt, claw));
 
                 // INFO: Score Low
                 driveController.a()
-                                .onTrue(ArmCommandFactories.Placement.createLow(elevator, elbow, tilt, claw, grabber));
+                                .onTrue(
+                                                Commands.sequence(
+                                                                Arm.Placement.createLow(elevator, elbow, tilt, claw,
+                                                                                grabber),
+                                                                Arm.Reset.createLow(elevator, elbow, tilt,
+                                                                                grabber)));
 
                 // INFO: Score Middle
                 driveController.leftBumper()
-                                .onTrue(ArmCommandFactories.Placement.createMiddle(elevator, elbow, tilt, claw,
-                                                grabber));
+                                .onTrue(
+                                                Commands.sequence(
+                                                                Arm.Placement.createMiddle(elevator, elbow, tilt, claw,
+                                                                                grabber),
+                                                                Arm.Reset.createMiddle(elevator, elbow, tilt,
+                                                                                grabber)));
 
                 // INFO: Score High
                 driveController.rightBumper()
-                                .onTrue(ArmCommandFactories.Placement.createHigh(elevator, elbow, tilt, claw, grabber));
+                                .onTrue(
+                                                Commands.sequence(
+                                                                Arm.Placement.createHigh(elevator, elbow, tilt, claw,
+                                                                                grabber),
+                                                                Arm.Reset.createHigh(elevator, elbow, tilt, grabber)));
 
                 // INFO: Test Targeting
                 driveController.povLeft().whileTrue(leftPortalAlign);
@@ -1199,88 +1214,62 @@ public class RobotContainer {
 
                 CommandBase balanceTest = swerveDrive.getBalanceCommand();
 
-                CommandBase elementCarry = ArmCommandFactories.Carry.create(
+                CommandBase elementCarry = Arm.Carry.create(
                                 elevator,
                                 elbow,
                                 grabber,
                                 tilt,
-                                Constants.Auto.Arm.Carry.elevatorPositionMeters,
-                                Constants.Auto.Arm.Carry.elbowPositionDegrees,
-                                Constants.Auto.Arm.Carry.elevatorTiltState);
+                                claw);
 
-                CommandBase conePickupFloor = ArmCommandFactories.Pickup.create(
+                CommandBase conePickupFloor = Arm.Pickup.createFloor(
                                 elevator,
                                 elbow,
                                 grabber,
                                 claw,
                                 tilt,
-                                Constants.Auto.Arm.Pickup.Floor.elevatorPositionMeters,
-                                Constants.Auto.Arm.Pickup.Floor.Cone.elbowPositionDegrees,
-                                Constants.Auto.Arm.Pickup.grabberSpeedRPM,
-                                Constants.Auto.Arm.Pickup.Floor.elevatorTiltState,
                                 Claw.State.CONE);
 
-                CommandBase cubePickupFloor = ArmCommandFactories.Pickup.create(
+                CommandBase cubePickupFloor = Arm.Pickup.createFloor(
                                 elevator,
                                 elbow,
                                 grabber,
                                 claw,
                                 tilt,
-                                Constants.Auto.Arm.Pickup.Floor.elevatorPositionMeters,
-                                Constants.Auto.Arm.Pickup.Floor.Cube.elbowPositionDegrees,
-                                Constants.Auto.Arm.Pickup.grabberSpeedRPM,
-                                Constants.Auto.Arm.Pickup.Floor.elevatorTiltState,
                                 Claw.State.CUBE);
 
-                CommandBase conePickupSliding = ArmCommandFactories.Pickup.create(
+                CommandBase conePickupSliding = Arm.Pickup.createSliding(
                                 elevator,
                                 elbow,
                                 grabber,
                                 claw,
                                 tilt,
-                                Constants.Auto.Arm.Pickup.Sliding.elevatorPositionMeters,
-                                Constants.Auto.Arm.Pickup.Sliding.elbowPositionDegrees,
-                                Constants.Auto.Arm.Pickup.grabberSpeedRPM,
-                                Constants.Auto.Arm.Pickup.Sliding.elevatorTiltState,
                                 Claw.State.CONE);
 
-                CommandBase cubePickupSliding = ArmCommandFactories.Pickup.create(
+                CommandBase cubePickupSliding = Arm.Pickup.createSliding(
                                 elevator,
                                 elbow,
                                 grabber,
                                 claw,
                                 tilt,
-                                Constants.Auto.Arm.Pickup.Sliding.elevatorPositionCubeMeters,
-                                Constants.Auto.Arm.Pickup.Sliding.elbowPositionDegrees,
-                                Constants.Auto.Arm.Pickup.grabberSpeedRPM,
-                                Constants.Auto.Arm.Pickup.Sliding.elevatorTiltState,
                                 Claw.State.CUBE);
 
-                CommandBase conePickupDrop = ArmCommandFactories.Pickup.create(
+                CommandBase conePickupDrop = Arm.Pickup.createDrop(
                                 elevator,
                                 elbow,
                                 grabber,
                                 claw,
                                 tilt,
-                                Constants.Auto.Arm.Pickup.Drop.elevatorPositionMeters,
-                                Constants.Auto.Arm.Pickup.Drop.Cone.elbowPositionDegrees,
-                                Constants.Auto.Arm.Pickup.grabberSpeedRPM,
-                                Constants.Auto.Arm.Pickup.Drop.elevatorTiltState,
                                 Claw.State.CONE);
 
-                CommandBase cubePickupDrop = ArmCommandFactories.Pickup.create(
+                CommandBase cubePickupDrop = Arm.Pickup.createDrop(
                                 elevator,
                                 elbow,
                                 grabber,
                                 claw,
                                 tilt,
-                                Constants.Auto.Arm.Pickup.Drop.elevatorPositionMeters,
-                                Constants.Auto.Arm.Pickup.Drop.Cube.elbowPositionDegrees,
-                                Constants.Auto.Arm.Pickup.grabberSpeedRPM,
-                                Constants.Auto.Arm.Pickup.Drop.elevatorTiltState,
                                 Claw.State.CUBE);
 
-                CommandBase grabberToggleCommand = claw.createSetStateCommand();
+                CommandBase grabberToggleCommand = claw.createToggleCommand();
 
                 CommandBase noLegsCommand = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
                 CommandBase shortSaber = tilt.createSetStateCommand(ElevatorTilt.State.TWO);
@@ -1298,7 +1287,6 @@ public class RobotContainer {
                 elbowManualControlTrigger.whileTrue(elbowManualControlCommand);
 
                 elevatorManualControlTrigger.whileTrue(elevatorManualControlCommand);
-                
 
                 grabberManualControlTrigger.whileTrue(grabberManualControlCommand);
 
@@ -1340,7 +1328,7 @@ public class RobotContainer {
                         String autoName = this.autoChooser.getSelected();
                         Command autoCommand = autoCommands.get(autoName);
                         List<PathPlannerTrajectory> autoTrajectories = pathPlannerTrajectories.get(autoName);
-                        List<Pose2d> autoPoses = FullAutoRoutines.getTrajectoryPoses(autoTrajectories);
+                        List<Pose2d> autoPoses = PathPlannerToAuto.getTrajectoryPoses(autoTrajectories);
 
                         fieldMap.addTrajectoryToField("Trajectory", autoPoses);
                         return autoCommand;
