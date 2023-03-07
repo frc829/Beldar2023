@@ -342,12 +342,12 @@ public final class Constants {
           public static double maxManualSpeedMPS = 0.79;
 
           public static class PID {
-            public static final double kP = 5;
+            public static final double kP = 10;
             public static final double kI = 0;
             public static final double kD = 0;
             public static final double minimumInput = Double.NaN;
             public static final double maximumInput = Double.NaN;
-            public static final double tolerance = 0.001;
+            public static final double tolerance = 0.01;
           }
         }
 

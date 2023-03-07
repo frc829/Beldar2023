@@ -57,6 +57,7 @@ public class Elbow extends SubsystemBase {
     this.elbowMech2d.setAngle(getPosition().getDegrees());
   }
 
+  // Suppliers
   private Rotation2d getPosition() {
     return elbowMech.getPositionRotations();
   }
@@ -73,6 +74,12 @@ public class Elbow extends SubsystemBase {
     return elbowMech.getAngularPostionFromSensor();
   }
 
+  // Runnables
+  private void stop() {
+    this.elbowMech.stop();
+  }
+
+  // Consumers
   private void setVelocityRotationsPerSecond(double rotationsPerSecond) {
     Rotation2d rps = Rotation2d.fromRotations(rotationsPerSecond);
     this.elbowMech.setVelocityRotationsPerSecond(rps);
@@ -80,61 +87,42 @@ public class Elbow extends SubsystemBase {
 
   public CommandBase createHoldCommand() {
 
-    Runnable initPIDController = new Runnable() {
-
-      @Override
-      public void run() {
-        elbowPIDController.setSetpoint(getPosition().getRotations());
-      }
-
-    };
-
-    Runnable control = new Runnable() {
-
-      @Override
-      public void run() {
-        double velocityRotationsPerSecond = elbowPIDController.calculate(getPosition().getRotations());
-        Rotation2d velocityRotation2dPerSecond = Rotation2d.fromRotations(velocityRotationsPerSecond);
-        elbowMech.setVelocityRotationsPerSecond(velocityRotation2dPerSecond);
-        velocityRotationsPerSecond = elbowPIDController.atSetpoint() ? 0 : velocityRotationsPerSecond;
-        velocityRotation2dPerSecond = Rotation2d.fromRotations(velocityRotationsPerSecond);
-        elbowMech.setVelocityRotationsPerSecond(velocityRotation2dPerSecond);
-
-      }
-    };
-
-    CommandBase initializePIDControllerCommand = Commands.runOnce(initPIDController, this);
-    CommandBase runElbowToPosition = Commands.run(control, this);
-
-    return Commands.sequence(initializePIDControllerCommand, runElbowToPosition);
-  }
-
-  public CommandBase createControlCommand() {
-    Runnable control = new Runnable() {
-
-      @Override
-      public void run() {
-        double velocityRPS = manualSpeedControl.getManualSpeed();
-        // velocityRPS = getPosition().getDegrees() <= elbowMinimumPositionDegrees && velocityRPS < 0.0 ? 0.0
-        //     : velocityRPS;
-        // velocityRPS = getPosition().getDegrees() >= elbowMaximumPositionDegrees && velocityRPS > 0.0 ? 0.0
-        //     : velocityRPS;
-        Rotation2d velocityRotationsPerSecond = Rotation2d.fromRotations(velocityRPS);
-        elbowMech.setVelocityRotationsPerSecond(velocityRotationsPerSecond);
-      }
-    };
-
-    return Commands.run(control, this);
-  }
-
-  public CommandBase createPickupControlCommand(double positionDegrees) {
     PIDCommand pidCommand = new PIDCommand(
         elbowPIDController,
         this::getPositionRotations,
-        positionDegrees / 360.0,
+        getPositionRotations(),
         this::setVelocityRotationsPerSecond,
-        this);
+        this) {
+      @Override
+      public void initialize() {
+        this.m_setpoint = () -> getPositionRotations();
+        SmartDashboard.putString("Elbow Command Current", "Hold at " + this.m_setpoint.getAsDouble() * 360.0 + " degs");
+        super.initialize();
+      }
+    };
+
     return pidCommand;
+  }
+
+  public CommandBase createControlCommand() {
+
+    CommandBase manualControlCommand = new CommandBase() {
+
+      @Override
+      public void initialize() {
+        SmartDashboard.putString("Elbow Command Current", "Manual Control");
+      }
+
+      @Override
+      public void execute() {
+        double manualSpeed = manualSpeedControl.getManualSpeed();
+        setVelocityRotationsPerSecond(manualSpeed);
+      }
+
+    };
+
+    manualControlCommand.addRequirements(this);
+    return manualControlCommand;
   }
 
   public CommandBase createControlCommand(double positionDegrees) {
@@ -145,6 +133,13 @@ public class Elbow extends SubsystemBase {
         positionDegrees / 360.0,
         this::setVelocityRotationsPerSecond,
         this) {
+
+      @Override
+      public void initialize() {
+        SmartDashboard.putString("Elbow Command Current", "Go To " + positionDegrees + " degrees");
+        super.initialize();
+      }
+
       @Override
       public boolean isFinished() {
         return elbowPIDController.atSetpoint();
@@ -156,14 +151,26 @@ public class Elbow extends SubsystemBase {
   }
 
   public CommandBase createStopCommand() {
-    Runnable control = new Runnable() {
+    CommandBase stopCommand = new CommandBase() {
+      @Override
+      public void initialize() {
+        SmartDashboard.putString("Elbow Command Current", "Stop");
+      }
 
       @Override
-      public void run() {
-        elbowMech.stop();
+      public void execute() {
+        stop();
       }
+
+      @Override
+      public boolean isFinished() {
+        return true;
+      }
+
     };
 
-    return Commands.runOnce(control, this);
+    stopCommand.addRequirements(this);
+
+    return stopCommand;
   }
 }

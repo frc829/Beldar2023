@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.framework.controls.ManualSpeedControl;
@@ -57,6 +56,7 @@ public class Elevator extends SubsystemBase {
     this.elevatorMech2d.setLength(getPosition());
   }
 
+  // Suppliers
   private double getPosition() {
     return elevatorMech.getPositionMeters();
   }
@@ -69,46 +69,55 @@ public class Elevator extends SubsystemBase {
     return elevatorMech.getLinearPositionFromSensor();
   }
 
+  // Runnable
+  private void stop() {
+    this.elevatorMech.stop();
+  }
+
+  // Consumers
+  private void setVelocity(double speedMetersPerSecond) {
+    this.elevatorMech.setMechanismSpeedMetersPerSecond(speedMetersPerSecond);
+  }
+
   public CommandBase createHoldCommand() {
 
     PIDCommand pidCommand = new PIDCommand(
         elevatorPIDController,
         this::getPosition,
-        this.getPosition(),
-        this.elevatorMech::setMechanismSpeedMetersPerSecond,
-        this){
-          @Override
-          public void initialize() {
-            m_controller.reset();
-            m_setpoint = () -> getPosition();
-          }
-        };
+        getPosition(),
+        this::setVelocity,
+        this) {
+      @Override
+      public void initialize() {
+        this.m_setpoint = () -> getPosition();
+        SmartDashboard.putString("Elevator Command Current", "Hold at " + this.m_setpoint.getAsDouble() + " m");
+        super.initialize();
+      }
+    };
+
     return pidCommand;
   }
 
   public CommandBase createControlCommand() {
-    Runnable control = new Runnable() {
+
+    CommandBase manualControlCommand = new CommandBase() {
 
       @Override
-      public void run() {
-        double velocityMPS = manualSpeedControl.getManualSpeed();
-        velocityMPS = getPosition() <= elevatorMinimumPositionMeters && velocityMPS < 0.0 ? 0.0 : velocityMPS;
-        velocityMPS = getPosition() >= elevatorMaximumPositionMeters && velocityMPS > 0.0 ? 0.0 : velocityMPS;
-        elevatorMech.setMechanismSpeedMetersPerSecond(velocityMPS);
+      public void initialize() {
+        SmartDashboard.putString("Elevator Command Current", "Manual Control");
       }
+
+      @Override
+      public void execute() {
+        double manualSpeed = manualSpeedControl.getManualSpeed();
+        setVelocity(manualSpeed);
+      }
+
     };
 
-    return Commands.run(control, this);
-  }
+    manualControlCommand.addRequirements(this);
+    return manualControlCommand;
 
-  public PIDCommand createPickupControlCommand(double positionMeters) {
-    PIDCommand pidCommand = new PIDCommand(
-        elevatorPIDController,
-        this::getPosition,
-        positionMeters,
-        this.elevatorMech::setMechanismSpeedMetersPerSecond,
-        this);
-    return pidCommand;
   }
 
   public PIDCommand createControlCommand(double positionMeters) {
@@ -117,8 +126,15 @@ public class Elevator extends SubsystemBase {
         elevatorPIDController,
         this::getPosition,
         positionMeters,
-        this.elevatorMech::setMechanismSpeedMetersPerSecond,
+        this::setVelocity,
         this) {
+
+      @Override
+      public void initialize() {
+        SmartDashboard.putString("Elevator Command Current", "Go To " + positionMeters + " meters");
+        super.initialize();
+      }
+
       @Override
       public boolean isFinished() {
         return elevatorPIDController.atSetpoint();
@@ -130,14 +146,27 @@ public class Elevator extends SubsystemBase {
   }
 
   public CommandBase createStopCommand() {
-    Runnable control = new Runnable() {
+
+    CommandBase stopCommand = new CommandBase() {
+      @Override
+      public void initialize() {
+        SmartDashboard.putString("Elevator Command Current", "Stop");
+      }
 
       @Override
-      public void run() {
-        elevatorMech.stop();
+      public void execute() {
+        stop();
       }
+
+      @Override
+      public boolean isFinished() {
+        return true;
+      }
+
     };
 
-    return Commands.runOnce(control, this);
+    stopCommand.addRequirements(this);
+
+    return stopCommand;
   }
 }

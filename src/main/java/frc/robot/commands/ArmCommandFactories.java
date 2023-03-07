@@ -147,13 +147,13 @@ public class ArmCommandFactories {
                                 }
                         };
 
-                        CommandBase elevatorSetCommand = elevator.createPickupControlCommand(
+                        CommandBase elevatorSetCommand = elevator.createControlCommand(
                                         Constants.Auto.Arm.Alignment.High.elevatorPositionMeters);
 
-                        CommandBase elbowConeCommand = elbow.createPickupControlCommand(
+                        CommandBase elbowConeCommand = elbow.createControlCommand(
                                         Constants.Auto.Arm.Alignment.High.elbowPositionDegrees);
 
-                        CommandBase elbowCubeCommand = elbow.createPickupControlCommand(
+                        CommandBase elbowCubeCommand = elbow.createControlCommand(
                                         Constants.Auto.Arm.Alignment.High.elbowPositionCubeDegrees);
 
                         CommandBase elbowCommand = Commands.either(elbowConeCommand, elbowCubeCommand,
@@ -182,13 +182,13 @@ public class ArmCommandFactories {
                                 }
                         };
 
-                        CommandBase elevatorSetCommand = elevator.createPickupControlCommand(
+                        CommandBase elevatorSetCommand = elevator.createControlCommand(
                                         Constants.Auto.Arm.Alignment.Middle.elevatorPositionMeters);
 
-                        CommandBase elbowConeCommand = elbow.createPickupControlCommand(
+                        CommandBase elbowConeCommand = elbow.createControlCommand(
                                         Constants.Auto.Arm.Alignment.Middle.elbowPositionDegrees);
 
-                        CommandBase elbowCubeCommand = elbow.createPickupControlCommand(
+                        CommandBase elbowCubeCommand = elbow.createControlCommand(
                                         Constants.Auto.Arm.Alignment.Middle.elbowPositionCubeDegrees);
 
                         CommandBase elbowCommand = Commands.either(elbowConeCommand, elbowCubeCommand,
@@ -217,13 +217,13 @@ public class ArmCommandFactories {
                                 }
                         };
 
-                        CommandBase elevatorSetCommand = elevator.createPickupControlCommand(
+                        CommandBase elevatorSetCommand = elevator.createControlCommand(
                                         Constants.Auto.Arm.Alignment.Low.elevatorPositionMeters);
 
-                        CommandBase elbowConeCommand = elbow.createPickupControlCommand(
+                        CommandBase elbowConeCommand = elbow.createControlCommand(
                                         Constants.Auto.Arm.Alignment.Low.elbowPositionDegrees);
 
-                        CommandBase elbowCubeCommand = elbow.createPickupControlCommand(
+                        CommandBase elbowCubeCommand = elbow.createControlCommand(
                                         Constants.Auto.Arm.Alignment.Low.elbowPositionCubeDegrees);
 
                         CommandBase elbowCommand = Commands.either(elbowConeCommand, elbowCubeCommand,
@@ -432,8 +432,8 @@ public class ArmCommandFactories {
 
                         };
 
-                        CommandBase elevatorSetCommand = elevator.createPickupControlCommand(elevatorPositionMeters);
-                        CommandBase elbowSetCommand = elbow.createPickupControlCommand(elbowPositionDegrees);
+                        CommandBase elevatorSetCommand = elevator.createControlCommand(elevatorPositionMeters);
+                        CommandBase elbowSetCommand = elbow.createControlCommand(elbowPositionDegrees);
 
                         CommandBase coneGrabberSet = grabber.createControlCommand(grabberSpeedRPM);
                         CommandBase cubeGrabberSEt = grabber.createControlCommand(500);

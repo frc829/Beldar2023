@@ -1296,7 +1296,10 @@ public class RobotContainer {
                 CommandBase grabberManualControlCommand = grabber.createControlCommand();
 
                 elbowManualControlTrigger.whileTrue(elbowManualControlCommand);
+
                 elevatorManualControlTrigger.whileTrue(elevatorManualControlCommand);
+                
+
                 grabberManualControlTrigger.whileTrue(grabberManualControlCommand);
 
                 // INFO: Manual Pickup Commands
