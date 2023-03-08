@@ -1,6 +1,26 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "CANCoder[30]": {
+        "header": {
+          "open": true
+        }
+      },
+      "CANCoder[31]": {
+        "header": {
+          "open": true
+        }
+      },
+      "CANCoder[32]": {
+        "header": {
+          "open": true
+        }
+      },
+      "CANCoder[33]": {
+        "header": {
+          "open": true
+        }
+      },
       "Compressor[19]": {
         "header": {
           "open": true

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.ColorFlowAnimation;
@@ -24,19 +22,16 @@ import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.framework.imus.Gyroscope;
 import frc.robot.framework.lighting.LEDConfig;
 
 /** Add your docs here. */
 public class LEDLighting extends SubsystemBase {
 
     private final CANdle candle;
-    private String currentAnimationName;
+    private Animation currentAnimation;
     private LEDConfig currentLEDConfig = null;
 
     public LEDLighting(
@@ -50,7 +45,7 @@ public class LEDLighting extends SubsystemBase {
         this.candle.configStatusLedState(false, 0);
         this.candle.configVBatOutput(VBatOutputMode.Modulated);
         this.candle.modulateVBatOutput(1);
-        this.currentAnimationName = "Off";
+        this.currentAnimation = null;
 
     }
 
@@ -62,42 +57,24 @@ public class LEDLighting extends SubsystemBase {
         this.candle.modulateVBatOutput(percent);
     }
 
-    public void setAnimations(String animationName, Animation... animations) {
-        this.candle.animate(null);
-        this.currentAnimationName = animationName;
-        if (this.candle.getMaxSimultaneousAnimationCount() >= animations.length) {
-            for (Animation animation : animations) {
-                setAnimation(animation);
+    public void setLEDS() {
+        if (this.currentAnimation == null) {
+            if (currentLEDConfig != null) {
+                this.candle.setLEDs(
+                        currentLEDConfig.red,
+                        currentLEDConfig.green,
+                        currentLEDConfig.blue,
+                        currentLEDConfig.white,
+                        currentLEDConfig.startIndex,
+                        currentLEDConfig.count);
+            } else {
+                this.candle.setLEDs(0, 0, 0, 0, 0, 400);
             }
         }
     }
 
-    public void setAnimation(Animation animation) {
-        this.candle.animate(animation);
-    }
-
-    public void animateOff() {
-        this.currentAnimationName = "Off";
+    public void setAnimation() {
         this.candle.animate(null);
-    }
-
-    public void setLEDSequences(String animationName, LEDConfig... ledSequences) {
-        this.candle.animate(null);
-        this.currentAnimationName = animationName;
-        for (LEDConfig ledSequence : ledSequences) {
-            setLEDSequence(ledSequence);
-        }
-    }
-
-    private void setLEDSequence(LEDConfig ledSequence) {
-        this.candle.animate(null);
-        this.candle.setLEDs(
-                ledSequence.red,
-                ledSequence.green,
-                ledSequence.blue,
-                ledSequence.white,
-                ledSequence.startIndex,
-                ledSequence.count);
     }
 
     public static Animation getColorFlow(int red, int green, int blue, int white, double speed, int numLed,
@@ -146,32 +123,41 @@ public class LEDLighting extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("CurrentAnimation", this.currentAnimationName);
-        if (currentLEDConfig != null) {
-            this.setLEDSequence(currentLEDConfig);
+        if (this.currentAnimation == null) {
+            SmartDashboard.putString("LED Lighting Current Animation", "NONE");
+        } else {
+            SmartDashboard.putString("LED Lighting Current Animation", this.currentAnimation.toString());
         }
-    }
+        if (this.currentLEDConfig == null) {
+            SmartDashboard.putString("LED Lighting Current COLOR", "NONE");
+        } else {
+            SmartDashboard.putString("LED Lighting Current COLOR", this.currentLEDConfig.toString());
+        }
 
-    public CommandBase getAnimationCommand(
-            String animationName,
-            Animation animation) {
-        return Commands.runOnce(
-                () -> setAnimations(animationName, animation),
-                this);
+        this.setLEDS();
+        this.setAnimation();
     }
 
     public CommandBase getSetLEDCommand(
             int r, int g, int b) {
-        return Commands.runOnce(
-                () -> setLEDSequence(
-                        this.currentLEDConfig = new LEDConfig(r, g, b, 0, 0, 300)),
-                this);
-    }
 
-    public CommandBase getLEDOffCommand() {
-        return Commands.runOnce(
-                () -> animateOff(),
-                this);
+        CommandBase setLEDCommand = new CommandBase() {
+            @Override
+            public void initialize() {
+                currentAnimation = null;
+                candle.animate(currentAnimation);
+                SmartDashboard.putString("LED Lighting Current Command", r + ":" + g + ":" + b);
+                currentLEDConfig = new LEDConfig(r, g, b, 0, 0, 400);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
+        };
+
+        setLEDCommand.addRequirements(this);
+        return setLEDCommand;
     }
 
     public CommandBase getDanceParty() {
@@ -181,12 +167,13 @@ public class LEDLighting extends SubsystemBase {
             @Override
             public void initialize() {
                 SmartDashboard.putString("LED Lighting Current Command", "Dance Party");
+                Animation dance = getRainbow(1, 1, 400, false, 0);
+                currentAnimation = dance;
             }
 
             @Override
-            public void end(boolean interrupted) {
-                Animation fire = getFire(1, 1, 400, 1, 1, false, 0);
-                setAnimation(fire);
+            public boolean isFinished() {
+                return true;
             }
         };
 

@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.802758381903169,
-        "y": 4.4
+        "x": 1.841264879110955,
+        "y": 4.419218069205369
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2637741001977734,
-        "y": 4.476313909892777
+        "x": 2.857570843346815,
+        "y": 4.750373945192335
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -26,16 +26,41 @@
     },
     {
       "anchorPoint": {
-        "x": 4.42199687818179,
-        "y": 4.761793113329817
+        "x": 3.851038471307712,
+        "y": 4.830308122154706
       },
       "prevControl": {
-        "x": 4.150523326444781,
-        "y": 4.732772038586379
+        "x": 2.89182834775926,
+        "y": 4.624763095680038
       },
       "nextControl": {
-        "x": 4.6934704299188,
-        "y": 4.790814188073254
+        "x": 4.868036109759746,
+        "y": 5.048236187537285
+      },
+      "holonomicAngle": 90.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 5.404045338005206,
+        "y": 4.818888954017225
+      },
+      "prevControl": {
+        "x": 4.9872457009871285,
+        "y": 4.967338139804486
+      },
+      "nextControl": {
+        "x": 5.820844975023284,
+        "y": 4.670439768229963
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -51,18 +76,18 @@
     },
     {
       "anchorPoint": {
-        "x": 6.545962151753363,
-        "y": 4.5905055912675925
+        "x": 6.637315496853216,
+        "y": 4.693278104504927
       },
       "prevControl": {
-        "x": 6.948219520127767,
-        "y": 4.572903684661638
+        "x": 6.2807066147705735,
+        "y": 4.767063346850714
       },
       "nextControl": {
-        "x": 6.1437047833789595,
-        "y": 4.608107497873547
+        "x": 6.993924378935859,
+        "y": 4.61949286215914
       },
-      "holonomicAngle": 0,
+      "holonomicAngle": -11.68936917543926,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -76,18 +101,18 @@
     },
     {
       "anchorPoint": {
-        "x": 4.090841002194825,
-        "y": 4.841727290292188
+        "x": 5.289853656630391,
+        "y": 4.875984794704632
       },
       "prevControl": {
-        "x": 4.269325736537121,
-        "y": 4.841727290292188
+        "x": 5.479518988153851,
+        "y": 4.968882099940612
       },
       "nextControl": {
-        "x": 3.9123562678525285,
-        "y": 4.841727290292188
+        "x": 4.730314417893793,
+        "y": 4.601924759405074
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 90.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -101,12 +126,12 @@
     },
     {
       "anchorPoint": {
-        "x": 1.8641032153859183,
-        "y": 4.955918971667003
+        "x": 1.8184265428359916,
+        "y": 4.978757307941967
       },
       "prevControl": {
-        "x": 1.9248433602985762,
-        "y": 4.955918971667003
+        "x": 2.800475002659407,
+        "y": 4.670439768229964
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -119,31 +144,22 @@
           "ScoreMiddle2"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
+        "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "maxVelocity": 2.0,
-  "maxAcceleration": 2.0,
-  "isReversed": null,
   "markers": [
     {
-      "position": 0.1,
-      "names": [
-        "Carry"
-      ]
-    },
-    {
-      "position": 1.381818181818182,
+      "position": 1.9636363636363952,
       "names": [
         "ConePickup1"
       ]
     },
     {
-      "position": 2.2545454545454535,
+      "position": 3.3454545454545714,
       "names": [
-        "Carry1"
+        "Carry"
       ]
     }
   ]

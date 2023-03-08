@@ -4,15 +4,7 @@
 
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import com.ctre.phoenix.led.Animation;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -86,6 +78,11 @@ public class SwerveDrive extends SubsystemBase {
     this.frontRightSteerPIDController = frontRightSteerPIDController;
     this.rearLeftSteerPIDController = rearLeftSteerPIDController;
     this.rearRightSteerPIDController = rearRightSteerPIDController;
+
+    // this.frontLeftModule.setSwerveModuleSteeringEncoder();
+    // this.frontRightModule.setSwerveModuleSteeringEncoder();
+    // this.rearLeftModule.setSwerveModuleSteeringEncoder();
+    // this.rearRightModule.setSwerveModuleSteeringEncoder();
 
     this.fieldMap = fieldMap;
 
@@ -345,7 +342,7 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
-  public CommandBase getBalanceCommand(LEDLighting ledLighting) {
+  public CommandBase getBalanceCommand() {
     CommandBase balance = new CommandBase() {
 
       @Override
@@ -369,26 +366,20 @@ public class SwerveDrive extends SubsystemBase {
       @Override
       public void end(boolean interrupted) {
         stopDrive();
-        Animation fire = LEDLighting.getFire(1, 1, 400, 1, 1, false, 0);
-        ledLighting.setAnimation(fire);
       }
 
       @Override
       public boolean isFinished() {
-        Rotation2d pitchAngle = gyroscope.getPitch();
-        Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
-        double pitchDistanceFrom0Value = Math.abs(pitchDistanceFrom0.getDegrees());
+        // Rotation2d pitchAngle = gyroscope.getPitch();
+        // Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
+        // double pitchDistanceFrom0Value = Math.abs(pitchDistanceFrom0.getDegrees());
 
-        return pitchDistanceFrom0Value < 2.5;
-        // return false;
+        // return pitchDistanceFrom0Value < 2.5;
+        return false;
       }
     };
 
-    balance.addRequirements(
-        this
-    // ,
-    // ledLighting
-    );
+    balance.addRequirements(this);
     return balance;
   }
 

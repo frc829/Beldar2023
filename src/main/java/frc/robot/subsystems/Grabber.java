@@ -103,6 +103,36 @@ public class Grabber extends SubsystemBase {
         Rotation2d rotationsPerSecond = Rotation2d.fromRotations(rps);
         grabberMech.setAverageVelocityRotationsPerSecond(rotationsPerSecond);
       }
+      
+    };
+
+    setGrabberSpeedCommand.addRequirements(this);
+
+    return setGrabberSpeedCommand;
+
+  }
+
+  public CommandBase createPickupCommand(double velocityRPM) {
+
+    CommandBase setGrabberSpeedCommand = new CommandBase() {
+
+      @Override
+      public void initialize() {
+        SmartDashboard.putString("Grabber Command Current", "Set Speed: " + velocityRPM + " rpm");
+      }
+
+      @Override
+      public void execute() {
+        double rps = velocityRPM / 60.0;
+        Rotation2d rotationsPerSecond = Rotation2d.fromRotations(rps);
+        grabberMech.setAverageVelocityRotationsPerSecond(rotationsPerSecond);
+      }
+
+      @Override
+          public boolean isFinished() {
+              return false;
+          }
+      
     };
 
     setGrabberSpeedCommand.addRequirements(this);
@@ -128,8 +158,13 @@ public class Grabber extends SubsystemBase {
       }
 
       @Override
+          public void end(boolean interrupted) {
+              stop();
+          }
+
+      @Override
       public boolean isFinished() {
-        return true;
+        return false;
       }
     };
 
@@ -173,4 +208,15 @@ public class Grabber extends SubsystemBase {
 
     return Commands.either(grabberSetCone, grabberSetCube, hasConeSupplier);
   }
+
+  public CommandBase createConeCubePickupCommand(
+    double grabberSpeedConeRPM,
+    double grabberSpeedCubeRPM,
+    BooleanSupplier hasConeSupplier) {
+
+  CommandBase grabberSetCone = createPickupCommand(grabberSpeedConeRPM);
+  CommandBase grabberSetCube = createPickupCommand(grabberSpeedCubeRPM);
+
+  return Commands.either(grabberSetCone, grabberSetCube, hasConeSupplier);
+}
 }

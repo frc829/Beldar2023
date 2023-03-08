@@ -63,34 +63,6 @@ public class Claw extends SubsystemBase {
     return idleCommand;
   }
 
-  public CommandBase createToggleCommand() {
-
-    CommandBase toggleCommand = new CommandBase() {
-
-      @Override
-      public void initialize() {
-        String lastCommand = SmartDashboard.getString("Claw Command Current", "Idle");
-        SmartDashboard.putString("Claw Command Last", lastCommand);
-        SmartDashboard.putString("Claw Command Current", "Toggle");
-      }
-
-      @Override
-      public void execute() {
-        Claw.State clawStateToSet = getState() == State.CONE ? State.CUBE : State.CONE;
-        setState(clawStateToSet);
-      }
-
-      @Override
-      public boolean isFinished() {
-        return true;
-      }
-    };
-
-    toggleCommand.addRequirements(this);
-    return toggleCommand;
-
-  }
-
   public CommandBase createSetStateCommand(Claw.State clawState) {
 
     CommandBase setStateCommand = new CommandBase() {

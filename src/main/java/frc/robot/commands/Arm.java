@@ -14,6 +14,7 @@ import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorTilt;
 import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.LEDLighting;
 import frc.robot.subsystems.ElevatorTilt.State;
 
 /** Add your docs here. */
@@ -181,7 +182,9 @@ public class Arm {
                         CommandBase releaseCone = claw.createSetStateCommand(Claw.State.CUBE);
                         CommandBase releaseCube = grabber.createPoofCommand(
                                         Constants.Auto.Arm.Placement.High.Cube.grabberSpeedCubeRPM);
-                        CommandBase release0 = Commands.either(releaseCone, releaseCube, claw::hasCone);
+                        CommandBase timerForCubeRelease = Commands.waitSeconds(0.25);
+                        CommandBase releaseCubeWaitForTimer = Commands.deadline(timerForCubeRelease, releaseCube);
+                        CommandBase release0 = Commands.either(releaseCone, releaseCubeWaitForTimer, claw::hasCone);
 
                         return Commands.sequence(
                                         tiltElevatorCommand0,
@@ -210,12 +213,16 @@ public class Arm {
                         CommandBase releaseCone = claw.createSetStateCommand(Claw.State.CUBE);
                         CommandBase releaseCube = grabber.createPoofCommand(
                                         Constants.Auto.Arm.Placement.Middle.Cube.grabberSpeedCubeRPM);
-                        CommandBase release0 = Commands.either(releaseCone, releaseCube, claw::hasCone);
+                        CommandBase timerForCubeRelease = Commands.waitSeconds(0.25);
+                        CommandBase releaseCubeWaitForTimer = Commands.deadline(timerForCubeRelease, releaseCube);
+                        CommandBase release0 = Commands.either(releaseCone, releaseCubeWaitForTimer, claw::hasCone);
+                        CommandBase tinyWait = Commands.waitSeconds(0.5);
 
                         return Commands.sequence(
                                         tiltElevatorCommand0,
                                         waitForTilt0,
-                                        release0);
+                                        release0,
+                                        tinyWait);
 
                 }
 
@@ -240,12 +247,15 @@ public class Arm {
                         CommandBase releaseCone = claw.createSetStateCommand(Claw.State.CUBE);
                         CommandBase releaseCube = grabber.createPoofCommand(
                                         Constants.Auto.Arm.Placement.Low.Cube.grabberSpeedCubeRPM);
-                        CommandBase release0 = Commands.either(releaseCone, releaseCube, claw::hasCone);
-
+                        CommandBase timerForCubeRelease = Commands.waitSeconds(0.25);
+                        CommandBase releaseCubeWaitForTimer = Commands.deadline(timerForCubeRelease, releaseCube);
+                        CommandBase release0 = Commands.either(releaseCone, releaseCubeWaitForTimer, claw::hasCone);
+                        CommandBase tinyWait = Commands.waitSeconds(0.5);
                         return Commands.sequence(
                                         tiltElevatorCommand0,
                                         waitForTilt0,
-                                        release0);
+                                        release0,
+                                        tinyWait);
 
                 }
         }
@@ -366,9 +376,29 @@ public class Arm {
                                 Grabber grabber,
                                 Claw claw,
                                 ElevatorTilt tilt,
-                                Claw.State clawState) {
+                                Claw.State clawState,
+                                LEDLighting ledLighting) {
 
                         CommandBase clawSetCommand0 = claw.createSetStateCommand(clawState);
+
+                        BooleanSupplier isCone = new BooleanSupplier() {
+
+                                @Override
+                                public boolean getAsBoolean() {
+                                        return claw.getState() == Claw.State.CONE;
+                                }
+
+                        };
+
+                        CommandBase coneLED = ledLighting.getSetLEDCommand(
+                                        0XFF,
+                                        0XD7,
+                                        0X00);
+                        CommandBase cubeLED = ledLighting.getSetLEDCommand(
+                                        0X3C,
+                                        0X09,
+                                        0X49);
+                        CommandBase ledCommand = Commands.either(cubeLED, coneLED, isCone);
 
                         CommandBase elevatorSetCommand0 = elevator.createConeCubeCommand(
                                         Constants.Auto.Arm.Pickup.Drop.Cone.elevatorPositionMeters,
@@ -380,7 +410,7 @@ public class Arm {
                                         Constants.Auto.Arm.Pickup.Drop.Cube.elbowPositionDegrees,
                                         claw::hasCone);
 
-                        CommandBase grabberSetCommand0 = grabber.createConeCubeCommand(
+                        CommandBase grabberSetCommand0 = grabber.createConeCubePickupCommand(
                                         Constants.Auto.Arm.Pickup.Drop.Cone.grabberSpeedRPM,
                                         Constants.Auto.Arm.Pickup.Drop.Cube.grabberSpeedRPM,
                                         claw::hasCone);
@@ -401,14 +431,14 @@ public class Arm {
 
                         CommandBase elbowAndElevatorDeadline = Commands.waitUntil(elbowAndElevatorStopCondition);
 
-                        CommandBase Pickup = Commands.deadline(
-                                        elbowAndElevatorDeadline,
+                        CommandBase Pickup = Commands.parallel(
+                                        // elbowAndElevatorDeadline,
                                         elevatorSetCommand0,
                                         elbowSetCommand0,
                                         grabberSetCommand0,
                                         elevatorTiltSetCommand0);
 
-                        return Commands.sequence(clawSetCommand0, Pickup);
+                        return Commands.sequence(clawSetCommand0, ledCommand, Pickup);
                 }
 
                 public static CommandBase createSliding(
@@ -417,9 +447,29 @@ public class Arm {
                                 Grabber grabber,
                                 Claw claw,
                                 ElevatorTilt tilt,
-                                Claw.State clawState) {
+                                Claw.State clawState,
+                                LEDLighting ledLighting) {
 
                         CommandBase clawSetCommand0 = claw.createSetStateCommand(clawState);
+
+                        BooleanSupplier isCone = new BooleanSupplier() {
+
+                                @Override
+                                public boolean getAsBoolean() {
+                                        return claw.getState() == Claw.State.CONE;
+                                }
+
+                        };
+
+                        CommandBase coneLED = ledLighting.getSetLEDCommand(
+                                        0XFF,
+                                        0XD7,
+                                        0X00);
+                        CommandBase cubeLED = ledLighting.getSetLEDCommand(
+                                        0X3C,
+                                        0X09,
+                                        0X49);
+                        CommandBase ledCommand = Commands.either(cubeLED, coneLED, isCone);
 
                         CommandBase elevatorSetCommand0 = elevator.createConeCubeCommand(
                                         Constants.Auto.Arm.Pickup.Sliding.Cone.elevatorPositionMeters,
@@ -431,7 +481,7 @@ public class Arm {
                                         Constants.Auto.Arm.Pickup.Sliding.Cube.elbowPositionDegrees,
                                         claw::hasCone);
 
-                        CommandBase grabberSetCommand0 = grabber.createConeCubeCommand(
+                        CommandBase grabberSetCommand0 = grabber.createConeCubePickupCommand(
                                         Constants.Auto.Arm.Pickup.Sliding.Cone.grabberSpeedRPM,
                                         Constants.Auto.Arm.Pickup.Sliding.Cube.grabberSpeedRPM,
                                         claw::hasCone);
@@ -452,14 +502,14 @@ public class Arm {
 
                         CommandBase elbowAndElevatorDeadline = Commands.waitUntil(elbowAndElevatorStopCondition);
 
-                        CommandBase Pickup = Commands.deadline(
-                                        elbowAndElevatorDeadline,
+                        CommandBase Pickup = Commands.parallel(
+                                        // elbowAndElevatorDeadline,
                                         elevatorSetCommand0,
                                         elbowSetCommand0,
                                         grabberSetCommand0,
                                         elevatorTiltSetCommand0);
 
-                        return Commands.sequence(clawSetCommand0, Pickup);
+                        return Commands.sequence(clawSetCommand0, ledCommand, Pickup);
                 }
 
                 public static CommandBase createFloor(
@@ -468,9 +518,29 @@ public class Arm {
                                 Grabber grabber,
                                 Claw claw,
                                 ElevatorTilt tilt,
-                                Claw.State clawState) {
+                                Claw.State clawState,
+                                LEDLighting ledLighting) {
 
                         CommandBase clawSetCommand0 = claw.createSetStateCommand(clawState);
+
+                        BooleanSupplier isCone = new BooleanSupplier() {
+
+                                @Override
+                                public boolean getAsBoolean() {
+                                        return claw.getState() == Claw.State.CONE;
+                                }
+
+                        };
+
+                        CommandBase coneLED = ledLighting.getSetLEDCommand(
+                                        0XFF,
+                                        0XD7,
+                                        0X00);
+                        CommandBase cubeLED = ledLighting.getSetLEDCommand(
+                                        0X3C,
+                                        0X09,
+                                        0X49);
+                        CommandBase ledCommand = Commands.either(cubeLED, coneLED, isCone);
 
                         CommandBase elevatorSetCommand0 = elevator.createConeCubeCommand(
                                         Constants.Auto.Arm.Pickup.Floor.Cone.elevatorPositionMeters,
@@ -482,7 +552,7 @@ public class Arm {
                                         Constants.Auto.Arm.Pickup.Floor.Cube.elbowPositionDegrees,
                                         claw::hasCone);
 
-                        CommandBase grabberSetCommand0 = grabber.createConeCubeCommand(
+                        CommandBase grabberSetCommand0 = grabber.createConeCubePickupCommand(
                                         Constants.Auto.Arm.Pickup.Floor.Cone.grabberSpeedRPM,
                                         Constants.Auto.Arm.Pickup.Floor.Cube.grabberSpeedRPM,
                                         claw::hasCone);
@@ -503,14 +573,14 @@ public class Arm {
 
                         CommandBase elbowAndElevatorDeadline = Commands.waitUntil(elbowAndElevatorStopCondition);
 
-                        CommandBase Pickup = Commands.deadline(
-                                        elbowAndElevatorDeadline,
+                        CommandBase Pickup = Commands.parallel(
+                                        // elbowAndElevatorDeadline,
                                         elevatorSetCommand0,
                                         elbowSetCommand0,
                                         grabberSetCommand0,
                                         elevatorTiltSetCommand0);
 
-                        return Commands.sequence(clawSetCommand0, Pickup);
+                        return Commands.sequence(clawSetCommand0, ledCommand, Pickup);
                 }
         }
 
@@ -563,4 +633,36 @@ public class Arm {
                 }
         }
 
+        public static class ClawControl {
+                public static CommandBase createToggle(
+                                Claw claw,
+                                LEDLighting ledLighting) {
+
+                        BooleanSupplier isCone = new BooleanSupplier() {
+
+                                @Override
+                                public boolean getAsBoolean() {
+                                        return claw.getState() == Claw.State.CONE;
+                                }
+
+                        };
+
+                        CommandBase clawCone = claw.createSetStateCommand(Claw.State.CONE);
+                        CommandBase clawCube = claw.createSetStateCommand(Claw.State.CUBE);
+                        CommandBase toggleClaw = Commands.either(clawCube, clawCone, isCone);
+
+                        CommandBase coneLED = ledLighting.getSetLEDCommand(
+                                        0XFF,
+                                        0XD7,
+                                        0X00);
+                        CommandBase cubeLED = ledLighting.getSetLEDCommand(
+                                        0X3C,
+                                        0X09,
+                                        0X49);
+                        CommandBase ledCommand = Commands.either(cubeLED, coneLED, isCone);
+
+                        return Commands.parallel(toggleClaw, ledCommand);
+
+                }
+        }
 }

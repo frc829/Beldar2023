@@ -132,7 +132,8 @@ public class PathPlannerToAuto {
                     grabber,
                     claw,
                     tilt,
-                    Claw.State.CONE);
+                    Claw.State.CONE,
+                    ledLighting);
             return conePickup;
         } else if (name.contains("ElevatorHold")) {
             return elevator.createHoldCommand();

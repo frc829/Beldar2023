@@ -20,6 +20,7 @@ public class SwerveModule {
       LinearMech driveMechanism) {
     this.driveMechanism = driveMechanism;
     this.steeringMechanism = steeringMechanism;
+    //setSwerveModuleSteeringEncoder();
   }
 
   public SwerveModulePosition getSwerveModulePosition() {

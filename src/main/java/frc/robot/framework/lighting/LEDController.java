@@ -71,7 +71,6 @@ public interface LEDController {
 
             @Override
             public void LEDSOff() {
-                // TODO Auto-generated method stub                
             }
 
             @Override
@@ -90,42 +89,34 @@ public interface LEDController {
 
             @Override
             public void setFire(Fire fireConfig) {
-                // TODO Auto-generated method stub                
             }
 
             @Override
             public void setLarson(Larson larsonConfig) {
-                // TODO Auto-generated method stub                
             }
 
             @Override
             public void setRainbow(Rainbow rainbowConfig) {
-                // TODO Auto-generated method stub                
             }
 
             @Override
             public void setRGBFade(RGBFade rgbFadeConfig) {
-                // TODO Auto-generated method stub                
             }
 
             @Override
             public void setSingleFade(SingleFade singleFadeConfig) {
-                // TODO Auto-generated method stub                
             }
 
             @Override
             public void setStrobe(Strobe strobeConfig) {
-                // TODO Auto-generated method stub                
             }
 
             @Override
             public void setTwinkle(Twinkle twinkleConfig) {
-                // TODO Auto-generated method stub                
             }
 
             @Override
             public void setTwinkleOff(TwinkleOff twinkleOffConfig) {
-                // TODO Auto-generated method stub                
             }
 
           

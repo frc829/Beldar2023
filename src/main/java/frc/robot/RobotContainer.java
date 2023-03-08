@@ -789,9 +789,10 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position1.rotationConstants);
 
                 Command driveForwardABit = swerveDrive.getOnRampCommand();
-                Command balance = swerveDrive.getBalanceCommand(ledLighting);
-                Element1DockPosition1Command = Commands.sequence(Element1DockPosition1Command, driveForwardABit,
-                                balance);
+                Command balance = swerveDrive.getBalanceCommand();
+                Command danceParty = ledLighting.getDanceParty();
+                Command end = Commands.parallel(balance, danceParty);
+                Element1DockPosition1Command = Commands.sequence(Element1DockPosition1Command, driveForwardABit, end);
 
                 List<PathPlannerTrajectory> Element2DockPosition2Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
@@ -830,7 +831,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position4.rotationConstants);
 
                 Command driveForwardABit14 = swerveDrive.getOnRampBackwardCommand();
-                Command balance14 = swerveDrive.getBalanceCommand(ledLighting);
+                Command balance14 = swerveDrive.getBalanceCommand();
                 Element1DockPosition4Command = Commands.sequence(Element1DockPosition4Command, driveForwardABit14,
                                 balance14);
 
@@ -853,7 +854,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position5.rotationConstants);
 
                 Command driveForwardABit15 = swerveDrive.getOnRampCommand();
-                Command balance15 = swerveDrive.getBalanceCommand(ledLighting);
+                Command balance15 = swerveDrive.getBalanceCommand();
                 Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, driveForwardABit15,
                                 balance15);
 
@@ -876,7 +877,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position6.rotationConstants);
 
                 Command driveForwardABit16 = swerveDrive.getOnRampBackwardCommand();
-                Command balance16 = swerveDrive.getBalanceCommand(ledLighting);
+                Command balance16 = swerveDrive.getBalanceCommand();
                 Element1DockPosition6Command = Commands.sequence(Element1DockPosition6Command, driveForwardABit16,
                                 balance16);
 
@@ -934,56 +935,12 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element3.position8.translationConstants,
                                 Constants.AutoRoutines.Element3.position8.rotationConstants);
 
-                BooleanSupplier ledPurpleBooleanSupplier = new BooleanSupplier() {
-
-                        @Override
-                        public boolean getAsBoolean() {
-                                return claw.getState() == Claw.State.CUBE;
-                        }
-
-                };
-
-                BooleanSupplier ledGoldBooleanSupplier = new BooleanSupplier() {
-
-                        @Override
-                        public boolean getAsBoolean() {
-                                return claw.getState() == Claw.State.CONE;
-                        }
-
-                };
-
-                Trigger ledPurpleTrigger = new Trigger(ledPurpleBooleanSupplier);
-                Trigger ledGoldTrigger = new Trigger(ledGoldBooleanSupplier);
-
-                CommandBase ledPurpleCommand = ledLighting.getSetLEDCommand(
-                                0X3C,
-                                0X09,
-                                0X49);
-
-                CommandBase ledGoldCommand = ledLighting.getSetLEDCommand(
-                                0XFF,
-                                0XD7,
-                                0X00);
-
-                ledGoldTrigger.onTrue(ledGoldCommand);
-                ledPurpleTrigger.onTrue(ledPurpleCommand);
-
                 pathPlannerTrajectories = new HashMap<>();
                 pathPlannerTrajectories.put("WeComeFromFrance",
                                 Element1DockPosition1Trajectory);
-                // pathPlannerTrajectories.put("1ElementPosition2",
-                // Element1DockPosition2Trajectory);
-                // pathPlannerTrajectories.put("1ElementPosition3",
-                // Element1DockPosition3Trajectory);
                 pathPlannerTrajectories.put("ChargeUp1", Element1DockPosition4Trajectory);
                 pathPlannerTrajectories.put("UpAndOver", Element1DockPosition5Trajectory);
                 pathPlannerTrajectories.put("ChargeUp2", Element1DockPosition6Trajectory);
-                // pathPlannerTrajectories.put("1ElementPosition7",
-                // Element1DockPosition7Trajectory);
-                // pathPlannerTrajectories.put("1ElementPosition8",
-                // Element1DockPosition8Trajectory);
-                // pathPlannerTrajectories.put("1ElementPosition9",
-                // Element1DockPosition9Trajectory);
                 pathPlannerTrajectories.put("ConsumeMassQuantities1", Element2DockPosition2Trajectory);
                 pathPlannerTrajectories.put("ConsumeMassQuantities2", Element2DockPosition8Trajectory);
                 pathPlannerTrajectories.put("3ElementPosition2", Element3DockPosition2Trajectory);
@@ -991,28 +948,18 @@ public class RobotContainer {
 
                 autoCommands = new HashMap<>();
                 autoCommands.put("WeComeFromFrance", Element1DockPosition1Command);
-                // autoCommands.put("1ElementPosition2", Element1DockPosition2Command);
-                // autoCommands.put("1ElementPosition3", Element1DockPosition3Command);
                 autoCommands.put("ChargeUp1", Element1DockPosition4Command);
                 autoCommands.put("UpAndOver", Element1DockPosition5Command);
                 autoCommands.put("ChargeUp2", Element1DockPosition6Command);
-                // autoCommands.put("1ElementPosition7", Element1DockPosition7Command);
-                // autoCommands.put("1ElementPosition8", Element1DockPosition8Command);
-                // autoCommands.put("1ElementPosition9", Element1DockPosition9Command);
                 autoCommands.put("ConsumeMassQuantities1", Element2DockPosition2Command);
                 autoCommands.put("ConsumeMassQuantities2", Element2DockPosition8Command);
                 autoCommands.put("3ElementPosition2", Element3DockPosition2Command);
                 autoCommands.put("3ElementPosition8", Element3DockPosition8Command);
 
                 this.autoChooser.addOption("WeComeFromFrance", "WeComeFromFrance");
-                // this.autoChooser.addOption("1ElementPosition2", "1ElementPosition2");
-                // this.autoChooser.addOption("1ElementPosition3", "1ElementPosition3");
                 this.autoChooser.addOption("ChargeUp1", "ChargeUp1");
                 this.autoChooser.addOption("UpAndOver", "UpAndOver");
                 this.autoChooser.addOption("ChargeUp2", "ChargeUp2");
-                // this.autoChooser.addOption("1ElementPosition7", "1ElementPosition7");
-                // this.autoChooser.addOption("1ElementPosition8", "1ElementPosition8");
-                // this.autoChooser.addOption("1ElementPosition9", "1ElementPosition9");
                 this.autoChooser.addOption("ConsumeMassQuantities1", "ConsumeMassQuantities1");
                 this.autoChooser.addOption("ConsumeMassQuantities2", "ConsumeMassQuantities2");
                 this.autoChooser.addOption("3ElementPosition2", "3ElementPosition2");
@@ -1055,10 +1002,10 @@ public class RobotContainer {
                 rotationController.enableContinuousInput(0, 1);
 
                 CommandBase dropPortalAlign = swerveDrive.createDropPortalCommand(
-                        forwardController,
-                        strafeController,
-                        rotationController,
-                        Constants.Auto.Drive.PortalPositions.dropPortal);
+                                forwardController,
+                                strafeController,
+                                rotationController,
+                                Constants.Auto.Drive.PortalPositions.dropPortal);
 
                 CommandBase leftPortalAlign = swerveDrive.createSlidingPortalCommand(
                                 forwardController,
@@ -1075,10 +1022,10 @@ public class RobotContainer {
                                 Constants.Auto.Drive.PortalPositions.leftPortal);
 
                 CommandBase nearestScoreAlign = swerveDrive.createNearestPointCommand(
-                        forwardController,
-                        strafeController,
-                        rotationController,
-                        Constants.Auto.Drive.ScoringPositions.positionsList);
+                                forwardController,
+                                strafeController,
+                                rotationController,
+                                Constants.Auto.Drive.ScoringPositions.positionsList);
 
                 // INFO: Zero Wheels Command
                 driveController.back().whileTrue(zeroModulesCommand);
@@ -1137,7 +1084,7 @@ public class RobotContainer {
 
         private void configureOperatorBindings() {
 
-                //CommandBase balanceTest = swerveDrive.getBalanceCommand();
+                // CommandBase balanceTest = swerveDrive.getBalanceCommand();
 
                 CommandBase elementCarry = Arm.Carry.create(
                                 elevator,
@@ -1152,7 +1099,8 @@ public class RobotContainer {
                                 grabber,
                                 claw,
                                 tilt,
-                                Claw.State.CONE);
+                                Claw.State.CONE,
+                                ledLighting);
 
                 CommandBase cubePickupFloor = Arm.Pickup.createFloor(
                                 elevator,
@@ -1160,7 +1108,8 @@ public class RobotContainer {
                                 grabber,
                                 claw,
                                 tilt,
-                                Claw.State.CUBE);
+                                Claw.State.CUBE,
+                                ledLighting);
 
                 CommandBase conePickupSliding = Arm.Pickup.createSliding(
                                 elevator,
@@ -1168,7 +1117,8 @@ public class RobotContainer {
                                 grabber,
                                 claw,
                                 tilt,
-                                Claw.State.CONE);
+                                Claw.State.CONE,
+                                ledLighting);
 
                 CommandBase cubePickupSliding = Arm.Pickup.createSliding(
                                 elevator,
@@ -1176,7 +1126,8 @@ public class RobotContainer {
                                 grabber,
                                 claw,
                                 tilt,
-                                Claw.State.CUBE);
+                                Claw.State.CUBE,
+                                ledLighting);
 
                 CommandBase conePickupDrop = Arm.Pickup.createDrop(
                                 elevator,
@@ -1184,7 +1135,8 @@ public class RobotContainer {
                                 grabber,
                                 claw,
                                 tilt,
-                                Claw.State.CONE);
+                                Claw.State.CONE,
+                                ledLighting);
 
                 CommandBase cubePickupDrop = Arm.Pickup.createDrop(
                                 elevator,
@@ -1192,9 +1144,10 @@ public class RobotContainer {
                                 grabber,
                                 claw,
                                 tilt,
-                                Claw.State.CUBE);
+                                Claw.State.CUBE,
+                                ledLighting);
 
-                CommandBase grabberToggleCommand = claw.createToggleCommand();
+                CommandBase grabberToggleCommand = Arm.ClawControl.createToggle(claw, ledLighting);
 
                 CommandBase noLegsCommand = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
                 CommandBase shortSaber = tilt.createSetStateCommand(ElevatorTilt.State.TWO);
@@ -1240,7 +1193,7 @@ public class RobotContainer {
                 operatorController.povRight().onTrue(tatooine);
                 operatorController.povUp().onTrue(duelOfTheFates);
 
-                //operatorController.start().whileTrue(balanceTest);
+                // operatorController.start().whileTrue(balanceTest);
         }
 
         /**
