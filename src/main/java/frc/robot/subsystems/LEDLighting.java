@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.ColorFlowAnimation;
@@ -22,10 +24,12 @@ import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.framework.imus.Gyroscope;
 import frc.robot.framework.lighting.LEDConfig;
 
 /** Add your docs here. */
@@ -68,7 +72,7 @@ public class LEDLighting extends SubsystemBase {
         }
     }
 
-    private void setAnimation(Animation animation) {
+    public void setAnimation(Animation animation) {
         this.candle.animate(animation);
     }
 
@@ -86,6 +90,7 @@ public class LEDLighting extends SubsystemBase {
     }
 
     private void setLEDSequence(LEDConfig ledSequence) {
+        this.candle.animate(null);
         this.candle.setLEDs(
                 ledSequence.red,
                 ledSequence.green,
@@ -142,7 +147,7 @@ public class LEDLighting extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putString("CurrentAnimation", this.currentAnimationName);
-        if(currentLEDConfig != null){
+        if (currentLEDConfig != null) {
             this.setLEDSequence(currentLEDConfig);
         }
     }
@@ -169,17 +174,24 @@ public class LEDLighting extends SubsystemBase {
                 this);
     }
 
-    public CommandBase getDanceParty(){
-        Runnable danceParty = new Runnable() {
+    public CommandBase getDanceParty() {
+
+        CommandBase dancePartyCommand = new CommandBase() {
 
             @Override
-            public void run() {
+            public void initialize() {
+                SmartDashboard.putString("LED Lighting Current Command", "Dance Party");
+            }
+
+            @Override
+            public void end(boolean interrupted) {
                 Animation fire = getFire(1, 1, 400, 1, 1, false, 0);
-                setAnimation(fire);                
-            }            
+                setAnimation(fire);
+            }
         };
 
-        return Commands.runOnce(danceParty,this);
+        dancePartyCommand.addRequirements(this);
+        return dancePartyCommand;
     }
 
 }

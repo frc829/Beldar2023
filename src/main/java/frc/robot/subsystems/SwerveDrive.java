@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ctre.phoenix.led.Animation;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -103,7 +105,6 @@ public class SwerveDrive extends SubsystemBase {
     telemetry.addVisionMeasurement(currentPoseFromCamera);
     fieldMap.updateField(this.telemetry.getCurrentPosition());
 
-
     SmartDashboard.putBoolean("Gyro Connected", this.gyroscope.isConnected());
     SmartDashboard.putNumber("PoseFromCameraX", currentPoseFromCamera[0]);
     SmartDashboard.putNumber("PoseFromCameraY", currentPoseFromCamera[1]);
@@ -149,7 +150,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("RobotFieldPositionY", this.telemetry.getCurrentPosition().getY());
 
     SmartDashboard.putNumber("RobotFieldPositionYawDeg",
-    this.telemetry.getCurrentPosition().getRotation().getDegrees());
+        this.telemetry.getCurrentPosition().getRotation().getDegrees());
 
     SmartDashboard.putNumber("GyroRoll", (this.gyroscope.getRoll().getDegrees()));
     SmartDashboard.putNumber("GyroPitch", (this.gyroscope.getPitch().getDegrees()));
@@ -269,8 +270,7 @@ public class SwerveDrive extends SubsystemBase {
 
   public void setTelemetryFromCamera() {
 
-    double[] currentPoseFromCamera =
-    this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
+    double[] currentPoseFromCamera = this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
     Rotation2d yawFromCamera = Rotation2d.fromDegrees(currentPoseFromCamera[5]);
     SmartDashboard.putNumber("YawFROMCAMERA", yawFromCamera.getDegrees());
     Pose2d cameraPose = new Pose2d(currentPoseFromCamera[0], currentPoseFromCamera[1], yawFromCamera);
@@ -318,161 +318,17 @@ public class SwerveDrive extends SubsystemBase {
         });
   }
 
-  public CommandBase getOnTheFlyDriveCommand(Pose2d goalPose, FieldMap fieldMap) {
-
-    SwerveDrive swerveDrive = this;
-
-    CommandBase onTheFlyCommand = new CommandBase() {
-      private PPSwerveControllerCommand drivingCommand;
-
-      @Override
-      public void initialize() {
-        Pose2d initialPose = swerveDrive.getSwerveDrivePosition();
-        if (DriverStation.getAlliance() == Alliance.Red) {
-          initialPose = new Pose2d(
-              initialPose.getX(),
-              8.02 - initialPose.getY(),
-              new Rotation2d().minus(initialPose.getRotation()));
-        }
-
-        PathPoint initialPoint = PathPoint.fromCurrentHolonomicState(
-            initialPose,
-            swerveDrive.getSwerveDriveChassisSpeed());
-
-        PathPoint goalPoint = PathPoint.fromCurrentHolonomicState(goalPose, new ChassisSpeeds());
-
-        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-            new PathConstraints(3, 3),
-            initialPoint,
-            goalPoint);
-
-        trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
-
-        drivingCommand = new PPSwerveControllerCommand(
-            trajectory,
-            swerveDrive::getSwerveDrivePosition,
-            new PIDController(4, 0, 0),
-            new PIDController(4, 0, 0),
-            new PIDController(5, 0, 0),
-            swerveDrive::setSwerveDriveChassisSpeed,
-            true);
-
-        List<Pose2d> poses = new ArrayList<Pose2d>();
-        for (var state : trajectory.getStates()) {
-          poses.add(state.poseMeters);
-        }
-
-        fieldMap.addTrajectoryToField("Trajectory", poses);
-
-        drivingCommand.initialize();
-      }
-
-      @Override
-      public void execute() {
-        drivingCommand.execute();
-      }
-
-      @Override
-      public void end(boolean interrupted) {
-        fieldMap.removeTrajectoryFromField("Trajectory");
-        drivingCommand.end(interrupted);
-      }
-
-      @Override
-      public boolean isFinished() {
-        return drivingCommand.isFinished();
-      }
-    };
-
-    onTheFlyCommand.addRequirements(this);
-    return onTheFlyCommand;
-
-  }
-
-  public CommandBase getOnTheFlyDriveCommand(List<Pose2d> positions, FieldMap fieldMap) {
-
-    SwerveDrive swerveDrive = this;
-
-    CommandBase onTheFlyCommand = new CommandBase() {
-      private PPSwerveControllerCommand drivingCommand;
-
-      @Override
-      public void initialize() {
-        Pose2d initialPose = swerveDrive.getSwerveDrivePosition();
-        // if (DriverStation.getAlliance() == Alliance.Red) {
-        //   initialPose = new Pose2d(
-        //       initialPose.getX(),
-        //       8.02 - initialPose.getY(),
-        //       new Rotation2d().minus(initialPose.getRotation()));
-        // }
-
-        PathPoint initialPoint = PathPoint.fromCurrentHolonomicState(
-            initialPose,
-            swerveDrive.getSwerveDriveChassisSpeed());
-
-        Pose2d goalPose = getClosestPosition(swerveDrive, positions);
-
-        PathPoint goalPoint = PathPoint.fromCurrentHolonomicState(goalPose, new ChassisSpeeds());
-
-        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-            new PathConstraints(3, 3),
-            initialPoint,
-            goalPoint);
-
-        //trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
-
-        drivingCommand = new PPSwerveControllerCommand(
-            trajectory,
-            swerveDrive::getSwerveDrivePosition,
-            new PIDController(10, 0, 0),
-            new PIDController(10, 0, 0),
-            new PIDController(10, 0, 0),
-            swerveDrive::setSwerveDriveChassisSpeed,
-            true);
-
-        List<Pose2d> poses = new ArrayList<Pose2d>();
-        for (var state : trajectory.getStates()) {
-          poses.add(state.poseMeters);
-        }
-
-        fieldMap.addTrajectoryToField("Trajectory", poses);
-
-        drivingCommand.initialize();
-      }
-
-      @Override
-      public void execute() {
-        drivingCommand.execute();
-      }
-
-      @Override
-      public void end(boolean interrupted) {
-        fieldMap.removeTrajectoryFromField("Trajectory");
-        drivingCommand.end(interrupted);
-      }
-
-      @Override
-      public boolean isFinished() {
-        return drivingCommand.isFinished();
-      }
-    };
-
-    onTheFlyCommand.addRequirements(this);
-    return onTheFlyCommand;
-
-  }
 
   public CommandBase getOnRampCommand() {
 
     CommandBase wait = Commands.waitSeconds(0.5);
     CommandBase drive = Commands.run(
-      () -> {
-        this.setSwerveDriveChassisSpeed(new ChassisSpeeds(4/1.4 * Math.sin(Math.toRadians(15)), 0, 0));
-      }, 
-      this);
+        () -> {
+          this.setSwerveDriveChassisSpeed(new ChassisSpeeds(4 / 1.4 * Math.sin(Math.toRadians(15)), 0, 0));
+        },
+        this);
 
     return Commands.race(wait, drive);
-
 
   }
 
@@ -480,26 +336,25 @@ public class SwerveDrive extends SubsystemBase {
 
     CommandBase wait = Commands.waitSeconds(0.5);
     CommandBase drive = Commands.run(
-      () -> {
-        this.setSwerveDriveChassisSpeed(new ChassisSpeeds(-4/1.4 * Math.sin(Math.toRadians(15)), 0, 0));
-      }, 
-      this);
+        () -> {
+          this.setSwerveDriveChassisSpeed(new ChassisSpeeds(-4 / 1.4 * Math.sin(Math.toRadians(15)), 0, 0));
+        },
+        this);
 
     return Commands.race(wait, drive);
 
-
   }
 
-  public CommandBase getBalanceCommand() {
+  public CommandBase getBalanceCommand(LEDLighting ledLighting) {
     CommandBase balance = new CommandBase() {
 
       @Override
       public void initialize() {
-        SmartDashboard.putBoolean("Balancing", true);
+        SmartDashboard.putString("Swerve Drive Current Command", "Balancing");
       }
+
       @Override
       public void execute() {
-        SmartDashboard.putBoolean("Balancing", false);
         Rotation2d pitchAngle = gyroscope.getPitch();
         Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
         double pitchDistanceFrom0Radians = pitchDistanceFrom0.getRadians();
@@ -507,28 +362,33 @@ public class SwerveDrive extends SubsystemBase {
         double vxMetersPerSecond = -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
             * Math.sin(pitchDistanceFrom0Radians) / 2.5;
 
-            vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
+        vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
         setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
       }
 
       @Override
       public void end(boolean interrupted) {
         stopDrive();
+        Animation fire = LEDLighting.getFire(1, 1, 400, 1, 1, false, 0);
+        ledLighting.setAnimation(fire);
       }
 
       @Override
       public boolean isFinished() {
-        // // Rotation2d pitchAngle = gyroscope.getPitch();
-        // // Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
-        // // double pitchDistanceFrom0Value = Math.abs(pitchDistanceFrom0.getDegrees());
+        Rotation2d pitchAngle = gyroscope.getPitch();
+        Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
+        double pitchDistanceFrom0Value = Math.abs(pitchDistanceFrom0.getDegrees());
 
-
-        // return pitchDistanceFrom0Value < 2.5;
-        return false;
+        return pitchDistanceFrom0Value < 2.5;
+        // return false;
       }
     };
 
-    balance.addRequirements(this);
+    balance.addRequirements(
+        this
+    // ,
+    // ledLighting
+    );
     return balance;
   }
 
@@ -550,14 +410,15 @@ public class SwerveDrive extends SubsystemBase {
         this);
   }
 
-  public static Pose2d getClosestPosition(SwerveDrive swerveDrive, List<Pose2d> positions) {
+  public Pose2d getClosestPosition(List<Pose2d> positions) {
 
-    Pose2d currentPosition = swerveDrive.getSwerveDrivePosition();
+    Pose2d currentPosition = this.getSwerveDrivePosition();
 
     Pose2d closestPosition = positions.get(0);
 
-    if(DriverStation.getAlliance() == Alliance.Red){
-      closestPosition = new Pose2d(closestPosition.getX(), 8.02 - closestPosition.getY(), closestPosition.getRotation());
+    if (DriverStation.getAlliance() == Alliance.Red) {
+      closestPosition = new Pose2d(closestPosition.getX(), 8.02 - closestPosition.getY(),
+          closestPosition.getRotation());
     }
     Translation2d closestPositionTranslation = closestPosition.getTranslation();
     Translation2d currentPositionTranslation = currentPosition.getTranslation();
@@ -566,7 +427,7 @@ public class SwerveDrive extends SubsystemBase {
 
     for (int i = 1; i < positions.size(); i++) {
       Pose2d position = positions.get(i);
-      if(DriverStation.getAlliance() == Alliance.Red){
+      if (DriverStation.getAlliance() == Alliance.Red) {
         position = new Pose2d(position.getX(), 8.02 - position.getY(), position.getRotation());
       }
       Translation2d positionTranslation = position.getTranslation();
@@ -582,8 +443,157 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
-  public double getGyroPitch(){
+  public double getGyroPitch() {
     return gyroscope.getPitch().getDegrees();
+  }
+
+  public CommandBase createSlidingPortalCommand(
+      PIDController forwardController,
+      PIDController strafeController,
+      PIDController rotationController,
+      Pose2d bluePortal,
+      Pose2d redPortal) {
+
+    CommandBase leftPortalCommand = new CommandBase() {
+
+      @Override
+      public void initialize() {
+        Pose2d goalPosition = bluePortal;
+        if (DriverStation.getAlliance() == Alliance.Red) {
+          goalPosition = redPortal;
+          goalPosition = new Pose2d(goalPosition.getX(), 8.02 - goalPosition.getY(), goalPosition.getRotation());
+        }
+        forwardController.setSetpoint(goalPosition.getX());
+        strafeController.setSetpoint(goalPosition.getY());
+        rotationController.setSetpoint(goalPosition.getRotation().getRotations());
+      }
+
+      @Override
+      public void execute() {
+        Pose2d currentPosition = telemetry.getCurrentPosition();
+        double vxMetersPerSecond = forwardController.calculate(currentPosition.getX());
+        double vyMetersPerSecond = strafeController.calculate(currentPosition.getY());
+        double rotationSpeedRPS = rotationController.calculate(currentPosition.getRotation().getRotations());
+        double omegaRadiansPerSecond = rotationSpeedRPS * Math.PI * 2;
+        ChassisSpeeds fcChassisSpeed = new ChassisSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond);
+        ChassisSpeeds rcChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fcChassisSpeed,
+            currentPosition.getRotation());
+        setSwerveDriveChassisSpeed(rcChassisSpeeds);
+      }
+
+      @Override
+      public void end(boolean interrupted) {
+        stopDrive();
+      }
+
+      @Override
+      public boolean isFinished() {
+        return forwardController.atSetpoint() && strafeController.atSetpoint() && rotationController.atSetpoint();
+      }
+
+    };
+
+    leftPortalCommand.addRequirements(this);
+    return leftPortalCommand;
+
+  }
+
+  public CommandBase createDropPortalCommand(
+      PIDController forwardController,
+      PIDController strafeController,
+      PIDController rotationController,
+      Pose2d bluePortal) {
+
+    CommandBase leftPortalCommand = new CommandBase() {
+
+      @Override
+      public void initialize() {
+        Pose2d goalPosition = bluePortal;
+        if (DriverStation.getAlliance() == Alliance.Red) {
+          goalPosition = new Pose2d(goalPosition.getX(), 8.02 - goalPosition.getY(),
+              goalPosition.getRotation().unaryMinus());
+        }
+        forwardController.setSetpoint(goalPosition.getX());
+        strafeController.setSetpoint(goalPosition.getY());
+        rotationController.setSetpoint(goalPosition.getRotation().getRotations());
+      }
+
+      @Override
+      public void execute() {
+        Pose2d currentPosition = telemetry.getCurrentPosition();
+        double vxMetersPerSecond = forwardController.calculate(currentPosition.getX());
+        double vyMetersPerSecond = strafeController.calculate(currentPosition.getY());
+        double rotationSpeedRPS = rotationController.calculate(currentPosition.getRotation().getRotations());
+        double omegaRadiansPerSecond = rotationSpeedRPS * Math.PI * 2;
+        ChassisSpeeds fcChassisSpeed = new ChassisSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond);
+        ChassisSpeeds rcChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fcChassisSpeed,
+            currentPosition.getRotation());
+        setSwerveDriveChassisSpeed(rcChassisSpeeds);
+      }
+
+      @Override
+      public void end(boolean interrupted) {
+        stopDrive();
+      }
+
+      @Override
+      public boolean isFinished() {
+        return forwardController.atSetpoint() && strafeController.atSetpoint() && rotationController.atSetpoint();
+      }
+
+    };
+
+    leftPortalCommand.addRequirements(this);
+    return leftPortalCommand;
+
+  }
+
+  public CommandBase createNearestPointCommand(
+      PIDController forwardController,
+      PIDController strafeController,
+      PIDController rotationController,
+      List<Pose2d> scoringPositions) {
+
+    CommandBase leftPortalCommand = new CommandBase() {
+
+      @Override
+      public void initialize() {
+
+        Pose2d goalPosition = getClosestPosition(scoringPositions);
+
+        forwardController.setSetpoint(goalPosition.getX());
+        strafeController.setSetpoint(goalPosition.getY());
+        rotationController.setSetpoint(goalPosition.getRotation().getRotations());
+      }
+
+      @Override
+      public void execute() {
+        Pose2d currentPosition = telemetry.getCurrentPosition();
+        double vxMetersPerSecond = forwardController.calculate(currentPosition.getX());
+        double vyMetersPerSecond = strafeController.calculate(currentPosition.getY());
+        double rotationSpeedRPS = rotationController.calculate(currentPosition.getRotation().getRotations());
+        double omegaRadiansPerSecond = rotationSpeedRPS * Math.PI * 2;
+        ChassisSpeeds fcChassisSpeed = new ChassisSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond);
+        ChassisSpeeds rcChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fcChassisSpeed,
+            currentPosition.getRotation());
+        setSwerveDriveChassisSpeed(rcChassisSpeeds);
+      }
+
+      @Override
+      public void end(boolean interrupted) {
+        stopDrive();
+      }
+
+      @Override
+      public boolean isFinished() {
+        return forwardController.atSetpoint() && strafeController.atSetpoint() && rotationController.atSetpoint();
+      }
+
+    };
+
+    leftPortalCommand.addRequirements(this);
+    return leftPortalCommand;
+
   }
 
 }

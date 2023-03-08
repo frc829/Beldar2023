@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BooleanSupplier;
-
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -21,7 +19,6 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -113,27 +110,7 @@ public class PathPlannerToAuto {
 
     private static CommandBase createCommandForAuto(String name, SwerveDrive swerveDrive, Elevator elevator,
             Elbow elbow, Grabber grabber, Claw claw, ElevatorTilt tilt, LEDLighting ledLighting) {
-        if (name == "Balance") {
-            CommandBase balance = swerveDrive.getBalanceCommand();
-            CommandBase danceParty = ledLighting.getDanceParty();
-
-            BooleanSupplier gyroAtValue = new BooleanSupplier() {
-
-                @Override
-                public boolean getAsBoolean() {
-                    double gyroPitchDegrees = swerveDrive.getGyroPitch();
-                    if (gyroPitchDegrees > 180) {
-                        return 360.0 - gyroPitchDegrees < 2.0;
-                    } else {
-                        return gyroPitchDegrees < 2.0;
-                    }
-                }
-            };
-
-            CommandBase maybeDanceParty = Commands.either(danceParty, Commands.none(), gyroAtValue);
-
-            return Commands.parallel(balance, maybeDanceParty);
-        } else if (name.contains("ScoreHigh")) {
+        if (name.contains("ScoreHigh")) {
             CommandBase alignment = Arm.Alignment.createHigh(elevator, elbow, tilt, claw);
             CommandBase placement = Arm.Placement.createHigh(elevator, elbow, tilt, claw, grabber);
             CommandBase reset = Arm.Reset.createHigh(elevator, elbow, tilt, grabber);

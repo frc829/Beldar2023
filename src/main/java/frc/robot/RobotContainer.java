@@ -789,7 +789,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position1.rotationConstants);
 
                 Command driveForwardABit = swerveDrive.getOnRampCommand();
-                Command balance = swerveDrive.getBalanceCommand();
+                Command balance = swerveDrive.getBalanceCommand(ledLighting);
                 Element1DockPosition1Command = Commands.sequence(Element1DockPosition1Command, driveForwardABit,
                                 balance);
 
@@ -811,25 +811,6 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element2.position2.translationConstants,
                                 Constants.AutoRoutines.Element2.position2.rotationConstants);
 
-                // List<PathPlannerTrajectory> Element1DockPosition3Trajectory =
-                // FullAutoRoutines.getPathPlannerTrajectory(
-                // Constants.AutoRoutines.Element1.position3.pathName,
-                // Constants.AutoRoutines.Element1.position3.firstPathConstraint,
-                // Constants.AutoRoutines.Element1.position3.remainingPathConstraints);
-
-                // Command Element1DockPosition3Command =
-                // FullAutoRoutines.createFullAutoFromPathGroup(
-                // swerveDrive,
-                // elevator,
-                // elbow,
-                // grabber,
-                // claw,
-                // tilt,
-                // ledLighting,
-                // Element1DockPosition3Trajectory,
-                // Constants.AutoRoutines.Element1.position3.translationConstants,
-                // Constants.AutoRoutines.Element1.position3.rotationConstants);
-
                 List<PathPlannerTrajectory> Element1DockPosition4Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
                                                 Constants.AutoRoutines.Element1.position4.pathName,
@@ -848,9 +829,9 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position4.translationConstants,
                                 Constants.AutoRoutines.Element1.position4.rotationConstants);
 
-                Command driveBackwardABit = swerveDrive.getOnRampBackwardCommand();
-                Command balance14 = swerveDrive.getBalanceCommand();
-                Element1DockPosition4Command = Commands.sequence(Element1DockPosition4Command, driveBackwardABit,
+                Command driveForwardABit14 = swerveDrive.getOnRampBackwardCommand();
+                Command balance14 = swerveDrive.getBalanceCommand(ledLighting);
+                Element1DockPosition4Command = Commands.sequence(Element1DockPosition4Command, driveForwardABit14,
                                 balance14);
 
                 List<PathPlannerTrajectory> Element1DockPosition5Trajectory = PathPlannerToAuto
@@ -871,8 +852,10 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position5.translationConstants,
                                 Constants.AutoRoutines.Element1.position5.rotationConstants);
 
-                Command balance15 = swerveDrive.getBalanceCommand();
-                Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, balance15);
+                Command driveForwardABit15 = swerveDrive.getOnRampCommand();
+                Command balance15 = swerveDrive.getBalanceCommand(ledLighting);
+                Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, driveForwardABit15,
+                                balance15);
 
                 List<PathPlannerTrajectory> Element1DockPosition6Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
@@ -892,27 +875,10 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position6.translationConstants,
                                 Constants.AutoRoutines.Element1.position6.rotationConstants);
 
-                Command balance16 = swerveDrive.getBalanceCommand();
-                Element1DockPosition6Command = Commands.sequence(Element1DockPosition6Command, balance16);
-
-                // List<PathPlannerTrajectory> Element1DockPosition7Trajectory =
-                // FullAutoRoutines.getPathPlannerTrajectory(
-                // Constants.AutoRoutines.Element1.position7.pathName,
-                // Constants.AutoRoutines.Element1.position7.firstPathConstraint,
-                // Constants.AutoRoutines.Element1.position7.remainingPathConstraints);
-
-                // Command Element1DockPosition7Command =
-                // FullAutoRoutines.createFullAutoFromPathGroup(
-                // swerveDrive,
-                // elevator,
-                // elbow,
-                // grabber,
-                // claw,
-                // tilt,
-                // ledLighting,
-                // Element1DockPosition7Trajectory,
-                // Constants.AutoRoutines.Element1.position7.translationConstants,
-                // Constants.AutoRoutines.Element1.position7.rotationConstants);
+                Command driveForwardABit16 = swerveDrive.getOnRampBackwardCommand();
+                Command balance16 = swerveDrive.getBalanceCommand(ledLighting);
+                Element1DockPosition6Command = Commands.sequence(Element1DockPosition6Command, driveForwardABit16,
+                                balance16);
 
                 List<PathPlannerTrajectory> Element2DockPosition8Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
@@ -968,63 +934,6 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element3.position8.translationConstants,
                                 Constants.AutoRoutines.Element3.position8.rotationConstants);
 
-                // List<PathPlannerTrajectory> Element1DockPosition9Trajectory =
-                // FullAutoRoutines.getPathPlannerTrajectory(
-                // Constants.AutoRoutines.Element1.position9.pathName,
-                // Constants.AutoRoutines.Element1.position9.firstPathConstraint,
-                // Constants.AutoRoutines.Element1.position9.remainingPathConstraints);
-
-                // Command Element1DockPosition9Command =
-                // FullAutoRoutines.createFullAutoFromPathGroup(
-                // swerveDrive,
-                // elevator,
-                // elbow,
-                // grabber,
-                // claw,
-                // tilt,
-                // ledLighting,
-                // Element1DockPosition9Trajectory,
-                // Constants.AutoRoutines.Element1.position9.translationConstants,
-                // Constants.AutoRoutines.Element1.position9.rotationConstants);
-
-                // List<PathPlannerTrajectory> Element2DockPosition1Trajectory =
-                // FullAutoRoutines.getPathPlannerTrajectory(
-                // Constants.AutoRoutines.Element2.position1.pathName,
-                // Constants.AutoRoutines.Element2.position1.firstPathConstraint,
-                // Constants.AutoRoutines.Element2.position1.remainingPathConstraints);
-
-                // Command Element2DockPosition1Command =
-                // FullAutoRoutines.createFullAutoFromPathGroup(
-                // swerveDrive,
-                // elevator,
-                // elbow,
-                // grabber,
-                // claw,
-                // tilt,
-                // ledLighting,
-                // Element2DockPosition1Trajectory,
-                // Constants.AutoRoutines.Element2.position1.translationConstants,
-                // Constants.AutoRoutines.Element2.position1.rotationConstants);
-
-                // List<PathPlannerTrajectory> Element2DockPosition2Trajectory =
-                // FullAutoRoutines.getPathPlannerTrajectory(
-                // Constants.AutoRoutines.Element2.position2.pathName,
-                // Constants.AutoRoutines.Element2.position2.firstPathConstraint,
-                // Constants.AutoRoutines.Element2.position2.remainingPathConstraints);
-
-                // Command Element2DockPosition2Command =
-                // FullAutoRoutines.createFullAutoFromPathGroup(
-                // swerveDrive,
-                // elevator,
-                // elbow,
-                // grabber,
-                // claw,
-                // tilt,
-                // ledLighting,
-                // Element2DockPosition2Trajectory,
-                // Constants.AutoRoutines.Element2.position2.translationConstants,
-                // Constants.AutoRoutines.Element2.position2.rotationConstants);
-
                 BooleanSupplier ledPurpleBooleanSupplier = new BooleanSupplier() {
 
                         @Override
@@ -1060,52 +969,52 @@ public class RobotContainer {
                 ledPurpleTrigger.onTrue(ledPurpleCommand);
 
                 pathPlannerTrajectories = new HashMap<>();
-                pathPlannerTrajectories.put("1ElementPosition1",
+                pathPlannerTrajectories.put("WeComeFromFrance",
                                 Element1DockPosition1Trajectory);
                 // pathPlannerTrajectories.put("1ElementPosition2",
                 // Element1DockPosition2Trajectory);
                 // pathPlannerTrajectories.put("1ElementPosition3",
                 // Element1DockPosition3Trajectory);
-                pathPlannerTrajectories.put("1ElementPosition4", Element1DockPosition4Trajectory);
-                pathPlannerTrajectories.put("1ElementPosition5", Element1DockPosition5Trajectory);
-                pathPlannerTrajectories.put("1ElementPosition6", Element1DockPosition6Trajectory);
+                pathPlannerTrajectories.put("ChargeUp1", Element1DockPosition4Trajectory);
+                pathPlannerTrajectories.put("UpAndOver", Element1DockPosition5Trajectory);
+                pathPlannerTrajectories.put("ChargeUp2", Element1DockPosition6Trajectory);
                 // pathPlannerTrajectories.put("1ElementPosition7",
                 // Element1DockPosition7Trajectory);
                 // pathPlannerTrajectories.put("1ElementPosition8",
                 // Element1DockPosition8Trajectory);
                 // pathPlannerTrajectories.put("1ElementPosition9",
                 // Element1DockPosition9Trajectory);
-                pathPlannerTrajectories.put("2ElementPosition2", Element2DockPosition2Trajectory);
-                pathPlannerTrajectories.put("2ElementPosition8", Element2DockPosition8Trajectory);
+                pathPlannerTrajectories.put("ConsumeMassQuantities1", Element2DockPosition2Trajectory);
+                pathPlannerTrajectories.put("ConsumeMassQuantities2", Element2DockPosition8Trajectory);
                 pathPlannerTrajectories.put("3ElementPosition2", Element3DockPosition2Trajectory);
                 pathPlannerTrajectories.put("3ElementPosition8", Element3DockPosition8Trajectory);
 
                 autoCommands = new HashMap<>();
-                autoCommands.put("1ElementPosition1", Element1DockPosition1Command);
+                autoCommands.put("WeComeFromFrance", Element1DockPosition1Command);
                 // autoCommands.put("1ElementPosition2", Element1DockPosition2Command);
                 // autoCommands.put("1ElementPosition3", Element1DockPosition3Command);
-                autoCommands.put("1ElementPosition4", Element1DockPosition4Command);
-                autoCommands.put("1ElementPosition5", Element1DockPosition5Command);
-                autoCommands.put("1ElementPosition6", Element1DockPosition6Command);
+                autoCommands.put("ChargeUp1", Element1DockPosition4Command);
+                autoCommands.put("UpAndOver", Element1DockPosition5Command);
+                autoCommands.put("ChargeUp2", Element1DockPosition6Command);
                 // autoCommands.put("1ElementPosition7", Element1DockPosition7Command);
                 // autoCommands.put("1ElementPosition8", Element1DockPosition8Command);
                 // autoCommands.put("1ElementPosition9", Element1DockPosition9Command);
-                autoCommands.put("2ElementPosition2", Element2DockPosition2Command);
-                autoCommands.put("2ElementPosition8", Element2DockPosition8Command);
+                autoCommands.put("ConsumeMassQuantities1", Element2DockPosition2Command);
+                autoCommands.put("ConsumeMassQuantities2", Element2DockPosition8Command);
                 autoCommands.put("3ElementPosition2", Element3DockPosition2Command);
                 autoCommands.put("3ElementPosition8", Element3DockPosition8Command);
 
-                this.autoChooser.addOption("1ElementPosition1", "1ElementPosition1");
+                this.autoChooser.addOption("WeComeFromFrance", "WeComeFromFrance");
                 // this.autoChooser.addOption("1ElementPosition2", "1ElementPosition2");
                 // this.autoChooser.addOption("1ElementPosition3", "1ElementPosition3");
-                this.autoChooser.addOption("1ElementPosition4", "1ElementPosition4");
-                this.autoChooser.addOption("1ElementPosition5", "1ElementPosition5");
-                this.autoChooser.addOption("1ElementPosition6", "1ElementPosition6");
+                this.autoChooser.addOption("ChargeUp1", "ChargeUp1");
+                this.autoChooser.addOption("UpAndOver", "UpAndOver");
+                this.autoChooser.addOption("ChargeUp2", "ChargeUp2");
                 // this.autoChooser.addOption("1ElementPosition7", "1ElementPosition7");
                 // this.autoChooser.addOption("1ElementPosition8", "1ElementPosition8");
                 // this.autoChooser.addOption("1ElementPosition9", "1ElementPosition9");
-                this.autoChooser.addOption("2ElementPosition2", "2ElementPosition2");
-                this.autoChooser.addOption("2ElementPosition8", "2ElementPosition8");
+                this.autoChooser.addOption("ConsumeMassQuantities1", "ConsumeMassQuantities1");
+                this.autoChooser.addOption("ConsumeMassQuantities2", "ConsumeMassQuantities2");
                 this.autoChooser.addOption("3ElementPosition2", "3ElementPosition2");
                 this.autoChooser.addOption("3ElementPosition8", "3ElementPosition8");
 
@@ -1139,21 +1048,37 @@ public class RobotContainer {
 
                 CommandBase zeroModulesCommand = swerveDrive.getZeroModuleCommand();
                 CommandBase setTelemetryFromCameraCommand = swerveDrive.setTelemetryFromCameraCommand();
-                CommandBase dropPortalAlign = swerveDrive.getOnTheFlyDriveCommand(
-                                Constants.Auto.Drive.PortalPositions.dropPortal,
-                                fieldMap);
 
-                CommandBase leftPortalAlign = swerveDrive.getOnTheFlyDriveCommand(
+                PIDController forwardController = new PIDController(5, 0, 0);
+                PIDController strafeController = new PIDController(5, 0, 0);
+                PIDController rotationController = new PIDController(5, 0, 0);
+                rotationController.enableContinuousInput(0, 1);
+
+                CommandBase dropPortalAlign = swerveDrive.createDropPortalCommand(
+                        forwardController,
+                        strafeController,
+                        rotationController,
+                        Constants.Auto.Drive.PortalPositions.dropPortal);
+
+                CommandBase leftPortalAlign = swerveDrive.createSlidingPortalCommand(
+                                forwardController,
+                                strafeController,
+                                rotationController,
                                 Constants.Auto.Drive.PortalPositions.leftPortal,
-                                fieldMap);
+                                Constants.Auto.Drive.PortalPositions.rightPortal);
 
-                CommandBase rightPortalAlign = swerveDrive.getOnTheFlyDriveCommand(
+                CommandBase rightPortalAlign = swerveDrive.createSlidingPortalCommand(
+                                forwardController,
+                                strafeController,
+                                rotationController,
                                 Constants.Auto.Drive.PortalPositions.rightPortal,
-                                fieldMap);
+                                Constants.Auto.Drive.PortalPositions.leftPortal);
 
-                CommandBase nearestScoreAlign = swerveDrive.getOnTheFlyDriveCommand(
-                                Constants.Auto.Drive.ScoringPositions.positionsList,
-                                fieldMap);
+                CommandBase nearestScoreAlign = swerveDrive.createNearestPointCommand(
+                        forwardController,
+                        strafeController,
+                        rotationController,
+                        Constants.Auto.Drive.ScoringPositions.positionsList);
 
                 // INFO: Zero Wheels Command
                 driveController.back().whileTrue(zeroModulesCommand);
@@ -1212,7 +1137,7 @@ public class RobotContainer {
 
         private void configureOperatorBindings() {
 
-                CommandBase balanceTest = swerveDrive.getBalanceCommand();
+                //CommandBase balanceTest = swerveDrive.getBalanceCommand();
 
                 CommandBase elementCarry = Arm.Carry.create(
                                 elevator,
@@ -1315,7 +1240,7 @@ public class RobotContainer {
                 operatorController.povRight().onTrue(tatooine);
                 operatorController.povUp().onTrue(duelOfTheFates);
 
-                operatorController.start().whileTrue(balanceTest);
+                //operatorController.start().whileTrue(balanceTest);
         }
 
         /**

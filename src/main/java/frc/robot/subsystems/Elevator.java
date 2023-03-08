@@ -79,7 +79,9 @@ public class Elevator extends SubsystemBase {
   // Consumers
   private void setVelocity(double speedMetersPerSecond) {
     if (RobotBase.isSimulation()) {
-      speedMetersPerSecond -= 0.1;
+      if (elevatorMech.getPositionMeters() > 0) {
+        speedMetersPerSecond -= 0.1;
+      }
     }
     this.elevatorMech.setMechanismSpeedMetersPerSecond(speedMetersPerSecond);
   }
