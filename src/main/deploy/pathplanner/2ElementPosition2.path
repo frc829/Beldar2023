@@ -124,15 +124,24 @@
       }
     }
   ],
+  "maxVelocity": 2.0,
+  "maxAcceleration": 2.0,
+  "isReversed": null,
   "markers": [
     {
-      "position": 2.2909090909090035,
+      "position": 0.1,
+      "names": [
+        "Carry"
+      ]
+    },
+    {
+      "position": 1.381818181818182,
       "names": [
         "ConePickup1"
       ]
     },
     {
-      "position": 3.27272727272716,
+      "position": 2.2545454545454535,
       "names": [
         "Carry1"
       ]

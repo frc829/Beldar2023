@@ -497,15 +497,19 @@ public final class Constants {
       public static class Alignment {
         public static class High {
           public static class Cone {
-            public static final double elevatorPositionMeters = 0.914;
-            public static final double elbowPositionDegrees = 16.6;
+            public static final double elevatorPositionMeters0 = 0.25;
+            public static final double elbowPositionDegrees0 = 40.0;
+            public static final double elevatorPositionMeters1 = 0.914;
+            public static final double elbowPositionDegrees1 = 16.6;
             public static final ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
             public static final double waitForElevatorToTilt = 0.5;
           }
 
           public static class Cube {
-            public static final double elevatorPositionMeters = 0.914;
-            public static final double elbowPositionDegrees = 40.0;
+            public static final double elevatorPositionMeters0 = 0.914;
+            public static final double elbowPositionDegrees0 = 40.0;
+            public static final double elevatorPositionMeters1 = 0.914;
+            public static final double elbowPositionDegrees1 = 40.0;
             public static final ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
             public static final double waitForElevatorToTilt = 0.5;
           }
@@ -591,8 +595,7 @@ public final class Constants {
 
         public static class High {
           public static class Cone {
-            public static double elevatorPosition0 = 0.75;
-            public static double elevatorPosition1 = 0.0;
+            public static double elevatorPosition = 0.0;
             public static double elbowPosition = 20.0;
             public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
           }

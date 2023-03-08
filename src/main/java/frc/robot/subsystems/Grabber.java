@@ -111,6 +111,34 @@ public class Grabber extends SubsystemBase {
 
   }
 
+  public CommandBase createPoofCommand(double velocityRPM) {
+
+    CommandBase setGrabberSpeedCommand = new CommandBase() {
+
+      @Override
+      public void initialize() {
+        SmartDashboard.putString("Grabber Command Current", "Poof Speed: " + velocityRPM + " rpm");
+      }
+
+      @Override
+      public void execute() {
+        double rps = velocityRPM / 60.0;
+        Rotation2d rotationsPerSecond = Rotation2d.fromRotations(rps);
+        grabberMech.setAverageVelocityRotationsPerSecond(rotationsPerSecond);
+      }
+
+      @Override
+      public boolean isFinished() {
+        return true;
+      }
+    };
+
+    setGrabberSpeedCommand.addRequirements(this);
+
+    return setGrabberSpeedCommand;
+
+  }
+
   public CommandBase createStopCommand() {
 
     CommandBase stopCommand = new CommandBase() {

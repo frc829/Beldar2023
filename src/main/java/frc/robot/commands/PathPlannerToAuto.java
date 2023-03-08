@@ -21,6 +21,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -135,21 +136,18 @@ public class PathPlannerToAuto {
         } else if (name.contains("ScoreHigh")) {
             CommandBase alignment = Arm.Alignment.createHigh(elevator, elbow, tilt, claw);
             CommandBase placement = Arm.Placement.createHigh(elevator, elbow, tilt, claw, grabber);
-            return Commands.sequence(alignment, placement);
+            CommandBase reset = Arm.Reset.createHigh(elevator, elbow, tilt, grabber);
+            return Commands.sequence(alignment, placement, reset);
         } else if (name.contains("ScoreMiddle")) {
             CommandBase alignment = Arm.Alignment.createMiddle(elevator, elbow, tilt, claw);
-            CommandBase waitTinyAmount = Commands.waitSeconds(1);
-            CommandBase alignAndWaith = Commands.race(alignment, waitTinyAmount);
             CommandBase placement = Arm.Placement.createMiddle(elevator, elbow, tilt, claw, grabber);
-            CommandBase placementWait = Commands.waitSeconds(1.5);
-            CommandBase placementAndWait = Commands.race(placement, placementWait);
-            return Commands.sequence(alignAndWaith, placementAndWait);
+            CommandBase reset = Arm.Reset.createMiddle(elevator, elbow, tilt, grabber);
+            return Commands.sequence(alignment, placement, reset);
         } else if (name.contains("ScoreLow")) {
             CommandBase alignment = Arm.Alignment.createLow(elevator, elbow, tilt, claw);
-            // CommandBase waitTinyAmount = Commands.waitSeconds(2);
-            // CommandBase alignAndWaith = Commands.race(alignment, waitTinyAmount);
             CommandBase placement = Arm.Placement.createLow(elevator, elbow, tilt, claw, grabber);
-            return Commands.sequence(alignment, placement);
+            CommandBase reset = Arm.Reset.createLow(elevator, elbow, tilt, grabber);
+            return Commands.sequence(alignment, placement, reset);
         } else if (name.contains("ConePickup")) {
             CommandBase conePickup = Arm.Pickup.createFloor(
                     elevator,
@@ -159,6 +157,10 @@ public class PathPlannerToAuto {
                     tilt,
                     Claw.State.CONE);
             return conePickup;
+        } else if (name.contains("ElevatorHold")) {
+            return elevator.createHoldCommand();
+        } else if (name.contains("ElbowHold")) {
+            return elbow.createHoldCommand();
         } else if (name.contains("Carry")) {
             CommandBase carry = Arm.Carry.create(
                     elevator,
