@@ -46,6 +46,21 @@
           "open": true
         }
       },
+      "SPARK MAX [10]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [11]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [20]": {
+        "header": {
+          "open": true
+        }
+      },
       "Solenoid[0]": {
         "header": {
           "open": true
@@ -168,7 +183,6 @@
           "style": "Line"
         },
         "height": 8.020000457763672,
-        "image": "C:\\Users\\narmstro\\Desktop\\Charged Up Field.PNG",
         "width": 16.5,
         "window": {
           "visible": true

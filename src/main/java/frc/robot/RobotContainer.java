@@ -329,6 +329,8 @@ public class RobotContainer {
                                 Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.motorToMechConversion,
                                 frontLeftSensor);
 
+                this.frontLeftSteeringMech.setEncoderPositionFromSensor();
+
                 this.frontRightSteeringMech = RotationMech.create(
                                 frontRightSteerMotor,
                                 Constants.Robot.Drive.Modules.FrontRight.SteeringMech.motorToMechConversion,
@@ -832,8 +834,9 @@ public class RobotContainer {
 
                 Command driveForwardABit14 = swerveDrive.getOnRampBackwardCommand();
                 Command balance14 = swerveDrive.getBalanceCommand();
-                Element1DockPosition4Command = Commands.sequence(Element1DockPosition4Command, driveForwardABit14,
-                                balance14);
+                Command danceParty14 = ledLighting.getDanceParty();
+                Command end14 = Commands.parallel(balance14, danceParty14);
+                Element1DockPosition4Command = Commands.sequence(Element1DockPosition4Command, driveForwardABit14, end14);
 
                 List<PathPlannerTrajectory> Element1DockPosition5Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
@@ -855,8 +858,9 @@ public class RobotContainer {
 
                 Command driveForwardABit15 = swerveDrive.getOnRampCommand();
                 Command balance15 = swerveDrive.getBalanceCommand();
-                Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, driveForwardABit15,
-                                balance15);
+                Command danceParty15 = ledLighting.getDanceParty();
+                Command end15 = Commands.parallel(balance15, danceParty15);
+                Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, driveForwardABit15, end15);
 
                 List<PathPlannerTrajectory> Element1DockPosition6Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
@@ -878,8 +882,9 @@ public class RobotContainer {
 
                 Command driveForwardABit16 = swerveDrive.getOnRampBackwardCommand();
                 Command balance16 = swerveDrive.getBalanceCommand();
-                Element1DockPosition6Command = Commands.sequence(Element1DockPosition6Command, driveForwardABit16,
-                                balance16);
+                Command danceParty16 = ledLighting.getDanceParty();
+                Command end16 = Commands.parallel(balance16, danceParty16);
+                Element1DockPosition6Command = Commands.sequence(Element1DockPosition6Command, driveForwardABit16, end16);
 
                 List<PathPlannerTrajectory> Element2DockPosition8Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
@@ -1218,5 +1223,9 @@ public class RobotContainer {
 
         public void clearFieldMap() {
                 this.fieldMap.removeTrajectoryFromField("Trajectory");
+        }
+
+        public void setSwerveModuleEncoders() {
+                swerveDrive.setModuleEncoders();
         }
 }

@@ -58,23 +58,23 @@ public class LEDLighting extends SubsystemBase {
     }
 
     public void setLEDS() {
-        if (this.currentAnimation == null) {
-            if (currentLEDConfig != null) {
-                this.candle.setLEDs(
-                        currentLEDConfig.red,
-                        currentLEDConfig.green,
-                        currentLEDConfig.blue,
-                        currentLEDConfig.white,
-                        currentLEDConfig.startIndex,
-                        currentLEDConfig.count);
-            } else {
-                this.candle.setLEDs(0, 0, 0, 0, 0, 400);
-            }
+
+        if (currentLEDConfig != null) {
+            this.currentAnimation = null;
+            this.candle.setLEDs(
+                    currentLEDConfig.red,
+                    currentLEDConfig.green,
+                    currentLEDConfig.blue,
+                    currentLEDConfig.white,
+                    currentLEDConfig.startIndex,
+                    currentLEDConfig.count);
+        } else {
+            this.candle.setLEDs(0, 0, 0, 0, 0, 400);
         }
     }
 
     public void setAnimation() {
-        this.candle.animate(null);
+        this.candle.animate(currentAnimation);
     }
 
     public static Animation getColorFlow(int red, int green, int blue, int white, double speed, int numLed,
