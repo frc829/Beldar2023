@@ -79,11 +79,6 @@ public class SwerveDrive extends SubsystemBase {
     this.rearLeftSteerPIDController = rearLeftSteerPIDController;
     this.rearRightSteerPIDController = rearRightSteerPIDController;
 
-    // this.frontLeftModule.setSwerveModuleSteeringEncoder();
-    // this.frontRightModule.setSwerveModuleSteeringEncoder();
-    // this.rearLeftModule.setSwerveModuleSteeringEncoder();
-    // this.rearRightModule.setSwerveModuleSteeringEncoder();
-
     this.fieldMap = fieldMap;
 
     this.setManualDefaultCommand();
@@ -269,7 +264,6 @@ public class SwerveDrive extends SubsystemBase {
 
     double[] currentPoseFromCamera = this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
     Rotation2d yawFromCamera = Rotation2d.fromDegrees(currentPoseFromCamera[5]);
-    SmartDashboard.putNumber("YawFROMCAMERA", yawFromCamera.getDegrees());
     Pose2d cameraPose = new Pose2d(currentPoseFromCamera[0], currentPoseFromCamera[1], yawFromCamera);
     this.telemetry.resetCurrentPosition(cameraPose, gyroscope.getYaw());
   }
@@ -277,10 +271,10 @@ public class SwerveDrive extends SubsystemBase {
   public CommandBase getZeroModuleCommand() {
     return Commands.runEnd(
         () -> {
-          this.frontLeftModule.setSwerveModuleSteeringEncoder();
-          this.frontRightModule.setSwerveModuleSteeringEncoder();
-          this.rearLeftModule.setSwerveModuleSteeringEncoder();
-          this.rearRightModule.setSwerveModuleSteeringEncoder();
+          // this.frontLeftModule.setSwerveModuleSteeringEncoder();
+          // this.frontRightModule.setSwerveModuleSteeringEncoder();
+          // this.rearLeftModule.setSwerveModuleSteeringEncoder();
+          // this.rearRightModule.setSwerveModuleSteeringEncoder();
 
           Rotation2d frontLeftSteeringSpeed = getSteeringSpeed(
               new Rotation2d(),
@@ -312,9 +306,9 @@ public class SwerveDrive extends SubsystemBase {
           this.frontRightModule.stop();
           this.rearLeftModule.stop();
           this.rearRightModule.stop();
-        });
+        }, 
+        this);
   }
-
 
   public CommandBase getOnRampCommand() {
 
@@ -585,6 +579,13 @@ public class SwerveDrive extends SubsystemBase {
     leftPortalCommand.addRequirements(this);
     return leftPortalCommand;
 
+  }
+
+  public void setModuleEncoders() {
+    this.frontLeftModule.setSwerveModuleSteeringEncoder();
+    this.frontRightModule.setSwerveModuleSteeringEncoder();
+    this.rearLeftModule.setSwerveModuleSteeringEncoder();
+    this.rearRightModule.setSwerveModuleSteeringEncoder();
   }
 
 }
