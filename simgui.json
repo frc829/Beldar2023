@@ -202,9 +202,6 @@
         "PPSwerveControllerCommand": {
           "open": true
         },
-        "The Field": {
-          "open": true
-        },
         "open": true
       }
     }

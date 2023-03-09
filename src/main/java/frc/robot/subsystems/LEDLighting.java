@@ -181,4 +181,26 @@ public class LEDLighting extends SubsystemBase {
         return dancePartyCommand;
     }
 
+    public CommandBase getDanceParty2() {
+
+        CommandBase dancePartyCommand = new CommandBase() {
+
+            @Override
+            public void initialize() {
+                SmartDashboard.putString("LED Lighting Current Command", "Dance Party");
+                currentLEDConfig = null;
+                Animation dance = getRainbow(1, 1, 400, false, 0);
+                currentAnimation = dance;
+            }
+
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
+        };
+
+        dancePartyCommand.addRequirements(this);
+        return dancePartyCommand;
+    }
+
 }

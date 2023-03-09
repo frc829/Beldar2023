@@ -97,7 +97,7 @@ public class SwerveDrive extends SubsystemBase {
     telemetry.addVisionMeasurement(currentPoseFromCamera);
     fieldMap.updateField(this.telemetry.getCurrentPosition());
 
-    SmartDashboard.putBoolean("Gyro Connected", this.gyroscope.isConnected());
+    // SmartDashboard.putBoolean("Gyro Connected", this.gyroscope.isConnected());
     SmartDashboard.putNumber("PoseFromCameraX", currentPoseFromCamera[0]);
     SmartDashboard.putNumber("PoseFromCameraY", currentPoseFromCamera[1]);
     SmartDashboard.putNumber("PoseFromCameraZ", currentPoseFromCamera[2]);
@@ -105,9 +105,9 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("PoseFromCameraPitch", currentPoseFromCamera[4]);
     SmartDashboard.putNumber("PoseFromCameraYaw", currentPoseFromCamera[5]);
 
-    SmartDashboard.putNumber("Gyro Pitch", this.gyroscope.getPitch().getDegrees());
-    SmartDashboard.putNumber("Gyro Roll", this.gyroscope.getRoll().getDegrees());
-    SmartDashboard.putNumber("Gyro Yaw", this.gyroscope.getYaw().getDegrees());
+    // SmartDashboard.putNumber("Gyro Pitch", this.gyroscope.getPitch().getDegrees());
+    // SmartDashboard.putNumber("Gyro Roll", this.gyroscope.getRoll().getDegrees());
+    // SmartDashboard.putNumber("Gyro Yaw", this.gyroscope.getYaw().getDegrees());
 
     this.telemetry.updateCurrentPosition(gyroscope.getYaw());
 
@@ -120,33 +120,33 @@ public class SwerveDrive extends SubsystemBase {
     ChassisSpeeds fieldCentricChassisSpeedsActual = ChassisSpeeds.fromFieldRelativeSpeeds(
         robotCentricChassisSpeedsActual, telemetry.getCurrentPosition().getRotation().unaryMinus());
 
-    SmartDashboard.putNumber("FieldCentricVXFromController", fieldCentricChassisSpeedsFromController.vxMetersPerSecond);
-    SmartDashboard.putNumber("FieldCentricVYFromController", fieldCentricChassisSpeedsFromController.vyMetersPerSecond);
-    SmartDashboard.putNumber("FieldCentricWFromController",
-        fieldCentricChassisSpeedsFromController.omegaRadiansPerSecond);
+    // SmartDashboard.putNumber("FieldCentricVXFromController", fieldCentricChassisSpeedsFromController.vxMetersPerSecond);
+    // SmartDashboard.putNumber("FieldCentricVYFromController", fieldCentricChassisSpeedsFromController.vyMetersPerSecond);
+    // SmartDashboard.putNumber("FieldCentricWFromController",
+    //     fieldCentricChassisSpeedsFromController.omegaRadiansPerSecond);
 
-    SmartDashboard.putNumber("RobotCentricVXFromController", robotCentricChassisSpeedsFromController.vxMetersPerSecond);
-    SmartDashboard.putNumber("RobotCentricVYFromController", robotCentricChassisSpeedsFromController.vyMetersPerSecond);
-    SmartDashboard.putNumber("RobotCentricWFromController",
-        robotCentricChassisSpeedsFromController.omegaRadiansPerSecond);
+    // SmartDashboard.putNumber("RobotCentricVXFromController", robotCentricChassisSpeedsFromController.vxMetersPerSecond);
+    // SmartDashboard.putNumber("RobotCentricVYFromController", robotCentricChassisSpeedsFromController.vyMetersPerSecond);
+    // SmartDashboard.putNumber("RobotCentricWFromController",
+    //     robotCentricChassisSpeedsFromController.omegaRadiansPerSecond);
 
-    SmartDashboard.putNumber("FieldCentricVXActual", fieldCentricChassisSpeedsActual.vxMetersPerSecond);
-    SmartDashboard.putNumber("FieldCentricVYActual", fieldCentricChassisSpeedsActual.vyMetersPerSecond);
-    SmartDashboard.putNumber("FieldCentricWActual", fieldCentricChassisSpeedsActual.omegaRadiansPerSecond);
+    // SmartDashboard.putNumber("FieldCentricVXActual", fieldCentricChassisSpeedsActual.vxMetersPerSecond);
+    // SmartDashboard.putNumber("FieldCentricVYActual", fieldCentricChassisSpeedsActual.vyMetersPerSecond);
+    // SmartDashboard.putNumber("FieldCentricWActual", fieldCentricChassisSpeedsActual.omegaRadiansPerSecond);
 
-    SmartDashboard.putNumber("RobotCentricVXActual", robotCentricChassisSpeedsActual.vxMetersPerSecond);
-    SmartDashboard.putNumber("RobotCentricVYActual", robotCentricChassisSpeedsActual.vyMetersPerSecond);
-    SmartDashboard.putNumber("RobotCentricWActual", robotCentricChassisSpeedsActual.omegaRadiansPerSecond);
+    // SmartDashboard.putNumber("RobotCentricVXActual", robotCentricChassisSpeedsActual.vxMetersPerSecond);
+    // SmartDashboard.putNumber("RobotCentricVYActual", robotCentricChassisSpeedsActual.vyMetersPerSecond);
+    // SmartDashboard.putNumber("RobotCentricWActual", robotCentricChassisSpeedsActual.omegaRadiansPerSecond);
 
-    SmartDashboard.putNumber("RobotFieldPositionX", this.telemetry.getCurrentPosition().getX());
-    SmartDashboard.putNumber("RobotFieldPositionY", this.telemetry.getCurrentPosition().getY());
+    // SmartDashboard.putNumber("RobotFieldPositionX", this.telemetry.getCurrentPosition().getX());
+    // SmartDashboard.putNumber("RobotFieldPositionY", this.telemetry.getCurrentPosition().getY());
 
-    SmartDashboard.putNumber("RobotFieldPositionYawDeg",
-        this.telemetry.getCurrentPosition().getRotation().getDegrees());
+    // SmartDashboard.putNumber("RobotFieldPositionYawDeg",
+    //     this.telemetry.getCurrentPosition().getRotation().getDegrees());
 
-    SmartDashboard.putNumber("GyroRoll", (this.gyroscope.getRoll().getDegrees()));
-    SmartDashboard.putNumber("GyroPitch", (this.gyroscope.getPitch().getDegrees()));
-    SmartDashboard.putNumber("GyroYaw", (this.gyroscope.getYaw().getDegrees()));
+    // SmartDashboard.putNumber("GyroRoll", (this.gyroscope.getRoll().getDegrees()));
+    // SmartDashboard.putNumber("GyroPitch", (this.gyroscope.getPitch().getDegrees()));
+    // SmartDashboard.putNumber("GyroYaw", (this.gyroscope.getYaw().getDegrees()));
   }
 
   private void stopDrive() {

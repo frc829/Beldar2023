@@ -42,15 +42,15 @@ public class Elbow extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putString(
-        "Elbow Position From Motor (deg)",
-        decimalFormat.format(getPosition().getDegrees()));
-    SmartDashboard.putString(
-        "Elbow Position From Sensor (deg)",
-        decimalFormat.format(getPositionFromSensor().getDegrees()));
-    SmartDashboard.putString(
-        "Elbow Speed From Motor(degps)",
-        decimalFormat.format(getVelocity().getDegrees()));
+    // SmartDashboard.putString(
+    //     "Elbow Position From Motor (deg)",
+    //     decimalFormat.format(getPosition().getDegrees()));
+    // SmartDashboard.putString(
+    //     "Elbow Position From Sensor (deg)",
+    //     decimalFormat.format(getPositionFromSensor().getDegrees()));
+    // SmartDashboard.putString(
+    //     "Elbow Speed From Motor(degps)",
+    //     decimalFormat.format(getVelocity().getDegrees()));
     this.elbowMech2d.setAngle(getPosition().getDegrees());
   }
 

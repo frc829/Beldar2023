@@ -41,15 +41,15 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putString(
-        "Elevator Position From Motor (m)",
-        decimalFormat.format(getPosition()));
-    SmartDashboard.putString(
-        "Elevator Position From Sensor (m)",
-        decimalFormat.format(getPositionFromSensor()));
-    SmartDashboard.putString(
-        "Elevator Speed From Motor(mps)",
-        decimalFormat.format(getVelocity()));
+    // SmartDashboard.putString(
+    //     "Elevator Position From Motor (m)",
+    //     decimalFormat.format(getPosition()));
+    // SmartDashboard.putString(
+    //     "Elevator Position From Sensor (m)",
+    //     decimalFormat.format(getPositionFromSensor()));
+    // SmartDashboard.putString(
+    //     "Elevator Speed From Motor(mps)",
+    //     decimalFormat.format(getVelocity()));
 
     this.elevatorMech2d.setLength(getPosition());
   }

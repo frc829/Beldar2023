@@ -54,7 +54,6 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.playingwithfusion.TimeOfFlight;
 import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -836,7 +835,8 @@ public class RobotContainer {
                 Command balance14 = swerveDrive.getBalanceCommand();
                 Command danceParty14 = ledLighting.getDanceParty();
                 Command end14 = Commands.parallel(balance14, danceParty14);
-                Element1DockPosition4Command = Commands.sequence(Element1DockPosition4Command, driveForwardABit14, end14);
+                Element1DockPosition4Command = Commands.sequence(Element1DockPosition4Command, driveForwardABit14,
+                                end14);
 
                 List<PathPlannerTrajectory> Element1DockPosition5Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
@@ -860,7 +860,8 @@ public class RobotContainer {
                 Command balance15 = swerveDrive.getBalanceCommand();
                 Command danceParty15 = ledLighting.getDanceParty();
                 Command end15 = Commands.parallel(balance15, danceParty15);
-                Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, driveForwardABit15, end15);
+                Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, driveForwardABit15,
+                                end15);
 
                 List<PathPlannerTrajectory> Element1DockPosition6Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
@@ -884,7 +885,8 @@ public class RobotContainer {
                 Command balance16 = swerveDrive.getBalanceCommand();
                 Command danceParty16 = ledLighting.getDanceParty();
                 Command end16 = Commands.parallel(balance16, danceParty16);
-                Element1DockPosition6Command = Commands.sequence(Element1DockPosition6Command, driveForwardABit16, end16);
+                Element1DockPosition6Command = Commands.sequence(Element1DockPosition6Command, driveForwardABit16,
+                                end16);
 
                 List<PathPlannerTrajectory> Element2DockPosition8Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
@@ -971,7 +973,7 @@ public class RobotContainer {
                 this.autoChooser.addOption("3ElementPosition8", "3ElementPosition8");
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
-                SmartDashboard.putString("RIO Serial Number", RoboRioDataJNI.getSerialNumber());
+                //SmartDashboard.putString("RIO Serial Number", RoboRioDataJNI.getSerialNumber());
 
                 // Configure the trigger bindings
                 configureBindings();
@@ -1198,7 +1200,8 @@ public class RobotContainer {
                 operatorController.povRight().onTrue(tatooine);
                 operatorController.povUp().onTrue(duelOfTheFates);
 
-                // operatorController.start().whileTrue(balanceTest);
+                CommandBase danceParty = ledLighting.getDanceParty2();
+                operatorController.start().whileTrue(danceParty);
         }
 
         /**
