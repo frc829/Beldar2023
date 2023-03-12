@@ -384,7 +384,7 @@ public final class Constants {
           public static double maxManualSpeedRotationsPerSecond = 0.125;
 
           public static class PID {
-            public static final double kP = 5;
+            public static final double kP = 7.5;
             public static final double kI = 0;
             public static final double kD = 0;
             public static final double minimumInput = 0;
@@ -643,16 +643,16 @@ public final class Constants {
         public static class Floor {
           public static class Cone {
             public static final double elevatorPositionMeters = 0.0;
-            public static final double elbowPositionDegrees = 115;
+            public static final double elbowPositionDegrees = 112;
             public static final ElevatorTilt.State elevatorTiltState = State.TWO;
             public static final double grabberSpeedRPM = 916.0;
           }
 
           public static class Cube {
             public static final double elevatorPositionMeters = 0.0;
-            public static final double elbowPositionDegrees = 105.0;
+            public static final double elbowPositionDegrees = 106.5;
             public static final ElevatorTilt.State elevatorTiltState = State.TWO;
-            public static final double grabberSpeedRPM = 500.0;
+            public static final double grabberSpeedRPM = 250.0;
           }
         }
 
@@ -692,7 +692,7 @@ public final class Constants {
       public static class Carry {
         public static class Cone {
           public static final double elevatorPositionMeters = 0.0;
-          public static final double elbowPositionDegrees = 17.0;
+          public static final double elbowPositionDegrees = 23.0;
           public static final double grabberSpeedRPM = 0.0;
           public static final ElevatorTilt.State elevatorTiltState = State.NONE;
         }
@@ -732,7 +732,7 @@ public final class Constants {
       public static class position2 {
         public static String pathName = "ConsumeMassQuantities1";
         public static PIDConstants translationConstants = new PIDConstants(5, 0, 0);
-        public static PIDConstants rotationConstants = new PIDConstants(0.5, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(1, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }
@@ -767,7 +767,7 @@ public final class Constants {
         public static String pathName = "UpAndOver";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
+        public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }
 
