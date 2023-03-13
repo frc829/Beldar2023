@@ -767,7 +767,7 @@ public final class Constants {
         public static String pathName = "UpAndOver";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
+        public static PathConstraints firstPathConstraint = new PathConstraints(1.25, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }
 
