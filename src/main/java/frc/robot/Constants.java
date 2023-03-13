@@ -674,14 +674,14 @@ public final class Constants {
 
         public static class Sliding {
           public static class Cone {
-            public static final double elevatorPositionMeters = 0.620;
+            public static final double elevatorPositionMeters = 0.650;
             public static final double elbowPositionDegrees = 90.0;
             public static final ElevatorTilt.State elevatorTiltState = State.NONE;
             public static final double grabberSpeedRPM = 916.0;
           }
 
           public static class Cube {
-            public static final double elevatorPositionMeters = 0.650;
+            public static final double elevatorPositionMeters = 0.680;
             public static final double elbowPositionDegrees = 87.0;
             public static final ElevatorTilt.State elevatorTiltState = State.NONE;
             public static final double grabberSpeedRPM = 500.0;
