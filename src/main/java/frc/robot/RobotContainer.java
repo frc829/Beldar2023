@@ -771,29 +771,9 @@ public class RobotContainer {
                                 "CANIVORE",
                                 300);
 
-                List<PathPlannerTrajectory> Element1DockPosition1Trajectory = PathPlannerToAuto
-                                .getPathPlannerTrajectory(
-                                                Constants.AutoRoutines.Element1.position1.pathName,
-                                                Constants.AutoRoutines.Element1.position1.firstPathConstraint,
-                                                Constants.AutoRoutines.Element1.position1.remainingPathConstraints);
 
-                Command Element1DockPosition1Command = PathPlannerToAuto.createFullAutoFromPathGroup(
-                                swerveDrive,
-                                elevator,
-                                elbow,
-                                grabber,
-                                claw,
-                                tilt,
-                                ledLighting,
-                                Element1DockPosition1Trajectory,
-                                Constants.AutoRoutines.Element1.position1.translationConstants,
-                                Constants.AutoRoutines.Element1.position1.rotationConstants);
 
-                Command driveForwardABit = swerveDrive.getOnRampCommand();
-                Command balance = swerveDrive.getBalanceCommand();
-                Command danceParty = ledLighting.getDanceParty();
-                Command end = Commands.parallel(balance, danceParty);
-                Element1DockPosition1Command = Commands.sequence(Element1DockPosition1Command, driveForwardABit, end);
+
 
                 List<PathPlannerTrajectory> Element2DockPosition2Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
@@ -832,7 +812,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position4.rotationConstants);
 
                 Command driveForwardABit14 = swerveDrive.getOnRampBackwardCommand();
-                Command balance14 = swerveDrive.getBalanceCommand();
+                Command balance14 = swerveDrive.getBalanceTestingCommand();
                 Command danceParty14 = ledLighting.getDanceParty();
                 Command end14 = Commands.parallel(balance14, danceParty14);
                 Element1DockPosition4Command = Commands.sequence(Element1DockPosition4Command, driveForwardABit14,
@@ -857,7 +837,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position5.rotationConstants);
 
                 Command driveForwardABit15 = swerveDrive.getOnRampCommand();
-                Command balance15 = swerveDrive.getBalanceCommand();
+                Command balance15 = swerveDrive.getBalanceTestingCommand();
                 Command danceParty15 = ledLighting.getDanceParty();
                 Command end15 = Commands.parallel(balance15, danceParty15);
                 Element1DockPosition5Command = Commands.sequence(Element1DockPosition5Command, driveForwardABit15,
@@ -882,7 +862,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position6.rotationConstants);
 
                 Command driveForwardABit16 = swerveDrive.getOnRampBackwardCommand();
-                Command balance16 = swerveDrive.getBalanceCommand();
+                Command balance16 = swerveDrive.getBalanceTestingCommand();
                 Command danceParty16 = ledLighting.getDanceParty();
                 Command end16 = Commands.parallel(balance16, danceParty16);
                 Element1DockPosition6Command = Commands.sequence(Element1DockPosition6Command, driveForwardABit16,
@@ -943,10 +923,8 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element3.position8.rotationConstants);
 
                 pathPlannerTrajectories = new HashMap<>();
-                pathPlannerTrajectories.put("WeComeFromFrance",
-                                Element1DockPosition1Trajectory);
                 pathPlannerTrajectories.put("ChargeUp1", Element1DockPosition4Trajectory);
-                pathPlannerTrajectories.put("UpAndOver", Element1DockPosition5Trajectory);
+                pathPlannerTrajectories.put("WeComeFromFrance", Element1DockPosition5Trajectory);
                 pathPlannerTrajectories.put("ChargeUp2", Element1DockPosition6Trajectory);
                 pathPlannerTrajectories.put("ConsumeMassQuantities1", Element2DockPosition2Trajectory);
                 pathPlannerTrajectories.put("ConsumeMassQuantities2", Element2DockPosition8Trajectory);
@@ -954,9 +932,8 @@ public class RobotContainer {
                 pathPlannerTrajectories.put("3ElementPosition8", Element3DockPosition8Trajectory);
 
                 autoCommands = new HashMap<>();
-                autoCommands.put("WeComeFromFrance", Element1DockPosition1Command);
                 autoCommands.put("ChargeUp1", Element1DockPosition4Command);
-                autoCommands.put("UpAndOver", Element1DockPosition5Command);
+                autoCommands.put("WeComeFromFrance", Element1DockPosition5Command);
                 autoCommands.put("ChargeUp2", Element1DockPosition6Command);
                 autoCommands.put("ConsumeMassQuantities1", Element2DockPosition2Command);
                 autoCommands.put("ConsumeMassQuantities2", Element2DockPosition8Command);
@@ -965,7 +942,7 @@ public class RobotContainer {
 
                 this.autoChooser.addOption("WeComeFromFrance", "WeComeFromFrance");
                 this.autoChooser.addOption("ChargeUp1", "ChargeUp1");
-                this.autoChooser.addOption("UpAndOver", "UpAndOver");
+                this.autoChooser.addOption("WeComeFromFrance", "WeComeFromFrance");
                 this.autoChooser.addOption("ChargeUp2", "ChargeUp2");
                 this.autoChooser.addOption("ConsumeMassQuantities1", "ConsumeMassQuantities1");
                 this.autoChooser.addOption("ConsumeMassQuantities2", "ConsumeMassQuantities2");
@@ -1095,7 +1072,7 @@ public class RobotContainer {
 
         private void configureOperatorBindings() {
 
-                // CommandBase balanceTest = swerveDrive.getBalanceCommand();
+                // CommandBase balanceTest = swerveDrive.getBalanceTestingCommand();
 
                 CommandBase elementCarry = Arm.Carry.create(
                                 elevator,

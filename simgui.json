@@ -183,6 +183,7 @@
           "style": "Line"
         },
         "height": 8.020000457763672,
+        "image": "C:\\Users\\narmstro\\Desktop\\Charged Up Field.PNG",
         "width": 16.5,
         "window": {
           "visible": true
@@ -191,7 +192,24 @@
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "retained": {
+      "SmartDashboard": {
+        "Auto Chooser": {
+          "open": true
+        },
+        "open": true
+      }
+    },
     "transitory": {
+      "CameraPublisher": {
+        "USB Camera 0": {
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "Elevator Speed (m": {
           "open": true
@@ -200,6 +218,9 @@
           "open": true
         },
         "PPSwerveControllerCommand": {
+          "open": true
+        },
+        "The Field": {
           "open": true
         },
         "open": true
