@@ -5,12 +5,9 @@
 package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.framework.controls.ManualSpeedControl;
 import frc.robot.framework.mechanismsAdvanced.DualRotationMechWithLimitSwitch;
@@ -103,36 +100,7 @@ public class Grabber extends SubsystemBase {
         Rotation2d rotationsPerSecond = Rotation2d.fromRotations(rps);
         grabberMech.setAverageVelocityRotationsPerSecond(rotationsPerSecond);
       }
-      
-    };
 
-    setGrabberSpeedCommand.addRequirements(this);
-
-    return setGrabberSpeedCommand;
-
-  }
-
-  public CommandBase createPickupCommand(double velocityRPM) {
-
-    CommandBase setGrabberSpeedCommand = new CommandBase() {
-
-      @Override
-      public void initialize() {
-        SmartDashboard.putString("Grabber Command Current", "Set Speed: " + velocityRPM + " rpm");
-      }
-
-      @Override
-      public void execute() {
-        double rps = velocityRPM / 60.0;
-        Rotation2d rotationsPerSecond = Rotation2d.fromRotations(rps);
-        grabberMech.setAverageVelocityRotationsPerSecond(rotationsPerSecond);
-      }
-
-      @Override
-          public boolean isFinished() {
-              return false;
-          }
-      
     };
 
     setGrabberSpeedCommand.addRequirements(this);
@@ -158,9 +126,9 @@ public class Grabber extends SubsystemBase {
       }
 
       @Override
-          public void end(boolean interrupted) {
-              stop();
-          }
+      public void end(boolean interrupted) {
+        stop();
+      }
 
       @Override
       public boolean isFinished() {
@@ -198,25 +166,5 @@ public class Grabber extends SubsystemBase {
     return stopCommand;
   }
 
-  public CommandBase createConeCubeCommand(
-      double grabberSpeedConeRPM,
-      double grabberSpeedCubeRPM,
-      BooleanSupplier hasConeSupplier) {
 
-    CommandBase grabberSetCone = createControlCommand(grabberSpeedConeRPM);
-    CommandBase grabberSetCube = createControlCommand(grabberSpeedCubeRPM);
-
-    return Commands.either(grabberSetCone, grabberSetCube, hasConeSupplier);
-  }
-
-  public CommandBase createConeCubePickupCommand(
-    double grabberSpeedConeRPM,
-    double grabberSpeedCubeRPM,
-    BooleanSupplier hasConeSupplier) {
-
-  CommandBase grabberSetCone = createPickupCommand(grabberSpeedConeRPM);
-  CommandBase grabberSetCube = createPickupCommand(grabberSpeedCubeRPM);
-
-  return Commands.either(grabberSetCone, grabberSetCube, hasConeSupplier);
-}
 }

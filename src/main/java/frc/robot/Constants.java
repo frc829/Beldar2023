@@ -22,6 +22,7 @@ import frc.robot.subsystems.ElevatorTilt;
 import frc.robot.subsystems.ElevatorTilt.State;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -557,6 +558,11 @@ public final class Constants {
             public static double waitForElevatorToTilt = 0.5;
           }
 
+          public static class ConePoof {
+            public static double waitForPoof = 0.5;
+            public static double grabberSpeedCubeRPM = -916.0;
+          }
+
           public static class Cube {
             public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
             public static double waitForElevatorToTilt = 0.25;
@@ -704,6 +710,11 @@ public final class Constants {
           public static final ElevatorTilt.State elevatorTiltState = State.NONE;
         }
 
+      }
+    
+      public static class LEDLighting{
+        public static Color8Bit Cone = new Color8Bit(0xFF, 0XD7, 0X00);
+        public static Color8Bit Cube = new Color8Bit(0x3C, 0X09, 0X49);
       }
     }
   }

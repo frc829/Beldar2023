@@ -111,14 +111,14 @@ public class SwerveDrive extends SubsystemBase {
 
     this.telemetry.updateCurrentPosition(gyroscope.getYaw());
 
-    ChassisSpeeds fieldCentricChassisSpeedsFromController = manualChassisSpeedControl
-        .getFieldCentricSpeeds(telemetry.getCurrentPosition().getRotation());
-    ChassisSpeeds robotCentricChassisSpeedsFromController = manualChassisSpeedControl
-        .getRobotCentricSpeeds(telemetry.getCurrentPosition().getRotation());
+    // ChassisSpeeds fieldCentricChassisSpeedsFromController = manualChassisSpeedControl
+    //     .getFieldCentricSpeeds(telemetry.getCurrentPosition().getRotation());
+    // ChassisSpeeds robotCentricChassisSpeedsFromController = manualChassisSpeedControl
+    //     .getRobotCentricSpeeds(telemetry.getCurrentPosition().getRotation());
 
-    ChassisSpeeds robotCentricChassisSpeedsActual = getSwerveDriveChassisSpeed();
-    ChassisSpeeds fieldCentricChassisSpeedsActual = ChassisSpeeds.fromFieldRelativeSpeeds(
-        robotCentricChassisSpeedsActual, telemetry.getCurrentPosition().getRotation().unaryMinus());
+    // ChassisSpeeds robotCentricChassisSpeedsActual = getSwerveDriveChassisSpeed();
+    // ChassisSpeeds fieldCentricChassisSpeedsActual = ChassisSpeeds.fromFieldRelativeSpeeds(
+    //     robotCentricChassisSpeedsActual, telemetry.getCurrentPosition().getRotation().unaryMinus());
 
     // SmartDashboard.putNumber("FieldCentricVXFromController", fieldCentricChassisSpeedsFromController.vxMetersPerSecond);
     // SmartDashboard.putNumber("FieldCentricVYFromController", fieldCentricChassisSpeedsFromController.vyMetersPerSecond);

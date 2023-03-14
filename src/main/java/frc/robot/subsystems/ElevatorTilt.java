@@ -4,12 +4,9 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.framework.pneumatics.DarthMaulCylinder;
 
@@ -117,7 +114,7 @@ public class ElevatorTilt extends SubsystemBase {
     return idleCommand;
   }
 
-  public CommandBase createSetStateCommand(State elevatorTiltState) {
+  public CommandBase createControlCommand(State elevatorTiltState) {
 
     CommandBase setStateCommand = new CommandBase() {
 
@@ -144,14 +141,5 @@ public class ElevatorTilt extends SubsystemBase {
 
   }
 
-  public CommandBase createConeCubeCommand(
-      State elevatorTiltStateCone,
-      State elevatorTiltStateCube,
-      BooleanSupplier hasConeSupplier) {
 
-    CommandBase elevatorTiltSetCone = createSetStateCommand(elevatorTiltStateCone);
-    CommandBase elevatorTiltSetCube = createSetStateCommand(elevatorTiltStateCube);
-
-    return Commands.either(elevatorTiltSetCone, elevatorTiltSetCube, hasConeSupplier);
-  }
 }

@@ -973,7 +973,8 @@ public class RobotContainer {
                 this.autoChooser.addOption("3ElementPosition8", "3ElementPosition8");
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
-                //SmartDashboard.putString("RIO Serial Number", RoboRioDataJNI.getSerialNumber());
+                // SmartDashboard.putString("RIO Serial Number",
+                // RoboRioDataJNI.getSerialNumber());
 
                 // Configure the trigger bindings
                 configureBindings();
@@ -1041,7 +1042,10 @@ public class RobotContainer {
                 driveController.start().onTrue(setTelemetryFromCameraCommand);
 
                 // INFO: Align Low
-                driveController.b().onTrue(Arm.Alignment.createLow(elevator, elbow, tilt, claw));
+                driveController.b().onTrue(
+                                Commands.sequence(
+                                                Arm.Placement.createHighConePoof(elevator, elbow, tilt, claw, grabber),
+                                                Arm.Reset.createHigh(elevator, elbow, tilt, grabber)));
 
                 // INFO: Align Middle
                 driveController.x().onTrue(Arm.Alignment.createMiddle(elevator, elbow, tilt, claw));
@@ -1156,10 +1160,10 @@ public class RobotContainer {
 
                 CommandBase grabberToggleCommand = Arm.ClawControl.createToggle(claw, ledLighting);
 
-                CommandBase noLegsCommand = tilt.createSetStateCommand(ElevatorTilt.State.NONE);
-                CommandBase shortSaber = tilt.createSetStateCommand(ElevatorTilt.State.TWO);
-                CommandBase tatooine = tilt.createSetStateCommand(ElevatorTilt.State.SIX);
-                CommandBase duelOfTheFates = tilt.createSetStateCommand(ElevatorTilt.State.EIGHT);
+                CommandBase noLegsCommand = tilt.createControlCommand(ElevatorTilt.State.NONE);
+                CommandBase shortSaber = tilt.createControlCommand(ElevatorTilt.State.TWO);
+                CommandBase tatooine = tilt.createControlCommand(ElevatorTilt.State.SIX);
+                CommandBase duelOfTheFates = tilt.createControlCommand(ElevatorTilt.State.EIGHT);
 
                 Trigger elbowManualControlTrigger = new Trigger(elbowManualControlSupplier);
                 Trigger elevatorManualControlTrigger = new Trigger(elevatorManualControlSupplier);

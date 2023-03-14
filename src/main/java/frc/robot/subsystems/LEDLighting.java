@@ -23,6 +23,7 @@ import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.framework.lighting.LEDConfig;
@@ -138,16 +139,16 @@ public class LEDLighting extends SubsystemBase {
         this.setAnimation();
     }
 
-    public CommandBase getSetLEDCommand(
-            int r, int g, int b) {
+    public CommandBase createControlCommand(
+            Color8Bit color) {
 
         CommandBase setLEDCommand = new CommandBase() {
             @Override
             public void initialize() {
                 currentAnimation = null;
                 candle.animate(currentAnimation);
-                SmartDashboard.putString("LED Lighting Current Command", r + ":" + g + ":" + b);
-                currentLEDConfig = new LEDConfig(r, g, b, 0, 0, 400);
+                SmartDashboard.putString("LED Lighting Current Command", color.red + ":" + color.green + ":" + color.blue);
+                currentLEDConfig = new LEDConfig(color, 0, 400);
             }
 
             @Override

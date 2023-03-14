@@ -5,14 +5,12 @@
 package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
-import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.framework.controls.ManualSpeedControl;
@@ -24,7 +22,7 @@ public class Elevator extends SubsystemBase {
   private final ManualSpeedControl manualSpeedControl;
   private final PIDController elevatorPIDController;
   private final MechanismLigament2d elevatorMech2d;
-  private final DecimalFormat decimalFormat;
+  //private final DecimalFormat decimalFormat;
 
   public Elevator(
       LinearMech elevatorMech,
@@ -36,7 +34,7 @@ public class Elevator extends SubsystemBase {
     this.manualSpeedControl = manualSpeedControl;
     this.elevatorPIDController = elevatorPIDController;
     this.elevatorMech2d = elevatorMech2d;
-    this.decimalFormat = decimalFormat;
+    //this.decimalFormat = decimalFormat;
   }
 
   @Override
@@ -59,13 +57,13 @@ public class Elevator extends SubsystemBase {
     return elevatorMech.getPositionMeters();
   }
 
-  private double getVelocity() {
-    return elevatorMech.getSpeedMetersPerSecond();
-  }
+  // private double getVelocity() {
+  //   return elevatorMech.getSpeedMetersPerSecond();
+  // }
 
-  private double getPositionFromSensor() {
-    return elevatorMech.getLinearPositionFromSensor();
-  }
+  // private double getPositionFromSensor() {
+  //   return elevatorMech.getLinearPositionFromSensor();
+  // }
 
   public boolean atSetpoint() {
     return elevatorPIDController.atSetpoint();
@@ -153,7 +151,6 @@ public class Elevator extends SubsystemBase {
     };
 
     return pidCommand;
-
   }
 
   public CommandBase createStopCommand() {
@@ -181,15 +178,6 @@ public class Elevator extends SubsystemBase {
     return stopCommand;
   }
 
-  public CommandBase createConeCubeCommand(
-      double elevatorPositionConeMeters,
-      double elevatorPositionCubeMeters,
-      BooleanSupplier hasConeSupplier) {
 
-    CommandBase positionElevatorCone = createControlCommand(elevatorPositionConeMeters);
-    CommandBase positionElevatorCube = createControlCommand(elevatorPositionCubeMeters);
-
-    return Commands.either(positionElevatorCone, positionElevatorCube, hasConeSupplier);
-  }
 
 }

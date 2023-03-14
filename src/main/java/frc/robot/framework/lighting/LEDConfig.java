@@ -4,6 +4,8 @@
 
 package frc.robot.framework.lighting;
 
+import edu.wpi.first.wpilibj.util.Color8Bit;
+
 /** Add your docs here. */
 public class LEDConfig {
     public final int red;
@@ -18,6 +20,15 @@ public class LEDConfig {
         this.green = green;
         this.blue = blue;
         this.white = white;
+        this.startIndex = startIndex;
+        this.count = count;
+    }
+
+    public LEDConfig(Color8Bit color, int startIndex, int count) {
+        this.red = color.red;
+        this.green = color.green;
+        this.blue = color.blue;
+        this.white = 0;
         this.startIndex = startIndex;
         this.count = count;
     }
