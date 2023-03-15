@@ -771,10 +771,6 @@ public class RobotContainer {
                                 "CANIVORE",
                                 300);
 
-
-
-
-
                 List<PathPlannerTrajectory> Element2DockPosition2Trajectory = PathPlannerToAuto
                                 .getPathPlannerTrajectory(
                                                 Constants.AutoRoutines.Element2.position2.pathName,
@@ -1018,7 +1014,7 @@ public class RobotContainer {
                 // INFO: Reset Telemetry From Safe Known Position
                 driveController.start().onTrue(setTelemetryFromCameraCommand);
 
-                // INFO: Align Low
+                // INFO: High Cone Poof
                 driveController.b().onTrue(
                                 Commands.sequence(
                                                 Arm.Placement.createHighConePoof(elevator, elbow, tilt, claw, grabber),
@@ -1034,6 +1030,7 @@ public class RobotContainer {
                 driveController.a()
                                 .onTrue(
                                                 Commands.sequence(
+                                                                Arm.Alignment.createLow(elevator, elbow, tilt, claw),
                                                                 Arm.Placement.createLow(elevator, elbow, tilt, claw,
                                                                                 grabber),
                                                                 Arm.Reset.createLow(elevator, elbow, tilt,

@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
   private final ManualSpeedControl manualSpeedControl;
   private final PIDController elevatorPIDController;
   private final MechanismLigament2d elevatorMech2d;
-  //private final DecimalFormat decimalFormat;
+  private final DecimalFormat decimalFormat;
 
   public Elevator(
       LinearMech elevatorMech,
@@ -34,20 +34,20 @@ public class Elevator extends SubsystemBase {
     this.manualSpeedControl = manualSpeedControl;
     this.elevatorPIDController = elevatorPIDController;
     this.elevatorMech2d = elevatorMech2d;
-    //this.decimalFormat = decimalFormat;
+    this.decimalFormat = decimalFormat;
   }
 
   @Override
   public void periodic() {
-    // SmartDashboard.putString(
-    //     "Elevator Position From Motor (m)",
-    //     decimalFormat.format(getPosition()));
+    SmartDashboard.putString(
+        "Elevator Position From Motor (m)",
+        decimalFormat.format(getPosition()));
     // SmartDashboard.putString(
     //     "Elevator Position From Sensor (m)",
     //     decimalFormat.format(getPositionFromSensor()));
-    // SmartDashboard.putString(
-    //     "Elevator Speed From Motor(mps)",
-    //     decimalFormat.format(getVelocity()));
+    SmartDashboard.putString(
+        "Elevator Speed From Motor(mps)",
+        decimalFormat.format(getVelocity()));
 
     this.elevatorMech2d.setLength(getPosition());
   }
@@ -57,9 +57,9 @@ public class Elevator extends SubsystemBase {
     return elevatorMech.getPositionMeters();
   }
 
-  // private double getVelocity() {
-  //   return elevatorMech.getSpeedMetersPerSecond();
-  // }
+  private double getVelocity() {
+    return elevatorMech.getSpeedMetersPerSecond();
+  }
 
   // private double getPositionFromSensor() {
   //   return elevatorMech.getLinearPositionFromSensor();
@@ -77,8 +77,16 @@ public class Elevator extends SubsystemBase {
   // Consumers
   private void setVelocity(double speedMetersPerSecond) {
     if (RobotBase.isSimulation()) {
+      double gravitySim = 0;
       if (elevatorMech.getPositionMeters() > 0) {
-        speedMetersPerSecond -= 0.1;
+        gravitySim = -0.1;
+      }
+      else{
+        gravitySim = 0.0;
+      }
+      speedMetersPerSecond += gravitySim;
+      if(speedMetersPerSecond < 0 && elevatorMech.getPositionMeters() <= 0){
+        speedMetersPerSecond = 0;
       }
     }
     this.elevatorMech.setMechanismSpeedMetersPerSecond(speedMetersPerSecond);

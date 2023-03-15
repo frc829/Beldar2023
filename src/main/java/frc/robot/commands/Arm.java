@@ -179,6 +179,10 @@ public class Arm {
                                 Claw claw,
                                 Grabber grabber) {
 
+                        CommandBase elevatorHold = elevator.createHoldCommand();
+                        CommandBase elbowHold = elbow.createHoldCommand();
+                        CommandBase elbowAndElevatorHold = Commands.parallel(elbowHold, elevatorHold);
+
                         CommandBase tiltElevatorCommand0 = ElevatorTiltControl.create(
                                         tilt,
                                         Constants.Auto.Arm.Placement.High.Cone.elevatorTiltState,
@@ -198,10 +202,12 @@ public class Arm {
                         CommandBase releaseCubeWaitForTimer = Commands.deadline(timerForCubeRelease, releaseCube);
                         CommandBase release0 = Commands.either(releaseCone, releaseCubeWaitForTimer, claw::hasCone);
 
-                        return Commands.sequence(
+                        CommandBase mainSequence = Commands.sequence(
                                         tiltElevatorCommand0,
                                         waitForTilt0,
                                         release0);
+
+                        return Commands.race(elbowAndElevatorHold, mainSequence);
                 }
 
                 public static CommandBase createHighConePoof(
@@ -211,13 +217,18 @@ public class Arm {
                                 Claw claw,
                                 Grabber grabber) {
 
+                        CommandBase elevatorHold = elevator.createHoldCommand();
+                        CommandBase elbowHold = elbow.createHoldCommand();
+                        CommandBase elbowAndElevatorHold = Commands.parallel(elbowHold, elevatorHold);
+
                         CommandBase waitForPoof = Commands
                                         .waitSeconds(Constants.Auto.Arm.Placement.High.ConePoof.waitForPoof);
                         CommandBase poofCone = grabber.createPoofCommand(
                                         Constants.Auto.Arm.Placement.High.ConePoof.grabberSpeedCubeRPM);
                         CommandBase poofConeAndWait = Commands.deadline(waitForPoof, poofCone);
 
-                        return poofConeAndWait;
+                        CommandBase highConePoof = Commands.race(poofConeAndWait, elbowAndElevatorHold);
+                        return highConePoof;
                 }
 
                 public static CommandBase createMiddle(
@@ -226,6 +237,10 @@ public class Arm {
                                 ElevatorTilt tilt,
                                 Claw claw,
                                 Grabber grabber) {
+
+                        CommandBase elevatorHold = elevator.createHoldCommand();
+                        CommandBase elbowHold = elbow.createHoldCommand();
+                        CommandBase elbowAndElevatorHold = Commands.parallel(elbowHold, elevatorHold);
 
                         CommandBase tiltElevatorCommand0 = ElevatorTiltControl.create(
                                         tilt,
@@ -247,11 +262,13 @@ public class Arm {
                         CommandBase release0 = Commands.either(releaseCone, releaseCubeWaitForTimer, claw::hasCone);
                         CommandBase tinyWait = Commands.waitSeconds(0.5);
 
-                        return Commands.sequence(
+                        CommandBase mainSequence = Commands.sequence(
                                         tiltElevatorCommand0,
                                         waitForTilt0,
                                         release0,
                                         tinyWait);
+
+                        return Commands.race(elbowAndElevatorHold, mainSequence);
 
                 }
 
@@ -268,6 +285,10 @@ public class Arm {
                                         Constants.Auto.Arm.Placement.Low.Cube.elevatorTiltState,
                                         claw::hasCone);
 
+                        CommandBase elevatorHold = elevator.createHoldCommand();
+                        CommandBase elbowHold = elbow.createHoldCommand();
+                        CommandBase elbowAndElevatorHold = Commands.parallel(elbowHold, elevatorHold);
+
                         CommandBase waitForTiltCone = Commands
                                         .waitSeconds(Constants.Auto.Arm.Placement.Low.Cone.waitForElevatorToTilt);
                         CommandBase waitForTiltCube = Commands
@@ -280,12 +301,15 @@ public class Arm {
                         CommandBase timerForCubeRelease = Commands.waitSeconds(0.25);
                         CommandBase releaseCubeWaitForTimer = Commands.deadline(timerForCubeRelease, releaseCube);
                         CommandBase release0 = Commands.either(releaseCone, releaseCubeWaitForTimer, claw::hasCone);
-                        CommandBase tinyWait = Commands.waitSeconds(0.5);
-                        return Commands.sequence(
+                        CommandBase tinyWait = Commands.waitSeconds(0.25);
+
+                        CommandBase mainSequence = Commands.sequence(
                                         tiltElevatorCommand0,
                                         waitForTilt0,
                                         release0,
                                         tinyWait);
+
+                        return Commands.race(elbowAndElevatorHold, mainSequence);
 
                 }
         }
@@ -296,6 +320,7 @@ public class Arm {
                                 Elbow elbow,
                                 ElevatorTilt tilt,
                                 Grabber grabber) {
+
 
                         CommandBase elevatorSetCommand0 = elevator.createControlCommand(
                                         Constants.Auto.Arm.Reset.High.Cone.elevatorPosition);
@@ -318,12 +343,18 @@ public class Arm {
 
                         CommandBase elbowAndElevatorDeadline = Commands.waitUntil(elbowAndElevatorStopCondition);
 
-                        return Commands.deadline(
+                        CommandBase reset = Commands.deadline(
                                         elbowAndElevatorDeadline,
                                         elevatorSetCommand0,
                                         elbowSetCommand0,
                                         tiltSetCommand0,
                                         grabberStopCommand);
+
+                        return Commands.sequence(
+                                        reset
+                        // ,
+                        // elbowAndElevatorHold
+                        );
                 }
 
                 public static CommandBase createMiddle(
@@ -331,6 +362,8 @@ public class Arm {
                                 Elbow elbow,
                                 ElevatorTilt tilt,
                                 Grabber grabber) {
+
+
 
                         CommandBase elevatorSetCommand0 = elevator.createControlCommand(
                                         Constants.Auto.Arm.Reset.Middle.Cone.elevatorPosition);
@@ -353,12 +386,18 @@ public class Arm {
 
                         CommandBase elbowAndElevatorDeadline = Commands.waitUntil(elbowAndElevatorStopCondition);
 
-                        return Commands.deadline(
+                        CommandBase reset = Commands.deadline(
                                         elbowAndElevatorDeadline,
                                         elevatorSetCommand0,
                                         elbowSetCommand0,
                                         tiltSetCommand0,
                                         grabberStopCommand);
+
+                        return Commands.sequence(
+                                        reset
+                        // ,
+                        // elbowAndElevatorHold
+                        );
 
                 }
 
@@ -367,6 +406,7 @@ public class Arm {
                                 Elbow elbow,
                                 ElevatorTilt tilt,
                                 Grabber grabber) {
+
 
                         CommandBase elevatorSetCommand0 = elevator.createControlCommand(
                                         Constants.Auto.Arm.Reset.Low.Cone.elevatorPosition);
@@ -389,12 +429,18 @@ public class Arm {
 
                         CommandBase elbowAndElevatorDeadline = Commands.waitUntil(elbowAndElevatorStopCondition);
 
-                        return Commands.deadline(
+                        CommandBase reset = Commands.deadline(
                                         elbowAndElevatorDeadline,
                                         elevatorSetCommand0,
                                         elbowSetCommand0,
                                         tiltSetCommand0,
                                         grabberStopCommand);
+
+                        return Commands.sequence(
+                                        reset
+                        // ,
+                        // elbowAndElevatorHold
+                        );
                 }
         }
 

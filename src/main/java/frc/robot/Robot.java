@@ -25,9 +25,9 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private double accumXError = 0.0;
-  private double accumYError = 0.0;
-  private double accumRotError = 0.0;
+  private double maxXError = 0.0;
+  private double maxYError = 0.0;
+  private double maxRotationError = 0.0;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -86,9 +86,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    accumRotError = 0;
-    accumXError = 0;
-    accumYError = 0;
+    maxRotationError = 0;
+    maxXError = 0;
+    maxYError = 0;
   }
 
   /** This function is called periodically during autonomous. */
@@ -99,13 +99,13 @@ public class Robot extends TimedRobot {
     double yError = SmartDashboard.getNumber("PPSwerveControllerCommand/yErrorMeters", 0.0);
     double rotationError = SmartDashboard.getNumber("PPSwerveControllerCommand/rotationErrorDegrees", 0.0);
   
-    accumXError += Math.abs(xError);
-    accumYError += Math.abs(yError);
-    accumRotError += Math.abs(rotationError);
+    maxXError = Math.abs(xError) > maxXError ? Math.abs(xError) : maxXError;
+    maxYError = Math.abs(yError) > maxYError ? Math.abs(yError) : maxYError;
+    maxRotationError = Math.abs(rotationError) > maxRotationError ? Math.abs(rotationError) : maxRotationError;
 
-    SmartDashboard.putNumber("xErrorAccum", accumXError);
-    SmartDashboard.putNumber("yErrorAccum", accumYError);
-    SmartDashboard.putNumber("rotationErrorAccum", accumRotError);
+    SmartDashboard.putNumber("Max X Error", maxXError);
+    SmartDashboard.putNumber("Max Y Error", maxYError);
+    SmartDashboard.putNumber("Max Rotation Error", maxRotationError);
 
   }
 
