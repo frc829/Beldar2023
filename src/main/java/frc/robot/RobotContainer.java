@@ -21,7 +21,6 @@ import frc.robot.framework.mechanismsAdvanced.DualRotationMechWithLimitSwitch;
 import frc.robot.framework.mechanismsAdvanced.SwerveModule;
 import frc.robot.framework.motors.Motor;
 import frc.robot.framework.motors.SparkMaxFactory;
-import frc.robot.framework.pneumatics.DarthMaulCylinder;
 import frc.robot.framework.pneumatics.JediCylinder;
 import frc.robot.framework.sensors.AngularPositionSensor;
 import frc.robot.framework.sensors.CANCoderFactory;
@@ -62,7 +61,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -115,8 +113,6 @@ public class RobotContainer {
         private final SwerveModule rearLeftModule;
         private final SwerveModule rearRightModule;
         private final Telemetry telemetry;
-
-        private final DarthMaulCylinder elevatorTilt;
 
         private final SwerveDrive swerveDrive;
         private final LinearMech elevatorMech;
@@ -672,25 +668,12 @@ public class RobotContainer {
                                 Constants.Robot.Arm.Claw.Control.doubleSolenoidChannel1,
                                 Constants.Robot.Arm.Claw.Control.doubleSolenoidChannel2);
 
-                Solenoid tiltSolenoid1 = new Solenoid(
-                                Constants.Robot.Arm.Pneumatics.pneumaticsModuleID,
-                                PneumaticsModuleType.REVPH,
-                                Constants.Robot.Arm.Elevator.Tilt.solenoid1Channel);
 
-                Solenoid tiltSolenoid2 = new Solenoid(
-                                Constants.Robot.Arm.Pneumatics.pneumaticsModuleID,
-                                PneumaticsModuleType.REVPH,
-                                Constants.Robot.Arm.Elevator.Tilt.solenoid2Channel);
 
                 this.grabberClaw = JediCylinder.getDoubleSolenoidBased(grabberClawDoubleSolenoid);
 
-                JediCylinder frontCylinder = JediCylinder.getSingleSolenoidBased(tiltSolenoid1);
 
-                JediCylinder backCylinder = JediCylinder.getSingleSolenoidBased(tiltSolenoid2);
 
-                this.elevatorTilt = new DarthMaulCylinder(
-                                frontCylinder,
-                                backCylinder);
                 PIDController elevatorPIDController = PIDControllerFactory.create(
                                 Constants.Robot.Arm.Elevator.Control.PID.kP,
                                 Constants.Robot.Arm.Elevator.Control.PID.kI,
@@ -735,7 +718,7 @@ public class RobotContainer {
 
                 SmartDashboard.putData("Arm2d", mech);
 
-                this.tilt = new ElevatorTilt(elevatorTilt, fakeElevatorMech2d, elevatorMech2d);
+                this.tilt = new ElevatorTilt(fakeElevatorMech2d, elevatorMech2d);
                 CommandBase defaultElevatorTiltCommand = tilt.createIdleCommand();
                 this.tilt.setDefaultCommand(defaultElevatorTiltCommand);
 

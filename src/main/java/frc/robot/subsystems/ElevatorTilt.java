@@ -4,11 +4,15 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.framework.pneumatics.DarthMaulCylinder;
+import frc.robot.framework.pneumatics.JediCylinder;
 
 public class ElevatorTilt extends SubsystemBase {
 
@@ -21,9 +25,27 @@ public class ElevatorTilt extends SubsystemBase {
     NONE, TWO, SIX, EIGHT
   }
 
-  public ElevatorTilt(DarthMaulCylinder elevatorTilt, MechanismLigament2d fakeElevatorMech2d,
+  public ElevatorTilt(
+      MechanismLigament2d fakeElevatorMech2d,
       MechanismLigament2d elevatorMech2d) {
-    this.elevatorTilt = elevatorTilt;
+
+    Solenoid tiltSolenoid1 = new Solenoid(
+        Constants.Robot.Arm.Pneumatics.pneumaticsModuleID,
+        PneumaticsModuleType.REVPH,
+        Constants.Robot.Arm.Elevator.Tilt.solenoid1Channel);
+
+    Solenoid tiltSolenoid2 = new Solenoid(
+        Constants.Robot.Arm.Pneumatics.pneumaticsModuleID,
+        PneumaticsModuleType.REVPH,
+        Constants.Robot.Arm.Elevator.Tilt.solenoid2Channel);
+
+    JediCylinder frontCylinder = JediCylinder.getSingleSolenoidBased(tiltSolenoid1);
+    JediCylinder backCylinder = JediCylinder.getSingleSolenoidBased(tiltSolenoid2);
+
+    this.elevatorTilt = new DarthMaulCylinder(
+        frontCylinder,
+        backCylinder);
+
     this.fakeElevatorMech2d = fakeElevatorMech2d;
     this.elevatorMech2d = elevatorMech2d;
   }
@@ -140,6 +162,5 @@ public class ElevatorTilt extends SubsystemBase {
     return setStateCommand;
 
   }
-
 
 }
