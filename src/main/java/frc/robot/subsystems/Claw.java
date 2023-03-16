@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.framework.pneumatics.JediCylinder;
 
 public class Claw extends SubsystemBase {
@@ -16,8 +19,15 @@ public class Claw extends SubsystemBase {
     CUBE, CONE
   }
 
-  public Claw(JediCylinder claw) {
-    this.claw = claw;
+  public Claw() {
+
+    DoubleSolenoid grabberClawDoubleSolenoid = new DoubleSolenoid(
+        Constants.Robot.Arm.Pneumatics.pneumaticsModuleID,
+        PneumaticsModuleType.REVPH,
+        Constants.Robot.Arm.Claw.Control.doubleSolenoidChannel1,
+        Constants.Robot.Arm.Claw.Control.doubleSolenoidChannel2);
+
+    this.claw = JediCylinder.getDoubleSolenoidBased(grabberClawDoubleSolenoid);
   }
 
   @Override

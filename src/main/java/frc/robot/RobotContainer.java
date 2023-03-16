@@ -17,18 +17,15 @@ import frc.robot.framework.imus.NavXGyroscopeFactory;
 import frc.robot.framework.kinematics.KinematicsFactory;
 import frc.robot.framework.mechanisms.LinearMech;
 import frc.robot.framework.mechanisms.RotationMech;
-import frc.robot.framework.mechanismsAdvanced.DualRotationMechWithLimitSwitch;
 import frc.robot.framework.mechanismsAdvanced.SwerveModule;
 import frc.robot.framework.motors.Motor;
 import frc.robot.framework.motors.SparkMaxFactory;
-import frc.robot.framework.pneumatics.JediCylinder;
 import frc.robot.framework.sensors.AngularPositionSensor;
 import frc.robot.framework.sensors.CANCoderFactory;
 import frc.robot.framework.sensors.LinearPositionSensor;
 import frc.robot.framework.sensors.TimeOfFlightFactory;
 import frc.robot.framework.sensors.WPI_TimeOfFlightFactory;
 import frc.robot.framework.sensors.WPI_TimeOfFlightFactory.WPI_TimeOfFlight;
-import frc.robot.framework.switches.LimitSwitch;
 import frc.robot.framework.telemetry.FieldMap;
 import frc.robot.framework.telemetry.SwervePoseEstimatorFactory;
 import frc.robot.framework.telemetry.Telemetry;
@@ -58,9 +55,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -94,8 +89,6 @@ public class RobotContainer {
         private final RotationMech frontRightSteeringMech;
         private final RotationMech rearLeftSteeringMech;
         private final RotationMech rearRightSteeringMech;
-        private final RotationMech leftGripperMech;
-        private final RotationMech rightGripperMech;
         private final LinearMech frontLeftDriveMech;
         private final LinearMech frontRightDriveMech;
         private final LinearMech rearLeftDriveMech;
@@ -106,7 +99,6 @@ public class RobotContainer {
         private final AngularPositionSensor rearRightSensor;
         private final AngularPositionSensor wristSensor;
         private final LinearPositionSensor elevatorPositionSensor;
-        private final LimitSwitch grabberLimitSwitch;
         private final Gyroscope gyroscope;
         private final SwerveModule frontLeftModule;
         private final SwerveModule frontRightModule;
@@ -117,8 +109,6 @@ public class RobotContainer {
         private final SwerveDrive swerveDrive;
         private final LinearMech elevatorMech;
         private final RotationMech elbowMech;
-
-        private final JediCylinder grabberClaw;
 
         private final Claw claw;
         private final Grabber grabber;
@@ -133,7 +123,6 @@ public class RobotContainer {
         private final HashMap<String, List<PathPlannerTrajectory>> pathPlannerTrajectories;
         private final SendableChooser<String> autoChooser = new SendableChooser<>();
         private final BooleanSupplier elevatorManualControlSupplier;
-        private final BooleanSupplier grabberManualControlSupplier;
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -232,24 +221,7 @@ public class RobotContainer {
                                 Constants.Robot.Arm.ElbowConstants.MotorConfig.velocityKI,
                                 Constants.Robot.Arm.ElbowConstants.MotorConfig.velocityKD,
                                 Constants.Robot.Arm.ElbowConstants.MotorConfig.velocityKF);
-                CANSparkMax leftGripperMotorSparkMax = SparkMaxFactory.create(
-                                Constants.Robot.Arm.Claw.LeftClaw.MotorConfig.deviceId,
-                                Constants.Robot.Arm.Claw.LeftClaw.MotorConfig.revMotor,
-                                Constants.Robot.Arm.Claw.LeftClaw.MotorConfig.isInverted,
-                                Constants.Robot.Arm.Claw.LeftClaw.MotorConfig.idleMode,
-                                Constants.Robot.Arm.Claw.LeftClaw.MotorConfig.velocityKP,
-                                Constants.Robot.Arm.Claw.LeftClaw.MotorConfig.velocityKI,
-                                Constants.Robot.Arm.Claw.LeftClaw.MotorConfig.velocityKD,
-                                Constants.Robot.Arm.Claw.LeftClaw.MotorConfig.velocityKF);
-                CANSparkMax rightGripperMotorSparkMax = SparkMaxFactory.create(
-                                Constants.Robot.Arm.Claw.RightClaw.MotorConfig.deviceId,
-                                Constants.Robot.Arm.Claw.RightClaw.MotorConfig.revMotor,
-                                Constants.Robot.Arm.Claw.RightClaw.MotorConfig.isInverted,
-                                Constants.Robot.Arm.Claw.RightClaw.MotorConfig.idleMode,
-                                Constants.Robot.Arm.Claw.RightClaw.MotorConfig.velocityKP,
-                                Constants.Robot.Arm.Claw.RightClaw.MotorConfig.velocityKI,
-                                Constants.Robot.Arm.Claw.RightClaw.MotorConfig.velocityKD,
-                                Constants.Robot.Arm.Claw.RightClaw.MotorConfig.velocityKF);
+
 
                 Motor frontLeftSteeringMotor = Motor.create(
                                 frontLeftSteeringMotorSparkMax,
@@ -281,12 +253,7 @@ public class RobotContainer {
                 Motor wristMotor = Motor.create(
                                 wristMotorSparkMax,
                                 Constants.Robot.Arm.ElbowConstants.MotorConfig.revMotor);
-                Motor leftGripperMotor = Motor.create(
-                                leftGripperMotorSparkMax,
-                                Constants.Robot.Arm.Claw.LeftClaw.MotorConfig.revMotor);
-                Motor rightGripperMotor = Motor.create(
-                                rightGripperMotorSparkMax,
-                                Constants.Robot.Arm.Claw.RightClaw.MotorConfig.revMotor);
+
 
                 WPI_CANCoder frontLeftCANCoder = CANCoderFactory.create(
                                 Constants.Robot.Drive.Modules.FrontLeft.AngleSensor.SensorConfig.deviceId,
@@ -342,13 +309,6 @@ public class RobotContainer {
                                 Constants.Robot.Drive.Modules.RearRight.SteeringMech.motorToMechConversion,
                                 rearRightSensor);
 
-                this.leftGripperMech = RotationMech.create(
-                                leftGripperMotor,
-                                Constants.Robot.Arm.Claw.LeftClaw.MechConfig.motorToMechConversion);
-
-                this.rightGripperMech = RotationMech.create(
-                                rightGripperMotor,
-                                Constants.Robot.Arm.Claw.RightClaw.MechConfig.motorToMechConversion);
 
                 this.frontLeftDriveMech = LinearMech.create(
                                 frontLeftDriveMotor,
@@ -388,23 +348,9 @@ public class RobotContainer {
                                 Constants.Robot.Arm.Elevator.Sensor.positionSensorID,
                                 elevatorWPI_TimeOfFlight);
 
-                TimeOfFlight grabberTimeOfFlight = TimeOfFlightFactory.create(
-                                Constants.Robot.Arm.Claw.LimitSwitch.Sensor.positionSensorID,
-                                Constants.Robot.Arm.Claw.LimitSwitch.Sensor.mode,
-                                Constants.Robot.Arm.Claw.LimitSwitch.Sensor.sampleTime);
 
-                WPI_TimeOfFlight grabberWPI_TimeOfFlight = WPI_TimeOfFlightFactory.create(
-                                grabberTimeOfFlight,
-                                Constants.Robot.Arm.Claw.LimitSwitch.Sensor.positionSensorID);
 
-                LinearPositionSensor grabberTimeOfFlightSensor = LinearPositionSensor.create(
-                                Constants.Robot.Arm.Claw.LimitSwitch.Sensor.positionSensorID,
-                                grabberWPI_TimeOfFlight);
 
-                this.grabberLimitSwitch = LimitSwitch.create(
-                                grabberTimeOfFlightSensor,
-                                Constants.Robot.Arm.Claw.LimitSwitch.minTruePositionMeters,
-                                Constants.Robot.Arm.Claw.LimitSwitch.maxTruePositionMeters);
 
                 this.frontLeftModule = new SwerveModule(
                                 frontLeftSteeringMech,
@@ -624,53 +570,19 @@ public class RobotContainer {
                                 wristMotor,
                                 Constants.Robot.Arm.ElbowConstants.MechConfig.motorToMechConversion);
 
-                HalfControllerAxis grabberPositiveRotation = HalfControllerAxis.getAxisControl(
-                                operatorController,
-                                HalfControllerAxis.PositiveOnlyAxisType.LeftTriggerAxis,
-                                false,
-                                Constants.OperatorConstants.ElevatorManualControls.kDeadband);
 
-                HalfControllerAxis grabberNegativeRotation = HalfControllerAxis.getAxisControl(
-                                operatorController,
-                                HalfControllerAxis.PositiveOnlyAxisType.RightTriggerAxis,
-                                false,
-                                Constants.OperatorConstants.ElevatorManualControls.kDeadband);
 
-                ControllerAxis grabberControlAxis = ControllerAxis.getAxisControl(grabberPositiveRotation,
-                                grabberNegativeRotation);
 
-                ManualSpeedControl grabberManualControl = new ManualSpeedControl(
-                                grabberControlAxis,
-                                Constants.Robot.Arm.Claw.Control.maxManualSpeedRPS);
-
-                this.grabberManualControlSupplier = new BooleanSupplier() {
-
-                        @Override
-                        public boolean getAsBoolean() {
-                                return grabberManualControl.getManualSpeed() != 0;
-                        }
-
-                };
 
                 this.elbowMech = RotationMech.create(
                                 wristMotor,
                                 Constants.Robot.Arm.ElbowConstants.MechConfig.motorToMechConversion,
                                 wristSensor);
 
-                DualRotationMechWithLimitSwitch grabberMech = DualRotationMechWithLimitSwitch.create(
-                                leftGripperMech,
-                                rightGripperMech,
-                                grabberLimitSwitch);
-
-                DoubleSolenoid grabberClawDoubleSolenoid = new DoubleSolenoid(
-                                Constants.Robot.Arm.Pneumatics.pneumaticsModuleID,
-                                PneumaticsModuleType.REVPH,
-                                Constants.Robot.Arm.Claw.Control.doubleSolenoidChannel1,
-                                Constants.Robot.Arm.Claw.Control.doubleSolenoidChannel2);
 
 
 
-                this.grabberClaw = JediCylinder.getDoubleSolenoidBased(grabberClawDoubleSolenoid);
+
 
 
 
@@ -722,14 +634,15 @@ public class RobotContainer {
                 CommandBase defaultElevatorTiltCommand = tilt.createIdleCommand();
                 this.tilt.setDefaultCommand(defaultElevatorTiltCommand);
 
-                this.claw = new Claw(grabberClaw);
+                this.claw = new Claw();
                 CommandBase clawDefaultCommand = claw.createIdleCommand();
                 claw.setDefaultCommand(clawDefaultCommand);
 
                 DecimalFormat decimalFormat = new DecimalFormat("###.###");
 
-                this.grabber = new Grabber(grabberMech, grabberManualControl, decimalFormat);
+                this.grabber = new Grabber(operatorController);
                 this.grabber.setDefaultCommand(this.grabber.createStopCommand());
+                this.grabber.setManualControlTrigger();
                 this.elevator = new Elevator(
                                 elevatorMech,
                                 elevatorManualSpeedControl,
@@ -1298,17 +1211,16 @@ public class RobotContainer {
 
                 Trigger elbowManualControlTrigger = new Trigger(elbowManualControlSupplier);
                 Trigger elevatorManualControlTrigger = new Trigger(elevatorManualControlSupplier);
-                Trigger grabberManualControlTrigger = new Trigger(grabberManualControlSupplier);
 
                 CommandBase elbowManualControlCommand = elbow.createControlCommand();
                 CommandBase elevatorManualControlCommand = elevator.createControlCommand();
-                CommandBase grabberManualControlCommand = grabber.createControlCommand();
+
 
                 elbowManualControlTrigger.whileTrue(elbowManualControlCommand);
 
                 elevatorManualControlTrigger.whileTrue(elevatorManualControlCommand);
 
-                grabberManualControlTrigger.whileTrue(grabberManualControlCommand);
+
 
                 // INFO: Manual Pickup Commands
                 operatorController.rightBumper().whileTrue(cubePickupFloor);
