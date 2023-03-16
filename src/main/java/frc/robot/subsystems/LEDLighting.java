@@ -35,11 +35,8 @@ public class LEDLighting extends SubsystemBase {
     private Animation currentAnimation;
     private LEDConfig currentLEDConfig = null;
 
-    public LEDLighting(
-            int deviceID,
-            String canbus,
-            int ledCount) {
-        this.candle = new CANdle(deviceID, canbus);
+    public LEDLighting() {
+        this.candle = new CANdle(17, "CANIVORE");
         this.candle.configLEDType(LEDStripType.GRB, 0);
         this.candle.configBrightnessScalar(1, 0);
         this.candle.configLOSBehavior(true, 0);

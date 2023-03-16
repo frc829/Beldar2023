@@ -791,8 +791,16 @@ public final class Constants {
         public static PathConstraints[] remainingPathConstraints = {};
       }
 
+      public static class position5Cone {
+        public static String pathName = "IAmWithCone";
+        public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
+        public static PathConstraints[] remainingPathConstraints = {};
+      }
+
       public static class position5Cone1 {
-        public static String pathName = "BeldarIAmWithCone1";
+        public static String pathName = "IAmWithCone1";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
@@ -800,15 +808,7 @@ public final class Constants {
       }
 
       public static class position5Cone2 {
-        public static String pathName = "BeldarIAmWithCone2";
-        public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
-        public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
-        public static PathConstraints[] remainingPathConstraints = {};
-      }
-
-      public static class position5Cone3 {
-        public static String pathName = "BeldarIAmWithCone3";
+        public static String pathName = "IAmWithCone2";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);

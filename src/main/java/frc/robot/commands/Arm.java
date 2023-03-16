@@ -18,7 +18,7 @@ import frc.robot.subsystems.LEDLighting;
 import frc.robot.subsystems.ElevatorTilt.State;
 
 /** Add your docs here. */
-public class Arm {
+public abstract class Arm {
 
         public static class Alignment {
 
@@ -166,6 +166,62 @@ public class Arm {
                                         elevatorSetCommand0,
                                         elbowSetCommand0,
                                         tiltElevatorCommand0);
+                }
+
+        }
+
+        public static class PlacementAndReset {
+                public static CommandBase createHighConePoof(
+                                Elevator elevator,
+                                Elbow elbow,
+                                ElevatorTilt tilt,
+                                Claw claw,
+                                Grabber grabber) {
+                        return Commands.sequence(
+                                        Arm.Placement.createHighConePoof(elevator, elbow, tilt, claw, grabber),
+                                        Arm.Reset.createHigh(elevator, elbow, tilt, grabber));
+                }
+
+                public static CommandBase createHighPlacementAndReset(
+                                Elevator elevator,
+                                Elbow elbow,
+                                ElevatorTilt tilt,
+                                Claw claw,
+                                Grabber grabber) {
+
+                        return Commands.sequence(
+                                        Arm.Placement.createHigh(elevator, elbow, tilt, claw,
+                                                        grabber),
+                                        Arm.Reset.createHigh(elevator, elbow, tilt, grabber));
+                }
+
+                public static CommandBase createMiddlePlacementAndReset(
+                                Elevator elevator,
+                                Elbow elbow,
+                                ElevatorTilt tilt,
+                                Claw claw,
+                                Grabber grabber) {
+
+                        return Commands.sequence(
+                                        Arm.Placement.createMiddle(elevator, elbow, tilt, claw,
+                                                        grabber),
+                                        Arm.Reset.createMiddle(elevator, elbow, tilt, grabber));
+                }
+
+                public static CommandBase createLowAlignPlacementAndReset(
+                                Elevator elevator,
+                                Elbow elbow,
+                                ElevatorTilt tilt,
+                                Claw claw,
+                                Grabber grabber) {
+
+                        return Commands.sequence(
+                                        Arm.Alignment.createLow(elevator, elbow, tilt, claw),
+                                        Arm.Placement.createLow(elevator, elbow, tilt, claw,
+                                                        grabber),
+                                        Arm.Reset.createLow(elevator, elbow, tilt,
+                                                        grabber));
+
                 }
 
         }
@@ -321,7 +377,6 @@ public class Arm {
                                 ElevatorTilt tilt,
                                 Grabber grabber) {
 
-
                         CommandBase elevatorSetCommand0 = elevator.createControlCommand(
                                         Constants.Auto.Arm.Reset.High.Cone.elevatorPosition);
 
@@ -362,8 +417,6 @@ public class Arm {
                                 Elbow elbow,
                                 ElevatorTilt tilt,
                                 Grabber grabber) {
-
-
 
                         CommandBase elevatorSetCommand0 = elevator.createControlCommand(
                                         Constants.Auto.Arm.Reset.Middle.Cone.elevatorPosition);
@@ -406,7 +459,6 @@ public class Arm {
                                 Elbow elbow,
                                 ElevatorTilt tilt,
                                 Grabber grabber) {
-
 
                         CommandBase elevatorSetCommand0 = elevator.createControlCommand(
                                         Constants.Auto.Arm.Reset.Low.Cone.elevatorPosition);

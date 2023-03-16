@@ -5,49 +5,100 @@
 package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
+
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
+import frc.robot.framework.controls.ControllerAxis;
 import frc.robot.framework.controls.ManualSpeedControl;
+import frc.robot.framework.controls.PIDControllerFactory;
 import frc.robot.framework.mechanisms.RotationMech;
+import frc.robot.framework.motors.Motor;
+import frc.robot.framework.motors.SparkMaxFactory;
+import frc.robot.framework.sensors.AngularPositionSensor;
 
 public class Elbow extends SubsystemBase {
 
   private final RotationMech elbowMech;
+  private final AngularPositionSensor elbowSensor;
   private final ManualSpeedControl manualSpeedControl;
   private final PIDController elbowPIDController;
   private final MechanismLigament2d elbowMech2d;
-  //private final DecimalFormat decimalFormat;
+  private final DecimalFormat decimalFormat;
 
   public Elbow(
-      RotationMech elbowMech,
-      ManualSpeedControl manualSpeedControl,
-      PIDController elbowPIDController,
-      MechanismLigament2d elbowMech2d,
-      DecimalFormat decimalFormat) {
-    this.elbowMech = elbowMech;
-    this.manualSpeedControl = manualSpeedControl;
-    this.elbowPIDController = elbowPIDController;
+      CommandXboxController operatorController,
+      MechanismLigament2d elbowMech2d) {
+
+    this.elbowPIDController = PIDControllerFactory.create(
+        Constants.Robot.Arm.ElbowConstants.Control.PID.kP,
+        Constants.Robot.Arm.ElbowConstants.Control.PID.kI,
+        Constants.Robot.Arm.ElbowConstants.Control.PID.kD,
+        Constants.Robot.Arm.ElbowConstants.Control.PID.tolerance,
+        Constants.Robot.Arm.ElbowConstants.Control.PID.minimumInput,
+        Constants.Robot.Arm.ElbowConstants.Control.PID.maximumInput);
+
+    CANSparkMax elbowMotorSparkMax = SparkMaxFactory.create(
+        Constants.Robot.Arm.ElbowConstants.MotorConfig.deviceId,
+        Constants.Robot.Arm.ElbowConstants.MotorConfig.revMotor,
+        Constants.Robot.Arm.ElbowConstants.MotorConfig.isInverted,
+        Constants.Robot.Arm.ElbowConstants.MotorConfig.idleMode,
+        Constants.Robot.Arm.ElbowConstants.MotorConfig.velocityKP,
+        Constants.Robot.Arm.ElbowConstants.MotorConfig.velocityKI,
+        Constants.Robot.Arm.ElbowConstants.MotorConfig.velocityKD,
+        Constants.Robot.Arm.ElbowConstants.MotorConfig.velocityKF);
+
+    Motor elbowMotor = Motor.create(
+        elbowMotorSparkMax,
+        Constants.Robot.Arm.ElbowConstants.MotorConfig.revMotor);
+
+    this.elbowSensor = AngularPositionSensor.getREVThroughBoreEncoder(
+        Constants.Robot.Arm.ElbowConstants.Sensor.dioChannel,
+        Constants.Robot.Arm.ElbowConstants.Sensor.offsetDegrees,
+        elbowMotor,
+        Constants.Robot.Arm.ElbowConstants.MechConfig.motorToMechConversion);
+
+    this.elbowMech = RotationMech.create(
+        elbowMotor,
+        Constants.Robot.Arm.ElbowConstants.MechConfig.motorToMechConversion,
+        elbowSensor);
+
+    ControllerAxis armUpDownAxis = ControllerAxis.getAxisControl(
+        operatorController,
+        XboxController.Axis.kRightY,
+        false,
+        Constants.OperatorConstants.ElevatorManualControls.kDeadband);
+
+    this.manualSpeedControl = new ManualSpeedControl(
+        armUpDownAxis,
+        Constants.Robot.Arm.ElbowConstants.Control.maxManualSpeedRotationsPerSecond);
+
     this.elbowMech2d = elbowMech2d;
-    //this.decimalFormat = decimalFormat;
+    this.decimalFormat = new DecimalFormat("###.###");
   }
 
   @Override
   public void periodic() {
-    // SmartDashboard.putString(
-    //     "Elbow Position From Motor (deg)",
-    //     decimalFormat.format(getPosition().getDegrees()));
-    // SmartDashboard.putString(
-    //     "Elbow Position From Sensor (deg)",
-    //     decimalFormat.format(getPositionFromSensor().getDegrees()));
-    // SmartDashboard.putString(
-    //     "Elbow Speed From Motor(degps)",
-    //     decimalFormat.format(getVelocity().getDegrees()));
+    SmartDashboard.putString(
+        "Elbow Position From Motor (deg)",
+        decimalFormat.format(getPosition().getDegrees()));
+    SmartDashboard.putString(
+        "Elbow Position From Sensor (deg)",
+        decimalFormat.format(getPositionFromSensor().getDegrees()));
+    SmartDashboard.putString(
+        "Elbow Speed From Motor(degps)",
+        decimalFormat.format(getVelocity().getDegrees()));
     this.elbowMech2d.setAngle(getPosition().getDegrees());
   }
 
@@ -60,19 +111,30 @@ public class Elbow extends SubsystemBase {
     return getPosition().getRotations();
   }
 
-  // private Rotation2d getVelocity() {
-  //   return elbowMech.getVelocityRotationPerSecond();
-  // }
+  private Rotation2d getVelocity() {
+    return elbowMech.getVelocityRotationPerSecond();
+  }
 
-  // private Rotation2d getPositionFromSensor() {
-  //   return elbowMech.getAngularPostionFromSensor();
-  // }
+  private Rotation2d getPositionFromSensor() {
+    return elbowMech.getAngularPostionFromSensor();
+  }
 
   public boolean atSetpoint() {
     return elbowPIDController.atSetpoint();
   }
 
+  public boolean manualSpeedNonZero() {
+    return this.manualSpeedControl.getManualSpeed() != 0;
+  }
+
   // Runnables
+
+  public void setManualControlTrigger() {
+    Trigger elbowManualControlTrigger = new Trigger(this::manualSpeedNonZero);
+    CommandBase elbowManualControlCommand = this.createControlCommand();
+    elbowManualControlTrigger.whileTrue(elbowManualControlCommand);
+  }
+
   private void stop() {
     this.elbowMech.stop();
   }
@@ -179,6 +241,5 @@ public class Elbow extends SubsystemBase {
 
     return stopCommand;
   }
-
 
 }

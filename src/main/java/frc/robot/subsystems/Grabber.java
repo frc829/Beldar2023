@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
-import java.util.function.BooleanSupplier;
-
 import com.playingwithfusion.TimeOfFlight;
 import com.revrobotics.CANSparkMax;
 

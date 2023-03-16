@@ -6,8 +6,13 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
+import com.ctre.phoenix.sensors.WPI_CANCoder;
+import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -15,16 +20,31 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.framework.controls.ControllerAxis;
+import frc.robot.framework.controls.HalfControllerAxis;
 import frc.robot.framework.controls.ManualChassisSpeedControl;
+import frc.robot.framework.controls.ManualSpeedControl;
+import frc.robot.framework.controls.PIDControllerFactory;
 import frc.robot.framework.imus.Gyroscope;
+import frc.robot.framework.imus.NavXGyroscopeFactory;
+import frc.robot.framework.kinematics.KinematicsFactory;
+import frc.robot.framework.mechanisms.LinearMech;
+import frc.robot.framework.mechanisms.RotationMech;
 import frc.robot.framework.mechanismsAdvanced.SwerveModule;
+import frc.robot.framework.motors.Motor;
+import frc.robot.framework.motors.SparkMaxFactory;
+import frc.robot.framework.sensors.AngularPositionSensor;
+import frc.robot.framework.sensors.CANCoderFactory;
 import frc.robot.framework.telemetry.FieldMap;
+import frc.robot.framework.telemetry.SwervePoseEstimatorFactory;
 import frc.robot.framework.telemetry.Telemetry;
 import frc.robot.framework.vision.TrackingCamera;
 
@@ -46,42 +66,339 @@ public class SwerveDrive extends SubsystemBase {
   private final FieldMap fieldMap;
 
   private boolean allowVisionMeasurements = true;
+  private final PIDController forwardController;
+  private final PIDController strafeController;
+  private final PIDController rotationController;
 
   public SwerveDrive(
-      SwerveModule frontLeftModule,
-      SwerveModule frontRightModule,
-      SwerveModule rearLeftModule,
-      SwerveModule rearRightModule,
-      Gyroscope gyroscope,
-      Telemetry telemetry,
-      TrackingCamera trackingCamera,
-      SwerveDriveKinematics swerveDriveKinematics,
-      ManualChassisSpeedControl manualChassisSpeedControl,
-      PIDController frontLeftSteerPIDController,
-      PIDController frontRightSteerPIDController,
-      PIDController rearLeftSteerPIDController,
-      PIDController rearRightSteerPIDController,
+      CommandXboxController driveController,
       FieldMap fieldMap) {
 
-    this.frontLeftModule = frontLeftModule;
-    this.frontRightModule = frontRightModule;
-    this.rearLeftModule = rearLeftModule;
-    this.rearRightModule = rearRightModule;
+    this.forwardController = new PIDController(5, 0, 0);
+    this.strafeController = new PIDController(5, 0, 0);
+    this.rotationController = new PIDController(5, 0, 0);
 
-    this.gyroscope = gyroscope;
-    this.telemetry = telemetry;
-    this.trackingCamera = trackingCamera;
-    this.swerveDriveKinematics = swerveDriveKinematics;
-    this.manualChassisSpeedControl = manualChassisSpeedControl;
+    CANSparkMax frontLeftSteeringMotorSparkMax = SparkMaxFactory.create(
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.deviceId,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.revMotor,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.isInverted,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.idleMode,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.velocityKP,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.velocityKI,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.velocityKD,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.velocityKF);
+    CANSparkMax frontLeftDriveMotorSparkMax = SparkMaxFactory.create(
+        Constants.Robot.Drive.Modules.FrontLeft.DriveMech.MotorConfig.deviceId,
+        Constants.Robot.Drive.Modules.FrontLeft.DriveMech.MotorConfig.revMotor,
+        Constants.Robot.Drive.Modules.FrontLeft.DriveMech.MotorConfig.isInverted,
+        Constants.Robot.Drive.Modules.FrontLeft.DriveMech.MotorConfig.idleMode,
+        Constants.Robot.Drive.Modules.FrontLeft.DriveMech.MotorConfig.velocityKP,
+        Constants.Robot.Drive.Modules.FrontLeft.DriveMech.MotorConfig.velocityKI,
+        Constants.Robot.Drive.Modules.FrontLeft.DriveMech.MotorConfig.velocityKD,
+        Constants.Robot.Drive.Modules.FrontLeft.DriveMech.MotorConfig.velocityKF);
+    CANSparkMax frontRightSteerMotorSparkMax = SparkMaxFactory.create(
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.MotorConfig.deviceId,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.MotorConfig.revMotor,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.MotorConfig.isInverted,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.MotorConfig.idleMode,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.MotorConfig.velocityKP,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.MotorConfig.velocityKI,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.MotorConfig.velocityKD,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.MotorConfig.velocityKF);
+    CANSparkMax frontRightDriveMotorSparkMax = SparkMaxFactory.create(
+        Constants.Robot.Drive.Modules.FrontRight.DriveMech.MotorConfig.deviceId,
+        Constants.Robot.Drive.Modules.FrontRight.DriveMech.MotorConfig.revMotor,
+        Constants.Robot.Drive.Modules.FrontRight.DriveMech.MotorConfig.isInverted,
+        Constants.Robot.Drive.Modules.FrontRight.DriveMech.MotorConfig.idleMode,
+        Constants.Robot.Drive.Modules.FrontRight.DriveMech.MotorConfig.velocityKP,
+        Constants.Robot.Drive.Modules.FrontRight.DriveMech.MotorConfig.velocityKI,
+        Constants.Robot.Drive.Modules.FrontRight.DriveMech.MotorConfig.velocityKD,
+        Constants.Robot.Drive.Modules.FrontRight.DriveMech.MotorConfig.velocityKF);
+    CANSparkMax rearLeftSteerMotorSparkMax = SparkMaxFactory.create(
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.MotorConfig.deviceId,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.MotorConfig.revMotor,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.MotorConfig.isInverted,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.MotorConfig.idleMode,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.MotorConfig.velocityKP,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.MotorConfig.velocityKI,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.MotorConfig.velocityKD,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.MotorConfig.velocityKF);
+    CANSparkMax rearLeftDriveMotorSparkMax = SparkMaxFactory.create(
+        Constants.Robot.Drive.Modules.RearLeft.DriveMech.MotorConfig.deviceId,
+        Constants.Robot.Drive.Modules.RearLeft.DriveMech.MotorConfig.revMotor,
+        Constants.Robot.Drive.Modules.RearLeft.DriveMech.MotorConfig.isInverted,
+        Constants.Robot.Drive.Modules.RearLeft.DriveMech.MotorConfig.idleMode,
+        Constants.Robot.Drive.Modules.RearLeft.DriveMech.MotorConfig.velocityKP,
+        Constants.Robot.Drive.Modules.RearLeft.DriveMech.MotorConfig.velocityKI,
+        Constants.Robot.Drive.Modules.RearLeft.DriveMech.MotorConfig.velocityKD,
+        Constants.Robot.Drive.Modules.RearLeft.DriveMech.MotorConfig.velocityKF);
+    CANSparkMax rearRightSteerMotorSparkMax = SparkMaxFactory.create(
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.MotorConfig.deviceId,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.MotorConfig.revMotor,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.MotorConfig.isInverted,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.MotorConfig.idleMode,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.MotorConfig.velocityKP,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.MotorConfig.velocityKI,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.MotorConfig.velocityKD,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.MotorConfig.velocityKF);
+    CANSparkMax rearRightDriveMotorSparkMax = SparkMaxFactory.create(
+        Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.deviceId,
+        Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.revMotor,
+        Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.isInverted,
+        Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.idleMode,
+        Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.velocityKP,
+        Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.velocityKI,
+        Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.velocityKD,
+        Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.velocityKF);
 
-    this.frontLeftSteerPIDController = frontLeftSteerPIDController;
-    this.frontRightSteerPIDController = frontRightSteerPIDController;
-    this.rearLeftSteerPIDController = rearLeftSteerPIDController;
-    this.rearRightSteerPIDController = rearRightSteerPIDController;
+    Motor frontLeftSteeringMotor = Motor.create(
+        frontLeftSteeringMotorSparkMax,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.MotorConfig.revMotor);
+    Motor frontLeftDriveMotor = Motor.create(
+        frontLeftDriveMotorSparkMax,
+        Constants.Robot.Drive.Modules.FrontLeft.DriveMech.MotorConfig.revMotor);
+    Motor frontRightSteerMotor = Motor.create(
+        frontRightSteerMotorSparkMax,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.MotorConfig.revMotor);
+    Motor frontRightDriveMotor = Motor.create(
+        frontRightDriveMotorSparkMax,
+        Constants.Robot.Drive.Modules.FrontRight.DriveMech.MotorConfig.revMotor);
+    Motor rearLeftSteerMotor = Motor.create(
+        rearLeftSteerMotorSparkMax,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.MotorConfig.revMotor);
+    Motor rearLeftDriveMotor = Motor.create(
+        rearLeftDriveMotorSparkMax,
+        Constants.Robot.Drive.Modules.RearLeft.DriveMech.MotorConfig.revMotor);
+    Motor rearRightSteerMotor = Motor.create(
+        rearRightSteerMotorSparkMax,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.MotorConfig.revMotor);
+    Motor rearRightDriveMotor = Motor.create(
+        rearRightDriveMotorSparkMax,
+        Constants.Robot.Drive.Modules.RearRight.DriveMech.MotorConfig.revMotor);
+
+    WPI_CANCoder frontLeftCANCoder = CANCoderFactory.create(
+        Constants.Robot.Drive.Modules.FrontLeft.AngleSensor.SensorConfig.deviceId,
+        Constants.Robot.Drive.Modules.FrontLeft.AngleSensor.SensorConfig.canbus,
+        frontLeftSteeringMotor,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.motorToMechConversion);
+
+    WPI_CANCoder frontRightCANCoder = CANCoderFactory.create(
+        Constants.Robot.Drive.Modules.FrontRight.AngleSensor.SensorConfig.deviceId,
+        Constants.Robot.Drive.Modules.FrontRight.AngleSensor.SensorConfig.canbus,
+        frontRightSteerMotor,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.motorToMechConversion);
+
+    WPI_CANCoder rearLeftCANCoder = CANCoderFactory.create(
+        Constants.Robot.Drive.Modules.RearLeft.AngleSensor.SensorConfig.deviceId,
+        Constants.Robot.Drive.Modules.RearLeft.AngleSensor.SensorConfig.canbus,
+        rearLeftSteerMotor,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.motorToMechConversion);
+
+    WPI_CANCoder rearRightCANCoder = CANCoderFactory.create(
+        Constants.Robot.Drive.Modules.RearRight.AngleSensor.SensorConfig.deviceId,
+        Constants.Robot.Drive.Modules.RearRight.AngleSensor.SensorConfig.canbus,
+        rearRightSteerMotor,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.motorToMechConversion);
+
+    AngularPositionSensor frontLeftSensor = AngularPositionSensor.create(frontLeftCANCoder);
+
+    AngularPositionSensor frontRightSensor = AngularPositionSensor.create(frontRightCANCoder);
+
+    AngularPositionSensor rearLeftSensor = AngularPositionSensor.create(rearLeftCANCoder);
+
+    AngularPositionSensor rearRightSensor = AngularPositionSensor.create(rearRightCANCoder);
+
+    RotationMech frontLeftSteeringMech = RotationMech.create(
+        frontLeftSteeringMotor,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.motorToMechConversion,
+        frontLeftSensor);
+
+    RotationMech frontRightSteeringMech = RotationMech.create(
+        frontRightSteerMotor,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.motorToMechConversion,
+        frontRightSensor);
+
+    RotationMech rearLeftSteeringMech = RotationMech.create(
+        rearLeftSteerMotor,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.motorToMechConversion,
+        rearLeftSensor);
+
+    RotationMech rearRightSteeringMech = RotationMech.create(
+        rearRightSteerMotor,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.motorToMechConversion,
+        rearRightSensor);
+
+    LinearMech frontLeftDriveMech = LinearMech.create(
+        frontLeftDriveMotor,
+        Constants.Robot.Drive.Modules.driveMotorMotorToRotationMechConversion,
+        Constants.Robot.Drive.Modules.driveMotorRotationToLinearConversion);
+
+    LinearMech frontRightDriveMech = LinearMech.create(
+        frontRightDriveMotor,
+        Constants.Robot.Drive.Modules.driveMotorMotorToRotationMechConversion,
+        Constants.Robot.Drive.Modules.driveMotorRotationToLinearConversion);
+
+    LinearMech rearLeftDriveMech = LinearMech.create(
+        rearLeftDriveMotor,
+        Constants.Robot.Drive.Modules.driveMotorMotorToRotationMechConversion,
+        Constants.Robot.Drive.Modules.driveMotorRotationToLinearConversion);
+
+    LinearMech rearRightDriveMech = LinearMech.create(
+        rearRightDriveMotor,
+        Constants.Robot.Drive.Modules.driveMotorMotorToRotationMechConversion,
+        Constants.Robot.Drive.Modules.driveMotorRotationToLinearConversion);
+
+    this.frontLeftModule = new SwerveModule(
+        frontLeftSteeringMech,
+        frontLeftDriveMech);
+
+    this.frontRightModule = new SwerveModule(
+        frontRightSteeringMech,
+        frontRightDriveMech);
+
+    this.rearLeftModule = new SwerveModule(
+        rearLeftSteeringMech,
+        rearLeftDriveMech);
+
+    this.rearRightModule = new SwerveModule(
+        rearRightSteeringMech,
+        rearRightDriveMech);
+
+    Pose2d initialPosition = new Pose2d(3, 3, new Rotation2d());
+
+    this.swerveDriveKinematics = KinematicsFactory.createSwerveKinematics(
+        Constants.Robot.Drive.Modules.FrontLeft.location,
+        Constants.Robot.Drive.Modules.FrontRight.location,
+        Constants.Robot.Drive.Modules.RearLeft.location,
+        Constants.Robot.Drive.Modules.RearRight.location);
+
+    SwerveDrivePoseEstimator swerveDrivePoseEstimator = SwervePoseEstimatorFactory.create(
+        swerveDriveKinematics,
+        new Rotation2d(),
+        initialPosition,
+        this.frontLeftModule,
+        this.frontRightModule,
+        this.rearLeftModule,
+        this.rearRightModule);
+
+    this.telemetry = Telemetry.create(
+        swerveDrivePoseEstimator,
+        this.frontLeftModule,
+        this.frontRightModule,
+        this.rearLeftModule,
+        this.rearRightModule);
+
+    AHRS navXMXP2 = NavXGyroscopeFactory.create(
+        Constants.Robot.Drive.Gyroscope.serial_port_id,
+        swerveDriveKinematics,
+        this.frontLeftModule,
+        this.frontRightModule,
+        this.rearLeftModule,
+        this.rearRightModule);
+
+    this.gyroscope = Gyroscope.create(navXMXP2);
+
+    ControllerAxis fieldCentricForwardBackAxis = ControllerAxis.getAxisControl(
+        driveController,
+        XboxController.Axis.kLeftY,
+        true,
+        Constants.OperatorConstants.DriverController.kDeadband);
+
+    ControllerAxis fieldCentricLeftRightAxis = ControllerAxis.getAxisControl(
+        driveController,
+        XboxController.Axis.kLeftX,
+        true,
+        Constants.OperatorConstants.DriverController.kDeadband);
+
+    ControllerAxis robotCentricForwardBackAxis = ControllerAxis.getAxisControl(
+        driveController,
+        XboxController.Axis.kRightY,
+        true,
+        Constants.OperatorConstants.DriverController.kDeadband);
+
+    ControllerAxis robotCentricLeftRightAxis = ControllerAxis.getAxisControl(
+        driveController,
+        XboxController.Axis.kRightX,
+        true,
+        Constants.OperatorConstants.DriverController.kDeadband);
+
+    HalfControllerAxis rotationPositiveAxis = HalfControllerAxis.getAxisControl(
+        driveController,
+        HalfControllerAxis.PositiveOnlyAxisType.LeftTriggerAxis,
+        false,
+        Constants.OperatorConstants.DriverController.kDeadband);
+
+    HalfControllerAxis rotationNegativeAxis = HalfControllerAxis.getAxisControl(
+        driveController,
+        HalfControllerAxis.PositiveOnlyAxisType.RightTriggerAxis,
+        false,
+        Constants.OperatorConstants.DriverController.kDeadband);
+
+    ControllerAxis rotationAxis = ControllerAxis.getAxisControl(rotationPositiveAxis, rotationNegativeAxis);
+
+    ManualSpeedControl fieldCentricForwardBackControl = new ManualSpeedControl(
+        fieldCentricForwardBackAxis,
+        Constants.OperatorConstants.DriverController.maxTranslationalSpeedMPS);
+
+    ManualSpeedControl fieldCentricLeftRightControl = new ManualSpeedControl(
+        fieldCentricLeftRightAxis,
+        Constants.OperatorConstants.DriverController.maxTranslationalSpeedMPS);
+
+    ManualSpeedControl robotCentricForwardBackControl = new ManualSpeedControl(
+        robotCentricForwardBackAxis,
+        Constants.OperatorConstants.DriverController.maxTranslationalSpeedMPS);
+
+    ManualSpeedControl robotCentricLeftRightControl = new ManualSpeedControl(
+        robotCentricLeftRightAxis,
+        Constants.OperatorConstants.DriverController.maxTranslationalSpeedMPS);
+
+    ManualSpeedControl rotationControl = new ManualSpeedControl(
+        rotationAxis,
+        Constants.OperatorConstants.DriverController.maxRotationalSpeedRadPS);
+
+    this.manualChassisSpeedControl = ManualChassisSpeedControl
+        .getManualChassisSpeedControl(
+            fieldCentricForwardBackControl,
+            fieldCentricLeftRightControl,
+            robotCentricForwardBackControl,
+            robotCentricLeftRightControl,
+            rotationControl);
+
+    this.frontLeftSteerPIDController = PIDControllerFactory.create(
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.PID.kP,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.PID.kI,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.PID.kD,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.PID.tolerance,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.PID.minimumInput,
+        Constants.Robot.Drive.Modules.FrontLeft.SteeringMech.PID.maximumInput);
+
+    this.frontRightSteerPIDController = PIDControllerFactory.create(
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.PID.kP,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.PID.kI,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.PID.kD,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.PID.tolerance,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.PID.minimumInput,
+        Constants.Robot.Drive.Modules.FrontRight.SteeringMech.PID.maximumInput);
+
+    this.rearLeftSteerPIDController = PIDControllerFactory.create(
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.PID.kP,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.PID.kI,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.PID.kD,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.PID.tolerance,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.PID.minimumInput,
+        Constants.Robot.Drive.Modules.RearLeft.SteeringMech.PID.maximumInput);
+
+    this.rearRightSteerPIDController = PIDControllerFactory.create(
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.PID.kP,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.PID.kI,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.PID.kD,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.PID.tolerance,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.PID.minimumInput,
+        Constants.Robot.Drive.Modules.RearRight.SteeringMech.PID.maximumInput);
+
+    this.trackingCamera = TrackingCamera.createFromLimeLight("limelight");
 
     this.fieldMap = fieldMap;
-
-    this.setManualDefaultCommand();
 
   }
 
@@ -290,10 +607,6 @@ public class SwerveDrive extends SubsystemBase {
   public CommandBase getZeroModuleCommand() {
     return Commands.runEnd(
         () -> {
-          // this.frontLeftModule.setSwerveModuleSteeringEncoder();
-          // this.frontRightModule.setSwerveModuleSteeringEncoder();
-          // this.rearLeftModule.setSwerveModuleSteeringEncoder();
-          // this.rearRightModule.setSwerveModuleSteeringEncoder();
 
           Rotation2d frontLeftSteeringSpeed = getSteeringSpeed(
               new Rotation2d(),
@@ -383,11 +696,6 @@ public class SwerveDrive extends SubsystemBase {
 
       @Override
       public boolean isFinished() {
-        // Rotation2d pitchAngle = gyroscope.getPitch();
-        // Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
-        // double pitchDistanceFrom0Value = Math.abs(pitchDistanceFrom0.getDegrees());
-
-        // return pitchDistanceFrom0Value < 2.5;
         return false;
       }
     };
@@ -431,11 +739,6 @@ public class SwerveDrive extends SubsystemBase {
 
       @Override
       public boolean isFinished() {
-        // Rotation2d pitchAngle = gyroscope.getPitch();
-        // Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
-        // double pitchDistanceFrom0Value = Math.abs(pitchDistanceFrom0.getDegrees());
-
-        // return pitchDistanceFrom0Value < 2.5;
         return false;
       }
     };
@@ -500,9 +803,6 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public CommandBase createSlidingPortalCommand(
-      PIDController forwardController,
-      PIDController strafeController,
-      PIDController rotationController,
       Pose2d bluePortal,
       Pose2d redPortal) {
 
@@ -550,11 +850,9 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
-  public CommandBase createDropPortalCommand(
-      PIDController forwardController,
-      PIDController strafeController,
-      PIDController rotationController,
-      Pose2d bluePortal) {
+  public CommandBase createDropPortalCommand(Pose2d bluePortal) {
+
+    rotationController.enableContinuousInput(0, 1);
 
     CommandBase leftPortalCommand = new CommandBase() {
 
@@ -601,9 +899,6 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public CommandBase createNearestPointCommand(
-      PIDController forwardController,
-      PIDController strafeController,
-      PIDController rotationController,
       List<Pose2d> scoringPositions) {
 
     CommandBase leftPortalCommand = new CommandBase() {
@@ -653,6 +948,10 @@ public class SwerveDrive extends SubsystemBase {
     this.frontRightModule.setSwerveModuleSteeringEncoder();
     this.rearLeftModule.setSwerveModuleSteeringEncoder();
     this.rearRightModule.setSwerveModuleSteeringEncoder();
+  }
+
+  public TrackingCamera getTrackingCamera() {
+    return this.trackingCamera;
   }
 
 }

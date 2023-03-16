@@ -31,7 +31,7 @@ import frc.robot.subsystems.LEDLighting;
 import frc.robot.subsystems.SwerveDrive;
 
 /** Add your docs here. */
-public class PathPlannerToAuto {
+public abstract class PathPlannerToAuto {
 
     public static List<PathPlannerTrajectory> getPathPlannerTrajectory(
             String pathName,
