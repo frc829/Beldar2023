@@ -45,7 +45,7 @@ import frc.robot.framework.sensors.AngularPositionSensor;
 import frc.robot.framework.sensors.CANCoderFactory;
 import frc.robot.framework.telemetry.FieldMap;
 import frc.robot.framework.telemetry.SwervePoseEstimatorFactory;
-import frc.robot.framework.telemetry.Telemetry;
+import frc.robot.framework.telemetry.FieldTelemetry;
 import frc.robot.framework.vision.TrackingCamera;
 
 public class SwerveDrive extends SubsystemBase {
@@ -54,25 +54,20 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveModule frontRightModule;
   private final SwerveModule rearLeftModule;
   private final SwerveModule rearRightModule;
-  private final Gyroscope gyroscope;
-  private final Telemetry telemetry;
-  private final TrackingCamera trackingCamera;
-  private final SwerveDriveKinematics swerveDriveKinematics;
   private final ManualChassisSpeedControl manualChassisSpeedControl;
   private final PIDController frontLeftSteerPIDController;
   private final PIDController frontRightSteerPIDController;
   private final PIDController rearLeftSteerPIDController;
   private final PIDController rearRightSteerPIDController;
-  private final FieldMap fieldMap;
-
-  private boolean allowVisionMeasurements = true;
   private final PIDController forwardController;
   private final PIDController strafeController;
   private final PIDController rotationController;
+  private final SwerveDriveKinematics swerveDriveKinematics;
 
   public SwerveDrive(
       CommandXboxController driveController,
-      FieldMap fieldMap) {
+      FieldMap fieldMap,
+      SwerveDriveKinematics swerveDriveKinematics) {
 
     this.forwardController = new PIDController(5, 0, 0);
     this.strafeController = new PIDController(5, 0, 0);
@@ -264,40 +259,6 @@ public class SwerveDrive extends SubsystemBase {
         rearRightSteeringMech,
         rearRightDriveMech);
 
-    Pose2d initialPosition = new Pose2d(3, 3, new Rotation2d());
-
-    this.swerveDriveKinematics = KinematicsFactory.createSwerveKinematics(
-        Constants.Robot.Drive.Modules.FrontLeft.location,
-        Constants.Robot.Drive.Modules.FrontRight.location,
-        Constants.Robot.Drive.Modules.RearLeft.location,
-        Constants.Robot.Drive.Modules.RearRight.location);
-
-    SwerveDrivePoseEstimator swerveDrivePoseEstimator = SwervePoseEstimatorFactory.create(
-        swerveDriveKinematics,
-        new Rotation2d(),
-        initialPosition,
-        this.frontLeftModule,
-        this.frontRightModule,
-        this.rearLeftModule,
-        this.rearRightModule);
-
-    this.telemetry = Telemetry.create(
-        swerveDrivePoseEstimator,
-        this.frontLeftModule,
-        this.frontRightModule,
-        this.rearLeftModule,
-        this.rearRightModule);
-
-    AHRS navXMXP2 = NavXGyroscopeFactory.create(
-        Constants.Robot.Drive.Gyroscope.serial_port_id,
-        swerveDriveKinematics,
-        this.frontLeftModule,
-        this.frontRightModule,
-        this.rearLeftModule,
-        this.rearRightModule);
-
-    this.gyroscope = Gyroscope.create(navXMXP2);
-
     ControllerAxis fieldCentricForwardBackAxis = ControllerAxis.getAxisControl(
         driveController,
         XboxController.Axis.kLeftY,
@@ -396,38 +357,12 @@ public class SwerveDrive extends SubsystemBase {
         Constants.Robot.Drive.Modules.RearRight.SteeringMech.PID.minimumInput,
         Constants.Robot.Drive.Modules.RearRight.SteeringMech.PID.maximumInput);
 
-    this.trackingCamera = TrackingCamera.createFromLimeLight("limelight");
+    this.swerveDriveKinematics = swerveDriveKinematics;
 
-    this.fieldMap = fieldMap;
-
-  }
-
-  public void toggleAllowVisionMeasurements() {
-    this.allowVisionMeasurements = !this.allowVisionMeasurements;
   }
 
   @Override
   public void periodic() {
-
-    this.telemetry.updateCurrentPosition(this.gyroscope.getYaw());
-    double[] currentPoseFromCamera = this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
-    telemetry.addVisionMeasurement(currentPoseFromCamera);
-    fieldMap.updateField(this.telemetry.getCurrentPosition());
-
-    // SmartDashboard.putBoolean("Gyro Connected", this.gyroscope.isConnected());
-    SmartDashboard.putNumber("PoseFromCameraX", currentPoseFromCamera[0]);
-    SmartDashboard.putNumber("PoseFromCameraY", currentPoseFromCamera[1]);
-    SmartDashboard.putNumber("PoseFromCameraZ", currentPoseFromCamera[2]);
-    SmartDashboard.putNumber("PoseFromCameraRoll", currentPoseFromCamera[3]);
-    SmartDashboard.putNumber("PoseFromCameraPitch", currentPoseFromCamera[4]);
-    SmartDashboard.putNumber("PoseFromCameraYaw", currentPoseFromCamera[5]);
-
-    // SmartDashboard.putNumber("Gyro Pitch",
-    // this.gyroscope.getPitch().getDegrees());
-    // SmartDashboard.putNumber("Gyro Roll", this.gyroscope.getRoll().getDegrees());
-    // SmartDashboard.putNumber("Gyro Yaw", this.gyroscope.getYaw().getDegrees());
-
-    this.telemetry.updateCurrentPosition(gyroscope.getYaw());
 
     // ChassisSpeeds fieldCentricChassisSpeedsFromController =
     // manualChassisSpeedControl
@@ -478,28 +413,27 @@ public class SwerveDrive extends SubsystemBase {
     // SmartDashboard.putNumber("RobotFieldPositionYawDeg",
     // this.telemetry.getCurrentPosition().getRotation().getDegrees());
 
-    // SmartDashboard.putNumber("GyroRoll",
-    // (this.gyroscope.getRoll().getDegrees()));
-    // SmartDashboard.putNumber("GyroPitch",
-    // (this.gyroscope.getPitch().getDegrees()));
-    // SmartDashboard.putNumber("GyroYaw", (this.gyroscope.getYaw().getDegrees()));
   }
 
-  private void stopDrive() {
-    this.frontLeftModule.stop();
-    this.frontRightModule.stop();
-    this.rearLeftModule.stop();
-    this.rearRightModule.stop();
+  // Functions
+  private Rotation2d getSteeringSpeed(
+      Rotation2d desiredAngle,
+      Rotation2d currentAngle,
+      PIDController pidController) {
+
+    double desiredAngleValue = desiredAngle.getRotations();
+    desiredAngleValue %= 1;
+    desiredAngleValue = desiredAngleValue < 0 ? desiredAngleValue + 1 : desiredAngleValue;
+
+    pidController.setSetpoint(desiredAngleValue);
+    double rotationsPerSecond = pidController.calculate(currentAngle.getRotations());
+    Rotation2d mechRotationsPerSecond = Rotation2d.fromRotations(rotationsPerSecond);
+
+    return mechRotationsPerSecond;
+
   }
 
-  public Pose2d getSwerveDrivePosition() {
-    return this.telemetry.getCurrentPosition();
-  }
-
-  public void resetSwerveDrivePosition(Pose2d newPose) {
-    this.telemetry.resetCurrentPosition(newPose, this.gyroscope.getYaw());
-  }
-
+  // Suppliers
   public ChassisSpeeds getSwerveDriveChassisSpeed() {
 
     SwerveModuleState frontLeftModuleState = this.frontLeftModule.getSwerveModuleState();
@@ -512,6 +446,31 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
+  public SwerveModule[] getSwerveModules() {
+    return new SwerveModule[] {
+        this.frontLeftModule,
+        this.frontRightModule,
+        this.rearLeftModule,
+        this.rearRightModule
+    };
+  }
+
+  // Runnables
+  private void stopDrive() {
+    this.frontLeftModule.stop();
+    this.frontRightModule.stop();
+    this.rearLeftModule.stop();
+    this.rearRightModule.stop();
+  }
+
+  public void setModuleEncoders() {
+    this.frontLeftModule.setSwerveModuleSteeringEncoder();
+    this.frontRightModule.setSwerveModuleSteeringEncoder();
+    this.rearLeftModule.setSwerveModuleSteeringEncoder();
+    this.rearRightModule.setSwerveModuleSteeringEncoder();
+  }
+
+  // Consumers
   public void setSwerveDriveChassisSpeed(ChassisSpeeds robotCentricChassisSpeeds) {
 
     if (robotCentricChassisSpeeds.vxMetersPerSecond == 0 &&
@@ -567,23 +526,6 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
-  private Rotation2d getSteeringSpeed(
-      Rotation2d desiredAngle,
-      Rotation2d currentAngle,
-      PIDController pidController) {
-
-    double desiredAngleValue = desiredAngle.getRotations();
-    desiredAngleValue %= 1;
-    desiredAngleValue = desiredAngleValue < 0 ? desiredAngleValue + 1 : desiredAngleValue;
-
-    pidController.setSetpoint(desiredAngleValue);
-    double rotationsPerSecond = pidController.calculate(currentAngle.getRotations());
-    Rotation2d mechRotationsPerSecond = Rotation2d.fromRotations(rotationsPerSecond);
-
-    return mechRotationsPerSecond;
-
-  }
-
   public void setManualDefaultCommand() {
 
     CommandBase manualControlCommand = Commands.run(
@@ -594,14 +536,6 @@ public class SwerveDrive extends SubsystemBase {
         }, this);
 
     this.setDefaultCommand(manualControlCommand);
-  }
-
-  public void setTelemetryFromCamera() {
-
-    double[] currentPoseFromCamera = this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
-    Rotation2d yawFromCamera = Rotation2d.fromDegrees(currentPoseFromCamera[5]);
-    Pose2d cameraPose = new Pose2d(currentPoseFromCamera[0], currentPoseFromCamera[1], yawFromCamera);
-    this.telemetry.resetCurrentPosition(cameraPose, gyroscope.getYaw());
   }
 
   public CommandBase getZeroModuleCommand() {
@@ -747,61 +681,6 @@ public class SwerveDrive extends SubsystemBase {
     return balance;
   }
 
-  public CommandBase setTelemetryFromCameraCommand() {
-    return Commands.runOnce(
-        () -> setTelemetryFromCamera(),
-        this);
-  }
-
-  public CommandBase setTelemetryFromSafeKnownPosition(Pose2d safeKnownPosition) {
-    return Commands.runOnce(
-        () -> resetSwerveDrivePosition(safeKnownPosition),
-        this);
-  }
-
-  public CommandBase toggleAllowVisionMeasurementCommand() {
-    return Commands.runOnce(
-        () -> toggleAllowVisionMeasurements(),
-        this);
-  }
-
-  public Pose2d getClosestPosition(List<Pose2d> positions) {
-
-    Pose2d currentPosition = this.getSwerveDrivePosition();
-
-    Pose2d closestPosition = positions.get(0);
-
-    if (DriverStation.getAlliance() == Alliance.Red) {
-      closestPosition = new Pose2d(closestPosition.getX(), 8.02 - closestPosition.getY(),
-          closestPosition.getRotation());
-    }
-    Translation2d closestPositionTranslation = closestPosition.getTranslation();
-    Translation2d currentPositionTranslation = currentPosition.getTranslation();
-
-    double currentMinimumDistance = closestPositionTranslation.getDistance(currentPositionTranslation);
-
-    for (int i = 1; i < positions.size(); i++) {
-      Pose2d position = positions.get(i);
-      if (DriverStation.getAlliance() == Alliance.Red) {
-        position = new Pose2d(position.getX(), 8.02 - position.getY(), position.getRotation());
-      }
-      Translation2d positionTranslation = position.getTranslation();
-      double distance = positionTranslation.getDistance(currentPositionTranslation);
-      if (distance < currentMinimumDistance) {
-        closestPosition = position;
-        currentMinimumDistance = distance;
-      }
-
-    }
-
-    return closestPosition;
-
-  }
-
-  public double getGyroPitch() {
-    return gyroscope.getPitch().getDegrees();
-  }
-
   public CommandBase createSlidingPortalCommand(
       Pose2d bluePortal,
       Pose2d redPortal) {
@@ -941,17 +820,6 @@ public class SwerveDrive extends SubsystemBase {
     leftPortalCommand.addRequirements(this);
     return leftPortalCommand;
 
-  }
-
-  public void setModuleEncoders() {
-    this.frontLeftModule.setSwerveModuleSteeringEncoder();
-    this.frontRightModule.setSwerveModuleSteeringEncoder();
-    this.rearLeftModule.setSwerveModuleSteeringEncoder();
-    this.rearRightModule.setSwerveModuleSteeringEncoder();
-  }
-
-  public TrackingCamera getTrackingCamera() {
-    return this.trackingCamera;
   }
 
 }

@@ -29,6 +29,7 @@ import frc.robot.subsystems.ElevatorTilt;
 import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.LEDLighting;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Telemetry;
 
 /** Add your docs here. */
 public abstract class PathPlannerToAuto {
@@ -61,6 +62,7 @@ public abstract class PathPlannerToAuto {
 
     public static Command createFullAutoFromPathGroup(
             SwerveDrive swerveDrive,
+            Telemetry telemetry,
             Elevator elevator,
             Elbow elbow,
             Grabber grabber,
@@ -102,6 +104,7 @@ public abstract class PathPlannerToAuto {
 
         return createFullAuto(
                 swerveDrive,
+                telemetry,
                 eventMap,
                 pathGroup,
                 translationConstants,
@@ -155,20 +158,22 @@ public abstract class PathPlannerToAuto {
 
     private static Command createFullAuto(
             SwerveDrive swerveDrive,
+            Telemetry telemetry,
             Map<String, Command> eventMap,
             List<PathPlannerTrajectory> pathGroup,
             PIDConstants translationConstants,
             PIDConstants rotationConstants) {
 
         SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-                swerveDrive::getSwerveDrivePosition,
-                swerveDrive::resetSwerveDrivePosition,
+                telemetry::getSwerveDrivePosition,
+                telemetry::resetSwerveDrivePosition,
                 translationConstants,
                 rotationConstants,
                 swerveDrive::setSwerveDriveChassisSpeed,
                 eventMap,
                 true,
-                swerveDrive);
+                swerveDrive,
+                telemetry);
 
         Command fullAuto = autoBuilder.fullAuto(pathGroup);
 

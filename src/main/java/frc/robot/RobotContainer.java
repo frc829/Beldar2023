@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Arm;
 import frc.robot.commands.PathPlannerToAuto;
 import frc.robot.commands.Arm.PlacementAndReset;
+import frc.robot.framework.kinematics.KinematicsFactory;
 import frc.robot.framework.telemetry.FieldMap;
 import frc.robot.framework.vision.DumbOldCamera;
 import frc.robot.subsystems.Claw;
@@ -17,6 +18,7 @@ import frc.robot.subsystems.ElevatorTilt;
 import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.LEDLighting;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Telemetry;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +29,7 @@ import com.pathplanner.lib.auto.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -65,6 +68,7 @@ public class RobotContainer {
         private final HashMap<String, Command> autoCommands;
         private final HashMap<String, List<PathPlannerTrajectory>> pathPlannerTrajectories;
         private final SendableChooser<String> autoChooser = new SendableChooser<>();
+        private final Telemetry telemetry;
 
         public enum AutoBalanceDirection {
                 Forward,
@@ -74,13 +78,23 @@ public class RobotContainer {
         public RobotContainer() {
 
                 DumbOldCamera.start();
+                SwerveDriveKinematics swerveDriveKinematics = KinematicsFactory.createSwerveKinematics(
+                                Constants.Robot.Drive.Modules.FrontLeft.location,
+                                Constants.Robot.Drive.Modules.FrontRight.location,
+                                Constants.Robot.Drive.Modules.RearLeft.location,
+                                Constants.Robot.Drive.Modules.RearRight.location);
+
                 this.driveController = new CommandXboxController(
                                 OperatorConstants.DriverController.kDriverControllerPort);
                 this.operatorController = new CommandXboxController(
                                 OperatorConstants.DriverController.kOperatorControllerPort);
                 this.fieldMap = new FieldMap();
-                this.swerveDrive = new SwerveDrive(driveController, fieldMap);
+                this.swerveDrive = new SwerveDrive(driveController, fieldMap, swerveDriveKinematics);
                 this.swerveDrive.setManualDefaultCommand();
+
+                Pose2d initialPosition = new Pose2d(3, 3, new Rotation2d());
+                this.telemetry = new Telemetry(initialPosition, fieldMap, swerveDriveKinematics,
+                                swerveDrive.getSwerveModules());
 
                 Mechanism2d mech = new Mechanism2d(3, 3);
                 MechanismRoot2d root = mech.getRoot("Arm", 2, 1);
@@ -145,7 +159,7 @@ public class RobotContainer {
         private void configureDriverBindings() {
 
                 CommandBase zeroModulesCommand = swerveDrive.getZeroModuleCommand();
-                CommandBase setTelemetryFromCameraCommand = swerveDrive.setTelemetryFromCameraCommand();
+                CommandBase setTelemetryFromCameraCommand = telemetry.setTelemetryFromCameraCommand();
 
                 CommandBase dropPortalAlign = swerveDrive
                                 .createDropPortalCommand(Constants.Auto.Drive.PortalPositions.dropPortal);
@@ -380,6 +394,7 @@ public class RobotContainer {
 
                 Command pathPlannerCommand = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
+                                telemetry,
                                 elevator,
                                 elbow,
                                 grabber,
@@ -398,6 +413,7 @@ public class RobotContainer {
 
                 Command pathPlannerCommand2 = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
+                                telemetry,
                                 elevator,
                                 elbow,
                                 grabber,
@@ -411,16 +427,16 @@ public class RobotContainer {
                 CommandBase resetTelemetry = new CommandBase() {
                         @Override
                         public void execute() {
-                                double[] positionFromTrackingCamera = swerveDrive.getTrackingCamera()
+                                double[] positionFromTrackingCamera = telemetry.getTrackingCamera()
                                                 .getFieldPosition(DriverStation.getAlliance());
                                 Pose2d position = new Pose2d(
                                                 positionFromTrackingCamera[0],
                                                 positionFromTrackingCamera[1],
                                                 Rotation2d.fromDegrees(positionFromTrackingCamera[5]));
                                 if (positionFromTrackingCamera[0] == 0) {
-                                        swerveDrive.resetSwerveDrivePosition(resetPose);
+                                        telemetry.resetSwerveDrivePosition(resetPose);
                                 } else {
-                                        swerveDrive.resetSwerveDrivePosition(position);
+                                        telemetry.resetSwerveDrivePosition(position);
                                 }
                         }
 
@@ -493,6 +509,7 @@ public class RobotContainer {
 
                 Command pathPlannerCommand = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
+                                telemetry,
                                 elevator,
                                 elbow,
                                 grabber,

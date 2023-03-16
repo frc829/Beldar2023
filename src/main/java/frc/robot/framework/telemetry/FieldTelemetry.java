@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.framework.mechanismsAdvanced.SwerveModule;
 
 /** Add your docs here. */
-public interface Telemetry {
+public interface FieldTelemetry {
 
     public Pose2d getCurrentPosition();
 
@@ -25,11 +25,11 @@ public interface Telemetry {
             Pose2d newPose,
             Rotation2d gyroScopeAngle);
 
-    public static Telemetry create(
+    public static FieldTelemetry create(
             SwerveDrivePoseEstimator swerveDrivePoseEstimator,
             SwerveModule... swerveModules) {
 
-        return new Telemetry() {
+        return new FieldTelemetry() {
 
             @Override
             public Pose2d getCurrentPosition() {
