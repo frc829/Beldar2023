@@ -144,18 +144,14 @@ public class Grabber extends SubsystemBase {
     return grabberMech.getAverageVelocityRotationPerSecond();
   }
 
+  public boolean manualSpeedNonZero(){
+    return grabberManualControl.getManualSpeed() != 0;
+  }
+
   // Runnables
 
   public void setManualControlTrigger() {
-    BooleanSupplier grabberManualControlSupplier = new BooleanSupplier() {
-
-      @Override
-      public boolean getAsBoolean() {
-        return grabberManualControl.getManualSpeed() != 0;
-      }
-
-    };
-    Trigger grabberManualControlTrigger = new Trigger(grabberManualControlSupplier);
+    Trigger grabberManualControlTrigger = new Trigger(this::manualSpeedNonZero);
     CommandBase grabberManualControlCommand = this.createControlCommand();
     grabberManualControlTrigger.whileTrue(grabberManualControlCommand);
   }
