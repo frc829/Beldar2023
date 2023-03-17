@@ -7,6 +7,8 @@ package frc.robot;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
@@ -455,6 +457,21 @@ public final class Constants {
         }
 
       }
+
+      public static class LEDS {
+        public static class Candle {
+          public static final int deviceId = 17;
+          public static final String canbus = "CANIVORE";
+          public static final int ledCount = 400;
+          public static final LEDStripType ledStripType = LEDStripType.GRB;
+          public static final double brightness = 1;
+          public static final boolean disableWhenLOS = false;
+          public static final boolean disableWhenRunning = false;
+          public static final VBatOutputMode vBatOutputMode = VBatOutputMode.Modulated;
+          public static final double dutyCyclePrcnt = 1;
+        }
+      }
+
     }
   }
 
