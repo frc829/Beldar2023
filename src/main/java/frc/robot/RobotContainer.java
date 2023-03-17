@@ -6,8 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Arm;
+import frc.robot.commands.Chassis;
 import frc.robot.commands.PathPlannerToAuto;
-import frc.robot.commands.Arm.PlacementAndReset;
 import frc.robot.framework.kinematics.KinematicsFactory;
 import frc.robot.framework.telemetry.FieldMap;
 import frc.robot.framework.vision.DumbOldCamera;
@@ -22,6 +22,7 @@ import frc.robot.subsystems.Telemetry;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -42,6 +43,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -58,6 +60,7 @@ public class RobotContainer {
         private final FieldMap fieldMap;
 
         private final SwerveDrive swerveDrive;
+        private final Telemetry telemetry;
         private final Claw claw;
         private final Grabber grabber;
         private final Elevator elevator;
@@ -68,7 +71,6 @@ public class RobotContainer {
         private final HashMap<String, Command> autoCommands;
         private final HashMap<String, List<PathPlannerTrajectory>> pathPlannerTrajectories;
         private final SendableChooser<String> autoChooser = new SendableChooser<>();
-        private final Telemetry telemetry;
 
         public enum AutoBalanceDirection {
                 Forward,
@@ -84,15 +86,16 @@ public class RobotContainer {
                                 Constants.Robot.Drive.Modules.RearLeft.location,
                                 Constants.Robot.Drive.Modules.RearRight.location);
 
+                Pose2d initialPosition = new Pose2d(3, 3, new Rotation2d());
+
                 this.driveController = new CommandXboxController(
                                 OperatorConstants.DriverController.kDriverControllerPort);
                 this.operatorController = new CommandXboxController(
                                 OperatorConstants.DriverController.kOperatorControllerPort);
                 this.fieldMap = new FieldMap();
                 this.swerveDrive = new SwerveDrive(driveController, fieldMap, swerveDriveKinematics);
-                this.swerveDrive.setManualDefaultCommand();
-
-                Pose2d initialPosition = new Pose2d(3, 3, new Rotation2d());
+                CommandBase swerveDriveDefault = swerveDrive.createStopCommand();
+                this.swerveDrive.setDefaultCommand(swerveDriveDefault);
                 this.telemetry = new Telemetry(initialPosition, fieldMap, swerveDriveKinematics,
                                 swerveDrive.getSwerveModules());
 
@@ -158,39 +161,52 @@ public class RobotContainer {
 
         private void configureDriverBindings() {
 
+                CommandBase manualDriveCommand = Chassis.createManualDriveCommand(swerveDrive, telemetry);
                 CommandBase zeroModulesCommand = swerveDrive.getZeroModuleCommand();
                 CommandBase setTelemetryFromCameraCommand = telemetry.setTelemetryFromCameraCommand();
 
-                CommandBase dropPortalAlign = swerveDrive
-                                .createDropPortalCommand(Constants.Auto.Drive.PortalPositions.dropPortal);
+                CommandBase dropPortalAlign = Chassis.createDropPortalCommand(
+                                swerveDrive,
+                                telemetry,
+                                Constants.Auto.Drive.PortalPositions.dropPortal);
 
-                CommandBase leftPortalAlign = swerveDrive.createSlidingPortalCommand(
+                CommandBase leftPortalAlign = Chassis.createSlidingPortalCommand(
+                                swerveDrive,
+                                telemetry,
                                 Constants.Auto.Drive.PortalPositions.leftPortal,
                                 Constants.Auto.Drive.PortalPositions.rightPortal);
 
-                CommandBase rightPortalAlign = swerveDrive.createSlidingPortalCommand(
+                CommandBase rightPortalAlign = Chassis.createSlidingPortalCommand(
+                                swerveDrive,
+                                telemetry,
                                 Constants.Auto.Drive.PortalPositions.rightPortal,
                                 Constants.Auto.Drive.PortalPositions.leftPortal);
 
-                CommandBase nearestScoreAlign = swerveDrive.createNearestPointCommand(
+                CommandBase nearestScoreAlign = Chassis.createNearestPointCommand(
+                                swerveDrive,
+                                telemetry,
                                 Constants.Auto.Drive.ScoringPositions.positionsList);
 
-                CommandBase highConePoofCommand = PlacementAndReset.createHighConePoof(
+                CommandBase highConePoofCommand = Arm.createHighConePoofAndReset(
                                 elevator, elbow, tilt, claw, grabber);
 
-                CommandBase highPlacementAndResetCommand = PlacementAndReset.createHighPlacementAndReset(
+                CommandBase highPlacementAndResetCommand = Arm.createHighPlacementAndReset(
                                 elevator, elbow, tilt, claw, grabber);
 
-                CommandBase middlePlacementAndResetCommand = PlacementAndReset.createMiddlePlacementAndReset(
+                CommandBase middlePlacementAndResetCommand = Arm.createMiddlePlacementAndReset(
                                 elevator, elbow, tilt, claw, grabber);
 
-                CommandBase highAlignment = Arm.Alignment.createHigh(elevator, elbow, tilt, claw);
-                CommandBase middleAlignment = Arm.Alignment.createMiddle(elevator, elbow, tilt, claw);
-                CommandBase lowAlignPlacmentAndResetCommand = PlacementAndReset
-                                .createLowAlignPlacementAndReset(elevator, elbow, tilt, claw, grabber);
+                CommandBase highAlignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
+                CommandBase middleAlignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
+                CommandBase lowAlignPlacmentAndResetCommand = Arm.createLowAlignPlacementAndReset(elevator, elbow, tilt,
+                                claw, grabber);
 
-                driveController.back().onTrue(setTelemetryFromCameraCommand);
-                driveController.start().whileTrue(zeroModulesCommand);
+                BooleanSupplier booleanSupplier = swerveDrive.manualSpeedControlActive(telemetry);
+                Trigger driveManualTrigger = new Trigger(booleanSupplier);
+                driveManualTrigger.whileTrue(manualDriveCommand);
+
+                driveController.start().onTrue(setTelemetryFromCameraCommand);
+                driveController.back().whileTrue(zeroModulesCommand);
                 driveController.b().onTrue(highConePoofCommand);
                 driveController.x().onTrue(middleAlignment);
                 driveController.y().onTrue(highAlignment);
@@ -206,28 +222,27 @@ public class RobotContainer {
 
         private void configureOperatorBindings() {
 
-                CommandBase elementCarry = Arm.Carry.create(
-                                elevator, elbow, grabber, tilt, claw);
+                CommandBase elementCarry = Arm.createCarry(elevator, elbow, tilt, claw);
 
-                CommandBase conePickupFloor = Arm.Pickup.createFloor(
-                                elevator, elbow, grabber, claw, tilt, Claw.State.CONE, ledLighting);
+                CommandBase conePickupFloor = Arm.createFloorPickup(
+                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CONE);
 
-                CommandBase cubePickupFloor = Arm.Pickup.createFloor(
-                                elevator, elbow, grabber, claw, tilt, Claw.State.CUBE, ledLighting);
+                CommandBase cubePickupFloor = Arm.createFloorPickup(
+                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CUBE);
 
-                CommandBase conePickupSliding = Arm.Pickup.createSliding(
-                                elevator, elbow, grabber, claw, tilt, Claw.State.CONE, ledLighting);
+                CommandBase conePickupSliding = Arm.createSlidingPickup(
+                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CONE);
 
-                CommandBase cubePickupSliding = Arm.Pickup.createSliding(
-                                elevator, elbow, grabber, claw, tilt, Claw.State.CUBE, ledLighting);
+                CommandBase cubePickupSliding = Arm.createSlidingPickup(
+                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CUBE);
 
-                CommandBase conePickupDrop = Arm.Pickup.createDrop(
-                                elevator, elbow, grabber, claw, tilt, Claw.State.CONE, ledLighting);
+                CommandBase conePickupDrop = Arm.createDropPickup(
+                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CONE);
 
-                CommandBase cubePickupDrop = Arm.Pickup.createDrop(
-                                elevator, elbow, grabber, claw, tilt, Claw.State.CUBE, ledLighting);
+                CommandBase cubePickupDrop = Arm.createDropPickup(
+                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CUBE);
 
-                CommandBase grabberToggleCommand = Arm.ClawControl.createToggle(claw, ledLighting);
+                CommandBase grabberToggleCommand = Arm.SingleArmMovement.createToggleClawAndLights(claw, ledLighting);
 
                 CommandBase noLegsCommand = tilt.createControlCommand(ElevatorTilt.State.NONE);
                 CommandBase shortSaber = tilt.createControlCommand(ElevatorTilt.State.TWO);
@@ -270,7 +285,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position4.remainingPathConstraints,
                                 Constants.AutoRoutines.Element1.position4.translationConstants,
                                 Constants.AutoRoutines.Element1.position4.rotationConstants,
-                                AutoBalanceDirection.Backward);
+                                AutoBalanceDirection.Forward);
 
                 addAutoCommand(
                                 Constants.AutoRoutines.Element1.position5.pathName,
@@ -278,7 +293,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position5.remainingPathConstraints,
                                 Constants.AutoRoutines.Element1.position5.translationConstants,
                                 Constants.AutoRoutines.Element1.position5.rotationConstants,
-                                AutoBalanceDirection.Backward);
+                                AutoBalanceDirection.Forward);
 
                 addAutoCommand(
                                 Constants.AutoRoutines.Element1.position5Balance.pathName,
@@ -294,7 +309,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position6.remainingPathConstraints,
                                 Constants.AutoRoutines.Element1.position6.translationConstants,
                                 Constants.AutoRoutines.Element1.position6.rotationConstants,
-                                AutoBalanceDirection.Backward);
+                                AutoBalanceDirection.Forward);
 
                 addAutoCommand(
                                 Constants.AutoRoutines.Element2.position2.pathName,
@@ -382,7 +397,7 @@ public class RobotContainer {
                         Pose2d resetPose,
                         AutoBalanceDirection direction) {
 
-                Command balance = swerveDrive.getBalanceTestingCommand();
+                Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
                 Command danceParty = ledLighting.getDanceParty();
                 Command balanceAndDance = Commands.parallel(balance, danceParty);
 
@@ -475,7 +490,7 @@ public class RobotContainer {
                         PIDConstants translationConstants,
                         PIDConstants rotationConstants,
                         AutoBalanceDirection direction) {
-                Command balance = swerveDrive.getBalanceTestingCommand();
+                Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
                 Command danceParty = ledLighting.getDanceParty();
                 Command balanceAndDance = Commands.parallel(balance, danceParty);
 

@@ -103,11 +103,11 @@ public class Elbow extends SubsystemBase {
   }
 
   // Suppliers
-  private Rotation2d getPosition() {
+  public Rotation2d getPosition() {
     return elbowMech.getPositionRotations();
   }
 
-  private double getPositionRotations() {
+  public double getPositionRotations() {
     return getPosition().getRotations();
   }
 
@@ -127,6 +127,10 @@ public class Elbow extends SubsystemBase {
     return this.manualSpeedControl.getManualSpeed() != 0;
   }
 
+  public PIDController getPIDController(){
+    return this.elbowPIDController;
+  }
+
   // Runnables
 
   public void setManualControlTrigger() {
@@ -140,7 +144,7 @@ public class Elbow extends SubsystemBase {
   }
 
   // Consumers
-  private void setVelocityRotationsPerSecond(double rotationsPerSecond) {
+  public void setVelocityRotationsPerSecond(double rotationsPerSecond) {
     if (RobotBase.isSimulation()) {
       rotationsPerSecond += 0.01;
     }

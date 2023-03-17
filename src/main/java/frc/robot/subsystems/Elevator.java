@@ -119,7 +119,7 @@ public class Elevator extends SubsystemBase {
   }
 
   // Suppliers
-  private double getPosition() {
+  public double getPosition() {
     return elevatorMech.getPositionMeters();
   }
 
@@ -139,6 +139,10 @@ public class Elevator extends SubsystemBase {
     return this.elevatorManualSpeedControl.getManualSpeed() != 0;
   }
 
+  public PIDController getPIDController(){
+    return this.elevatorPIDController;
+  }
+
   // Runnable
 
   public void setManualControlTrigger() {
@@ -152,7 +156,7 @@ public class Elevator extends SubsystemBase {
   }
 
   // Consumers
-  private void setVelocity(double speedMetersPerSecond) {
+  public void setVelocity(double speedMetersPerSecond) {
     if (RobotBase.isSimulation()) {
       double gravitySim = 0;
       if (elevatorMech.getPositionMeters() > 0) {

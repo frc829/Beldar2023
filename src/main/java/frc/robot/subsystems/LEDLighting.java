@@ -136,6 +136,14 @@ public class LEDLighting extends SubsystemBase {
         this.setAnimation();
     }
 
+    //Consumers
+    public void setCurrentLEDConfig(LEDConfig ledConfig){
+        currentAnimation = null;
+        candle.animate(currentAnimation);
+        this.currentLEDConfig = ledConfig;
+    }
+
+
     public CommandBase createControlCommand(
             Color8Bit color) {
 

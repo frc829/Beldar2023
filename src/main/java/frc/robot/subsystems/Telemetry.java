@@ -140,6 +140,14 @@ public class Telemetry extends SubsystemBase {
                 return gyroscope.getPitch().getDegrees();
         }
 
+        public Rotation2d getPitch() {
+                return gyroscope.getPitch();
+        }
+
+        public Rotation2d getRoll() {
+                return gyroscope.getRoll();
+        }
+
         // Runnables
 
         // Consumers

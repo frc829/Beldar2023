@@ -500,18 +500,20 @@ public final class Constants {
           public static class Cone {
             public static final double elevatorPositionMeters0 = 0.25;
             public static final double elbowPositionDegrees0 = 40.0;
+            public static final ElevatorTilt.State elevatorTiltState0 = ElevatorTilt.State.NONE;
             public static final double elevatorPositionMeters1 = 0.914;
             public static final double elbowPositionDegrees1 = 16.6;
-            public static final ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
+            public static final ElevatorTilt.State elevatorTiltState1 = ElevatorTilt.State.SIX;
             public static final double waitForElevatorToTilt = 0.5;
           }
 
           public static class Cube {
             public static final double elevatorPositionMeters0 = 0.914;
             public static final double elbowPositionDegrees0 = 35.0;
+            public static final ElevatorTilt.State elevatorTiltState0 = ElevatorTilt.State.NONE;
             public static final double elevatorPositionMeters1 = 0.914;
             public static final double elbowPositionDegrees1 = 35.0;
-            public static final ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
+            public static final ElevatorTilt.State elevatorTiltState1 = ElevatorTilt.State.SIX;
             public static final double waitForElevatorToTilt = 0.5;
           }
         }
@@ -560,7 +562,7 @@ public final class Constants {
 
           public static class ConePoof {
             public static double waitForPoof = 0.5;
-            public static double grabberSpeedCubeRPM = -916.0;
+            public static double grabberSpeedRPM = -916.0;
           }
 
           public static class Cube {
@@ -600,45 +602,26 @@ public final class Constants {
       public static class Reset {
 
         public static class High {
-          public static class Cone {
-            public static double elevatorPosition = 0.0;
-            public static double elbowPosition = 30.0;
-            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
-          }
 
-          public static class Cube {
-            public static double elevatorPosition = 0.0;
-            public static double elbowPosition = 30.0;
-            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
-          }
+          public static double elevatorPosition = 0.0;
+          public static double elbowPosition = 30.0;
+          public static double grabberSpeed = 0.0;
+          public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
         }
 
         public static class Middle {
-          public static class Cone {
-            public static double elevatorPosition = 0.0;
-            public static double elbowPosition = 30.0;
-            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
-          }
 
-          public static class Cube {
-            public static double elevatorPosition = 0.0;
-            public static double elbowPosition = 30.0;
-            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
-          }
+          public static double elevatorPosition = 0.0;
+          public static double elbowPosition = 30.0;
+          public static double grabberSpeed = 0.0;
+          public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
         }
 
         public static class Low {
-          public static class Cone {
-            public static double elevatorPosition = 0.0;
-            public static double elbowPosition = 20.0;
-            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
-          }
-
-          public static class Cube {
-            public static double elevatorPosition = 0.0;
-            public static double elbowPosition = 20.0;
-            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
-          }
+          public static double elevatorPosition = 0.0;
+          public static double elbowPosition = 30.0;
+          public static double grabberSpeed = 0.0;
+          public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
         }
 
       }
@@ -711,8 +694,8 @@ public final class Constants {
         }
 
       }
-    
-      public static class LEDLighting{
+
+      public static class LEDLighting {
         public static Color8Bit Cone = new Color8Bit(0xFF, 0XD7, 0X00);
         public static Color8Bit Cube = new Color8Bit(0x3C, 0X09, 0X49);
       }
