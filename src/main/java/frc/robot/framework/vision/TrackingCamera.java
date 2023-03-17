@@ -15,8 +15,8 @@ public interface TrackingCamera {
             public double[] getFieldPosition(Alliance alliance) {
                 double[] fieldPoseDoubleArray = new double[7];
                 fieldPoseDoubleArray = alliance == Alliance.Blue 
-                ? LimelightHelpers.getBotpose_wpiBlue(limelightName)
-                : LimelightHelpers.getBotpose_wpiRed(limelightName);
+                ? LimelightHelpers.getBotPose_wpiBlue(limelightName)
+                : LimelightHelpers.getBotPose_wpiRed(limelightName);
 
                 fieldPoseDoubleArray = fieldPoseDoubleArray.length == 0 ? new double[7] : fieldPoseDoubleArray;
 
