@@ -22,7 +22,7 @@ public interface LimitSwitch {
             public boolean isOn() {
                 double position = linearPositionSensor.getPosition();
 
-                return position >= minimumDistance && position <= maximumDistance && linearPositionSensor.isRangeValid();
+                return position >= minimumDistance && position <= maximumDistance; //&& linearPositionSensor.isRangeValid();
             }
         };
     }

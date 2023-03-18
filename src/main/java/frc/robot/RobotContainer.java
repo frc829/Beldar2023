@@ -31,7 +31,6 @@ import com.pathplanner.lib.auto.PIDConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -345,143 +344,16 @@ public class RobotContainer {
 
                 addAutoCommand(
                                 Constants.AutoRoutines.Element1.position5Cone1.pathName,
-                                Constants.AutoRoutines.Element1.position5Cone.pathName,
-                                Constants.AutoRoutines.Element1.position5Cone.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.position5Cone.remainingPathConstraints,
-                                Constants.AutoRoutines.Element1.position5Cone.translationConstants,
-                                Constants.AutoRoutines.Element1.position5Cone.rotationConstants,
-                                Constants.AutoRoutines.Element1.position5Cone1.pathName,
                                 Constants.AutoRoutines.Element1.position5Cone1.firstPathConstraint,
                                 Constants.AutoRoutines.Element1.position5Cone1.remainingPathConstraints,
                                 Constants.AutoRoutines.Element1.position5Cone1.translationConstants,
                                 Constants.AutoRoutines.Element1.position5Cone1.rotationConstants,
-                                new Pose2d(
-                                                5.27,
-                                                2.75,
-                                                Rotation2d.fromDegrees(180)),
-                                AutoBalanceDirection.Backward);
-
-                addAutoCommand(
-                                Constants.AutoRoutines.Element1.position5Cone2.pathName,
-                                Constants.AutoRoutines.Element1.position5Cone.pathName,
-                                Constants.AutoRoutines.Element1.position5Cone.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.position5Cone.remainingPathConstraints,
-                                Constants.AutoRoutines.Element1.position5Cone.translationConstants,
-                                Constants.AutoRoutines.Element1.position5Cone.rotationConstants,
-                                Constants.AutoRoutines.Element1.position5Cone2.pathName,
-                                Constants.AutoRoutines.Element1.position5Cone2.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.position5Cone2.remainingPathConstraints,
-                                Constants.AutoRoutines.Element1.position5Cone2.translationConstants,
-                                Constants.AutoRoutines.Element1.position5Cone2.rotationConstants,
-                                new Pose2d(
-                                                5.27,
-                                                2.75,
-                                                Rotation2d.fromDegrees(180)),
                                 AutoBalanceDirection.Backward);
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
+
         }
 
-        private void addAutoCommand(
-                        String autoName,
-                        String pathName,
-                        PathConstraints firstPathConstraint,
-                        PathConstraints[] remainingPathConstraints,
-                        PIDConstants translationConstants,
-                        PIDConstants rotationConstants,
-                        String pathName2,
-                        PathConstraints firstPathConstraint2,
-                        PathConstraints[] remainingPathConstraints2,
-                        PIDConstants translationConstants2,
-                        PIDConstants rotationConstants2,
-                        Pose2d resetPose,
-                        AutoBalanceDirection direction) {
-
-                Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
-                Command danceParty = ledLighting.getDanceParty();
-                Command balanceAndDance = Commands.parallel(balance, danceParty);
-
-                List<PathPlannerTrajectory> trajectories = PathPlannerToAuto
-                                .getPathPlannerTrajectory(
-                                                pathName,
-                                                firstPathConstraint,
-                                                remainingPathConstraints);
-
-                Command pathPlannerCommand = PathPlannerToAuto.createFullAutoFromPathGroup(
-                                swerveDrive,
-                                telemetry,
-                                elevator,
-                                elbow,
-                                grabber,
-                                claw,
-                                tilt,
-                                ledLighting,
-                                trajectories,
-                                translationConstants,
-                                rotationConstants);
-
-                List<PathPlannerTrajectory> trajectories2 = PathPlannerToAuto
-                                .getPathPlannerTrajectory(
-                                                pathName2,
-                                                firstPathConstraint2,
-                                                remainingPathConstraints2);
-
-                Command pathPlannerCommand2 = PathPlannerToAuto.createFullAutoFromPathGroup(
-                                swerveDrive,
-                                telemetry,
-                                elevator,
-                                elbow,
-                                grabber,
-                                claw,
-                                tilt,
-                                ledLighting,
-                                trajectories2,
-                                translationConstants2,
-                                rotationConstants2);
-
-                CommandBase resetTelemetry = new CommandBase() {
-                        @Override
-                        public void execute() {
-                                double[] positionFromTrackingCamera = telemetry.getTrackingCamera()
-                                                .getFieldPosition(DriverStation.getAlliance());
-                                Pose2d position = new Pose2d(
-                                                positionFromTrackingCamera[0],
-                                                positionFromTrackingCamera[1],
-                                                Rotation2d.fromDegrees(positionFromTrackingCamera[5]));
-                                if (positionFromTrackingCamera[0] == 0) {
-                                        telemetry.resetSwerveDrivePosition(resetPose);
-                                } else {
-                                        telemetry.resetSwerveDrivePosition(position);
-                                }
-                        }
-
-                        @Override
-                        public boolean isFinished() {
-                                return true;
-                        }
-                };
-
-                resetTelemetry.addRequirements(swerveDrive);
-
-                if (direction == AutoBalanceDirection.Forward) {
-                        Command driveABit = swerveDrive.getOnRampCommand();
-                        Command endCommand = Commands.sequence(driveABit, balanceAndDance);
-                        Command autoCommand = Commands.sequence(pathPlannerCommand, resetTelemetry, pathPlannerCommand2,
-                                        endCommand);
-                        this.pathPlannerTrajectories.put(autoName, trajectories);
-                        this.autoCommands.put(autoName, autoCommand);
-                        this.autoChooser.addOption(autoName, autoName);
-
-                } else {
-                        Command driveABit = swerveDrive.getOnRampBackwardCommand();
-                        Command endCommand = Commands.sequence(driveABit, balanceAndDance);
-                        Command autoCommand = Commands.sequence(pathPlannerCommand, resetTelemetry, pathPlannerCommand2,
-                                        endCommand);
-                        this.pathPlannerTrajectories.put(autoName, trajectories);
-                        this.autoCommands.put(autoName, autoCommand);
-                        this.autoChooser.addOption(autoName, autoName);
-                }
-        }
 
         private void addAutoCommand(
                         String pathName,

@@ -98,7 +98,7 @@ public abstract class PathPlannerToAuto {
 
         for (String name : commandNames) {
             CommandBase command = createCommandForAuto(name, swerveDrive, elevator, elbow, grabber, claw, tilt,
-                    ledLighting);
+                    ledLighting, telemetry);
             eventMap.put(name, command);
         }
 
@@ -112,7 +112,7 @@ public abstract class PathPlannerToAuto {
     }
 
     private static CommandBase createCommandForAuto(String name, SwerveDrive swerveDrive, Elevator elevator,
-            Elbow elbow, Grabber grabber, Claw claw, ElevatorTilt tilt, LEDLighting ledLighting) {
+            Elbow elbow, Grabber grabber, Claw claw, ElevatorTilt tilt, LEDLighting ledLighting, Telemetry telemetry) {
         if (name.contains("ScoreHighCone")) {
             CommandBase clawCone = claw.createSetStateCommand(Claw.State.CONE);
             CommandBase alignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
@@ -173,6 +173,9 @@ public abstract class PathPlannerToAuto {
                     tilt,
                     claw);
             return carry;
+        } else if (name.contains("Camera")) {
+            CommandBase camera = telemetry.setTelemetryFromCameraCommand();
+            return camera;
         } else {
             CommandBase none = Commands.none();
             return none;

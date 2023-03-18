@@ -146,8 +146,8 @@ public class Elbow extends SubsystemBase {
   // Consumers
   public void setVelocityRotationsPerSecond(double rotationsPerSecond) {
 
-    if(Math.abs(rotationsPerSecond) >= 0.34){
-      rotationsPerSecond = Math.signum(rotationsPerSecond) * 0.34;
+    if(Math.abs(rotationsPerSecond) >= 0.68){
+      rotationsPerSecond = Math.signum(rotationsPerSecond) * 0.68;
     }
 
     if (RobotBase.isSimulation()) {

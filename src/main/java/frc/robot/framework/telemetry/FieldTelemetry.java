@@ -55,8 +55,8 @@ public interface FieldTelemetry {
             public void addVisionMeasurement(double[] poseFromVision) {
 
                 Translation2d poseFromVisionTranslation = new Translation2d(
-                    poseFromVision[0], 
-                    poseFromVision[1]);
+                        poseFromVision[0],
+                        poseFromVision[1]);
                 Translation2d currentPoseFromEstimatorTranslation = getCurrentPosition().getTranslation();
                 double poseDifferencesNorm = poseFromVisionTranslation.getDistance(currentPoseFromEstimatorTranslation);
 
@@ -65,15 +65,35 @@ public interface FieldTelemetry {
                 Rotation2d yawDifference = currentYaw.minus(poseFromVisionyaw);
 
                 double yawDifferenceDegrees = yawDifference.getDegrees();
-                double yawDifferenceDegreesMag = Math.abs(yawDifferenceDegrees);               
+                double yawDifferenceDegreesMag = Math.abs(yawDifferenceDegrees);
 
-                //SmartDashboard.putNumber("YAWFROMTELE", poseFromVision[5]);
+                // SmartDashboard.putNumber("YAWFROMTELE", poseFromVision[5]);
 
-                if (poseDifferencesNorm <= 1.0 && yawDifferenceDegreesMag <= 2.0) {
-                    swerveDrivePoseEstimator.addVisionMeasurement(
-                            new Pose2d(poseFromVision[0], poseFromVision[1], Rotation2d.fromDegrees(poseFromVision[5])),
-                            Timer.getFPGATimestamp());
+                if (poseFromVision[0] != 0) {
+                    if (poseDifferencesNorm <= 1.0 && yawDifferenceDegreesMag <= 2.0) {
+                        swerveDrivePoseEstimator.addVisionMeasurement(
+                                new Pose2d(poseFromVision[0], poseFromVision[1],
+                                        Rotation2d.fromDegrees(poseFromVision[5])),
+                                Timer.getFPGATimestamp());
+                    } else if (poseDifferencesNorm <= 1.0) {
+                        Pose2d visionPose = new Pose2d(
+                                poseFromVision[0],
+                                poseFromVision[1],
+                                getCurrentPosition().getRotation());
+                        swerveDrivePoseEstimator.addVisionMeasurement(
+                                visionPose,
+                                Timer.getFPGATimestamp());
+                    } else if (yawDifferenceDegreesMag <= 2.0) {
+                        Pose2d visionPose = new Pose2d(
+                                getCurrentPosition().getX(),
+                                getCurrentPosition().getY(),
+                                Rotation2d.fromDegrees(poseFromVision[5]));
+                        swerveDrivePoseEstimator.addVisionMeasurement(
+                                visionPose,
+                                Timer.getFPGATimestamp());
+                    }
                 }
+
             }
 
             @Override
