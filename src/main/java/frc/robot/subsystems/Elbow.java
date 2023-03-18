@@ -9,7 +9,6 @@ import java.text.DecimalFormat;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -34,7 +33,7 @@ public class Elbow extends SubsystemBase {
   private final RotationMech elbowMech;
   private final AngularPositionSensor elbowSensor;
   private final ManualSpeedControl manualSpeedControl;
-  private final ProfiledPIDController elbowPIDController;
+  private final PIDController elbowPIDController;
   private final MechanismLigament2d elbowMech2d;
   private final DecimalFormat decimalFormat;
 
@@ -146,6 +145,11 @@ public class Elbow extends SubsystemBase {
 
   // Consumers
   public void setVelocityRotationsPerSecond(double rotationsPerSecond) {
+
+    if(Math.abs(rotationsPerSecond) >= 0.34){
+      rotationsPerSecond = Math.signum(rotationsPerSecond) * 0.34;
+    }
+
     if (RobotBase.isSimulation()) {
       rotationsPerSecond += 0.01;
     }

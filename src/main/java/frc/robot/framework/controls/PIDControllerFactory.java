@@ -5,7 +5,6 @@
 package frc.robot.framework.controls;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 
 /** Add your docs here. */
 public class PIDControllerFactory {
@@ -32,18 +31,5 @@ public class PIDControllerFactory {
         pidController.enableContinuousInput(minContinuousPosition, maxContinuousPosition);
         return pidController;
     }
-
-    public static ProfiledPIDController createProfiled(
-        double kP,
-        double kI,
-        double kD,
-        double tolerance,
-        double minContinuousPosition,
-        double maxContinuousPosition) {
-    PIDController pidController = new PIDController(kP, kI, kD);
-    pidController.setTolerance(tolerance);
-    pidController.enableContinuousInput(minContinuousPosition, maxContinuousPosition);
-    return pidController;
-}
 
 }
