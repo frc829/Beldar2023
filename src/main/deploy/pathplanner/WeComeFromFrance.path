@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "ScoreMiddle1"
+          "ScoreHighCube1"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -74,12 +74,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.1,
-      "names": [
-        "ElbowHold"
-      ]
-    }
-  ]
+  "markers": []
 }

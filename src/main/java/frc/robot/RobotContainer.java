@@ -285,7 +285,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position4.remainingPathConstraints,
                                 Constants.AutoRoutines.Element1.position4.translationConstants,
                                 Constants.AutoRoutines.Element1.position4.rotationConstants,
-                                AutoBalanceDirection.Forward);
+                                AutoBalanceDirection.Backward);
 
                 addAutoCommand(
                                 Constants.AutoRoutines.Element1.position5.pathName,
@@ -309,7 +309,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position6.remainingPathConstraints,
                                 Constants.AutoRoutines.Element1.position6.translationConstants,
                                 Constants.AutoRoutines.Element1.position6.rotationConstants,
-                                AutoBalanceDirection.Forward);
+                                AutoBalanceDirection.Backward);
 
                 addAutoCommand(
                                 Constants.AutoRoutines.Element2.position2.pathName,

@@ -113,16 +113,30 @@ public abstract class PathPlannerToAuto {
 
     private static CommandBase createCommandForAuto(String name, SwerveDrive swerveDrive, Elevator elevator,
             Elbow elbow, Grabber grabber, Claw claw, ElevatorTilt tilt, LEDLighting ledLighting) {
-        if (name.contains("ScoreHigh")) {
+        if (name.contains("ScoreHighCone")) {
+            CommandBase clawCone = claw.createSetStateCommand(Claw.State.CONE);
             CommandBase alignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
             CommandBase placement = Arm.createHighPlacement(elevator, elbow, tilt, claw, grabber);
             CommandBase reset = Arm.createResetHigh(elevator, elbow, tilt, grabber);
-            return Commands.sequence(alignment, placement, reset);
-        } else if (name.contains("ScoreMiddle")) {
+            return Commands.sequence(clawCone, alignment, placement, reset);
+        } else if (name.contains("ScoreHighCube")) {
+            CommandBase clawCube = claw.createSetStateCommand(Claw.State.CUBE);
+            CommandBase alignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
+            CommandBase placement = Arm.createHighPlacement(elevator, elbow, tilt, claw, grabber);
+            CommandBase reset = Arm.createResetHigh(elevator, elbow, tilt, grabber);
+            return Commands.sequence(clawCube, alignment, placement, reset);
+        } else if (name.contains("ScoreMiddleCone")) {
+            CommandBase clawCone = claw.createSetStateCommand(Claw.State.CONE);
             CommandBase alignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
             CommandBase placement = Arm.createMiddlePlacement(elevator, elbow, tilt, claw, grabber);
             CommandBase reset = Arm.createResetMiddle(elevator, elbow, tilt, grabber);
-            return Commands.sequence(alignment, placement, reset);
+            return Commands.sequence(clawCone, alignment, placement, reset);
+        } else if (name.contains("ScoreMiddleCube")) {
+            CommandBase clawCube = claw.createSetStateCommand(Claw.State.CUBE);
+            CommandBase alignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
+            CommandBase placement = Arm.createMiddlePlacement(elevator, elbow, tilt, claw, grabber);
+            CommandBase reset = Arm.createResetMiddle(elevator, elbow, tilt, grabber);
+            return Commands.sequence(clawCube, alignment, placement, reset);
         } else if (name.contains("ScoreLow")) {
             CommandBase alignment = Arm.createAlignLow(elevator, elbow, tilt, claw);
             CommandBase placement = Arm.createLowPlacement(elevator, elbow, tilt, claw, grabber);
@@ -137,6 +151,16 @@ public abstract class PathPlannerToAuto {
                     claw,
                     ledLighting,
                     Claw.State.CONE);
+            return conePickup;
+        } else if (name.contains("CubePickup")) {
+            CommandBase conePickup = Arm.createFloorPickup(
+                    elevator,
+                    elbow,
+                    tilt,
+                    grabber,
+                    claw,
+                    ledLighting,
+                    Claw.State.CUBE);
             return conePickup;
         } else if (name.contains("ElevatorHold")) {
             return elevator.createHoldCommand();

@@ -376,8 +376,8 @@ public final class Constants {
 
         public static class Sensor {
           public static int dioChannel = 0;
-          // public static double offsetDegrees = 210.0; //practicebot
-          public static double offsetDegrees = 317.0; // compbot
+          public static double offsetDegrees = 210.0; //practicebot
+          //public static double offsetDegrees = 317.0; // compbot
         }
 
         public static class Control {
@@ -544,10 +544,12 @@ public final class Constants {
           }
 
           public static class Cube {
-            public static final double elevatorPositionMeters = 0.495;
-            public static final double elbowPositionDegrees = 34.0;
-            public static final ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
-            public static final double waitForElevatorToTilt = 0.5;
+            // public static final double elevatorPositionMeters = 0.495;
+            // public static final double elbowPositionDegrees = 34.0;
+            public static final double elevatorPositionMeters = 0.0;
+            public static final double elbowPositionDegrees = 40.0;
+            public static final ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
+            public static final double waitForElevatorToTilt = 0.0;
           }
 
         }
@@ -583,7 +585,7 @@ public final class Constants {
           }
 
           public static class Cube {
-            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
+            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
             public static double waitForElevatorToTilt = 0.25;
             public static double grabberSpeedCubeRPM = -916.0;
           }
@@ -596,7 +598,7 @@ public final class Constants {
           }
 
           public static class Cube {
-            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.SIX;
+            public static ElevatorTilt.State elevatorTiltState = ElevatorTilt.State.NONE;
             public static double waitForElevatorToTilt = 0.25;
             public static double grabberSpeedCubeRPM = -916.0;
           }
@@ -658,7 +660,7 @@ public final class Constants {
             public static final double elevatorPositionMeters = 0.0;
             public static final double elbowPositionDegrees = 106.5;
             public static final ElevatorTilt.State elevatorTiltState = State.TWO;
-            public static final double grabberSpeedRPM = 250.0;
+            public static final double grabberSpeedRPM = 160.0;
           }
         }
 
@@ -698,14 +700,14 @@ public final class Constants {
       public static class Carry {
         public static class Cone {
           public static final double elevatorPositionMeters = 0.0;
-          public static final double elbowPositionDegrees = 23.0;
+          public static final double elbowPositionDegrees = 25.0;
           public static final double grabberSpeedRPM = 0.0;
           public static final ElevatorTilt.State elevatorTiltState = State.NONE;
         }
 
         public static class Cube {
           public static final double elevatorPositionMeters = 0.0;
-          public static final double elbowPositionDegrees = 17.0;
+          public static final double elbowPositionDegrees = 25.0;
           public static final double grabberSpeedRPM = 0.0;
           public static final ElevatorTilt.State elevatorTiltState = State.NONE;
         }
@@ -742,8 +744,8 @@ public final class Constants {
     public static class Element2 {
       public static class position2 {
         public static String pathName = "ConsumeMassQuantities1";
-        public static PIDConstants translationConstants = new PIDConstants(15.000, 0, 0);
-        public static PIDConstants rotationConstants = new PIDConstants(10.000, 0, 0);
+        public static PIDConstants translationConstants = new PIDConstants(1.000, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(1.000, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }

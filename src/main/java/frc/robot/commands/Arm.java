@@ -167,7 +167,7 @@ public abstract class Arm {
                                 claw,
                                 grabber,
                                 Constants.Auto.Arm.Placement.Middle.Cube.grabberSpeedCubeRPM,
-                                0.25);
+                                0.5);
 
                 CommandBase tinyWait = Commands.waitSeconds(0.5);
 
