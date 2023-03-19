@@ -200,6 +200,12 @@ public class RobotContainer {
                 CommandBase lowAlignPlacmentAndResetCommand = Arm.createLowAlignPlacementAndReset(elevator, elbow, tilt,
                                 claw, grabber);
 
+                Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
+                Command danceParty = ledLighting.getDanceParty2();
+                Command balanceAndDance = Commands.parallel(balance, danceParty);
+                Command driveABit = swerveDrive.getOnRampBackwardCommand();
+                Command end = Commands.sequence(driveABit, balanceAndDance);
+
                 BooleanSupplier booleanSupplier = swerveDrive.manualSpeedControlActive(telemetry);
                 Trigger driveManualTrigger = new Trigger(booleanSupplier);
                 driveManualTrigger.whileTrue(manualDriveCommand);
@@ -209,7 +215,8 @@ public class RobotContainer {
                 driveController.b().onTrue(highConePoofCommand);
                 driveController.x().onTrue(middleAlignment);
                 driveController.y().onTrue(highAlignment);
-                driveController.a().onTrue(lowAlignPlacmentAndResetCommand);
+                // driveController.a().onTrue(lowAlignPlacmentAndResetCommand);
+                driveController.a().whileTrue(end);
                 driveController.leftBumper().onTrue(middlePlacementAndResetCommand);
                 driveController.rightBumper().onTrue(highPlacementAndResetCommand);
                 driveController.povLeft().whileTrue(leftPortalAlign);
@@ -276,6 +283,14 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element2.position2.remainingPathConstraints,
                                 Constants.AutoRoutines.Element2.position2.translationConstants,
                                 Constants.AutoRoutines.Element2.position2.rotationConstants,
+                                Commands.none());
+
+                addAutoCommand(
+                                Constants.AutoRoutines.Element2.position2Again.pathName,
+                                Constants.AutoRoutines.Element2.position2Again.firstPathConstraint,
+                                Constants.AutoRoutines.Element2.position2Again.remainingPathConstraints,
+                                Constants.AutoRoutines.Element2.position2Again.translationConstants,
+                                Constants.AutoRoutines.Element2.position2Again.rotationConstants,
                                 Commands.none());
 
                 addAutoCommand(
@@ -354,7 +369,6 @@ public class RobotContainer {
 
         }
 
-
         private void addAutoCommand(
                         String pathName,
                         PathConstraints firstPathConstraint,
@@ -363,7 +377,7 @@ public class RobotContainer {
                         PIDConstants rotationConstants,
                         AutoBalanceDirection direction) {
                 Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
-                Command danceParty = ledLighting.getDanceParty();
+                Command danceParty = ledLighting.getDanceParty2();
                 Command balanceAndDance = Commands.parallel(balance, danceParty);
 
                 if (direction == AutoBalanceDirection.Forward) {

@@ -99,13 +99,32 @@ public abstract class Arm {
                 CommandBase movement0 = Arm.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
-                                grabber,
-                                Constants.Auto.Arm.Placement.High.ConePoof.grabberSpeedRPM,
-                                0.25);
+                                tilt,
+                                claw,
+                                Constants.Auto.Arm.Alignment.High.Cone.elevatorTiltState0,
+                                Constants.Auto.Arm.Alignment.High.Cube.elevatorTiltState0,
+                                Constants.Auto.Arm.Alignment.High.Cone.elevatorPositionMeters0,
+                                Constants.Auto.Arm.Alignment.High.Cube.elevatorPositionMeters0,
+                                Constants.Auto.Arm.Alignment.High.Cone.elbowPositionDegrees0,
+                                Constants.Auto.Arm.Alignment.High.Cube.elbowPositionDegrees0);
+
+                CommandBase movement1 = Arm.SingleArmMovement.createWithEnding(
+                                elevator,
+                                elbow,
+                                tilt,
+                                claw,
+                                Constants.Auto.Arm.Alignment.High.Cone.elevatorTiltState1,
+                                Constants.Auto.Arm.Alignment.High.Cube.elevatorTiltState1,
+                                Constants.Auto.Arm.Alignment.High.Cone.elevatorPositionMeters1,
+                                Constants.Auto.Arm.Alignment.High.Cube.elevatorPositionMeters1,
+                                Constants.Auto.Arm.Alignment.High.Cone.elbowPositionDegrees1,
+                                Constants.Auto.Arm.Alignment.High.Cube.elbowPositionDegrees1);
 
                 CommandBase tinyWait = Commands.waitSeconds(0.25);
 
-                return Commands.sequence(movement0, tinyWait);
+                CommandBase openClaw = claw.createSetStateCommand(Claw.State.CUBE);
+
+                return Commands.sequence(movement0, movement1, tinyWait, openClaw);
         }
 
         public static CommandBase createHighPlacement(
@@ -167,9 +186,9 @@ public abstract class Arm {
                                 claw,
                                 grabber,
                                 Constants.Auto.Arm.Placement.Middle.Cube.grabberSpeedCubeRPM,
-                                0.5);
+                                0.25);
 
-                CommandBase tinyWait = Commands.waitSeconds(0.5);
+                CommandBase tinyWait = Commands.waitSeconds(0.25);
 
                 return Commands.sequence(movement0, wait0, movement1, tinyWait);
         }
