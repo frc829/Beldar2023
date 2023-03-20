@@ -149,5 +149,21 @@
       }
     }
   ],
-  "markers": []
+  "maxVelocity": 1.0,
+  "maxAcceleration": 2.0,
+  "isReversed": null,
+  "markers": [
+    {
+      "position": 1.8909090909090547,
+      "names": [
+        "CubePickup1"
+      ]
+    },
+    {
+      "position": 3.4909090909090175,
+      "names": [
+        "Carry1"
+      ]
+    }
+  ]
 }

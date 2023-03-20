@@ -73,7 +73,8 @@ public class RobotContainer {
 
         public enum AutoBalanceDirection {
                 Forward,
-                Backward
+                Backward,
+                Ignore
         }
 
         public RobotContainer() {
@@ -200,11 +201,11 @@ public class RobotContainer {
                 CommandBase lowAlignPlacmentAndResetCommand = Arm.createLowAlignPlacementAndReset(elevator, elbow, tilt,
                                 claw, grabber);
 
-                Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
-                Command danceParty = ledLighting.getDanceParty2();
-                Command balanceAndDance = Commands.parallel(balance, danceParty);
-                Command driveABit = swerveDrive.getOnRampBackwardCommand();
-                Command end = Commands.sequence(driveABit, balanceAndDance);
+                // Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
+                // Command danceParty = ledLighting.getDanceParty2();
+                // Command balanceAndDance = Commands.parallel(balance, danceParty);
+                // Command driveABit = swerveDrive.getOnRampBackwardCommand();
+                // Command end = Commands.sequence(driveABit, balanceAndDance);
 
                 BooleanSupplier booleanSupplier = swerveDrive.manualSpeedControlActive(telemetry);
                 Trigger driveManualTrigger = new Trigger(booleanSupplier);
@@ -216,7 +217,7 @@ public class RobotContainer {
                 driveController.x().onTrue(middleAlignment);
                 driveController.y().onTrue(highAlignment);
                 // driveController.a().onTrue(lowAlignPlacmentAndResetCommand);
-                driveController.a().whileTrue(end);
+                driveController.a().onTrue(lowAlignPlacmentAndResetCommand);
                 driveController.leftBumper().onTrue(middlePlacementAndResetCommand);
                 driveController.rightBumper().onTrue(highPlacementAndResetCommand);
                 driveController.povLeft().whileTrue(leftPortalAlign);
@@ -363,7 +364,15 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position5Cone1.remainingPathConstraints,
                                 Constants.AutoRoutines.Element1.position5Cone1.translationConstants,
                                 Constants.AutoRoutines.Element1.position5Cone1.rotationConstants,
-                                AutoBalanceDirection.Backward);
+                                AutoBalanceDirection.Ignore);
+
+                addAutoCommand(
+                                Constants.AutoRoutines.Element1.position5Cone2.pathName,
+                                Constants.AutoRoutines.Element1.position5Cone2.firstPathConstraint,
+                                Constants.AutoRoutines.Element1.position5Cone2.remainingPathConstraints,
+                                Constants.AutoRoutines.Element1.position5Cone2.translationConstants,
+                                Constants.AutoRoutines.Element1.position5Cone2.rotationConstants,
+                                AutoBalanceDirection.Ignore);
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -385,9 +394,13 @@ public class RobotContainer {
                         Command end = Commands.sequence(driveABit, balanceAndDance);
                         addAutoCommand(pathName, firstPathConstraint, remainingPathConstraints, translationConstants,
                                         rotationConstants, end);
-                } else {
+                } else if (direction == AutoBalanceDirection.Backward) {
                         Command driveABit = swerveDrive.getOnRampBackwardCommand();
                         Command end = Commands.sequence(driveABit, balanceAndDance);
+                        addAutoCommand(pathName, firstPathConstraint, remainingPathConstraints, translationConstants,
+                                        rotationConstants, end);
+                } else if (direction == AutoBalanceDirection.Ignore) {
+                        Command end = Commands.sequence(balanceAndDance);
                         addAutoCommand(pathName, firstPathConstraint, remainingPathConstraints, translationConstants,
                                         rotationConstants, end);
                 }
