@@ -724,6 +724,7 @@ public abstract class Arm {
                                         double elbowPositionRotations = elbow.getPositionRotations();
                                         double elevatorSpeed = elevator.getPIDController()
                                                         .calculate(elevatorPositionMeters);
+                                        elevatorSpeed = Math.abs(elevatorSpeed) > 0.5 ? Math.signum(elevatorSpeed) * 0.5 : elevatorSpeed; 
                                         double elbowSpeed = elbow.getPIDController().calculate(elbowPositionRotations);
                                         elbow.setVelocityRotationsPerSecond(elbowSpeed);
                                         elevator.setVelocity(elevatorSpeed);

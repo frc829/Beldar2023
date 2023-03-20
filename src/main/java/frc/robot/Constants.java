@@ -652,7 +652,7 @@ public final class Constants {
         public static class Floor {
           public static class Cone {
             public static final double elevatorPositionMeters = 0.0;
-            public static final double elbowPositionDegrees = 109;
+            public static final double elbowPositionDegrees = 106.5;
             public static final ElevatorTilt.State elevatorTiltState = State.TWO;
             public static final double grabberSpeedRPM = 916.0;
           }
@@ -668,7 +668,7 @@ public final class Constants {
         public static class Drop {
           public static class Cone {
             public static final double elevatorPositionMeters = 0.0;
-            public static final double elbowPositionDegrees = 54.97;
+            public static final double elbowPositionDegrees = 51.97;
             public static final ElevatorTilt.State elevatorTiltState = State.NONE;
             public static final double grabberSpeedRPM = 916.0;
           }
@@ -737,8 +737,8 @@ public final class Constants {
 
       public static class position8 {
         public static String pathName = "3ElementPosition2Fast";
-        public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
-        public static PIDConstants rotationConstants = new PIDConstants(20, 0, 0);
+        public static PIDConstants translationConstants = new PIDConstants(30, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(50, 0, 1);
         public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
         public static PathConstraints[] remainingPathConstraints = {
             new PathConstraints(4, 3)
@@ -810,7 +810,7 @@ public final class Constants {
         public static String pathName = "IAmWithCone1";
         public static PIDConstants translationConstants = new PIDConstants(1, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(1, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(1, 2);
+        public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }
 
