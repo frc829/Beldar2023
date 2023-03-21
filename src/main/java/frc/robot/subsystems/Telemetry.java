@@ -164,11 +164,6 @@ public class Telemetry extends SubsystemBase {
         }
 
         // Commands
-        public CommandBase setTelemetryFromSafeKnownPosition(Pose2d safeKnownPosition) {
-                return Commands.runOnce(
-                                () -> resetSwerveDrivePosition(safeKnownPosition),
-                                this);
-        }
 
         public CommandBase setTelemetryFromCameraCommand() {
                 return Commands.runOnce(
