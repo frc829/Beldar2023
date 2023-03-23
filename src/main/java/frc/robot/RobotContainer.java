@@ -201,11 +201,11 @@ public class RobotContainer {
                 CommandBase lowAlignPlacmentAndResetCommand = Arm.createLowAlignPlacementAndReset(elevator, elbow, tilt,
                                 claw, grabber);
 
-                // Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
-                // Command danceParty = ledLighting.getDanceParty2();
-                // Command balanceAndDance = Commands.parallel(balance, danceParty);
-                // Command driveABit = swerveDrive.getOnRampBackwardCommand();
-                // Command end = Commands.sequence(driveABit, balanceAndDance);
+                Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
+                Command danceParty = ledLighting.getDanceParty2();
+                Command balanceAndDance = Commands.parallel(balance, danceParty);
+                Command driveABit = swerveDrive.getOnRampCommand();
+                Command end = Commands.sequence(driveABit, balanceAndDance);
 
                 BooleanSupplier booleanSupplier = swerveDrive.manualSpeedControlActive(telemetry);
                 Trigger driveManualTrigger = new Trigger(booleanSupplier);
@@ -217,7 +217,7 @@ public class RobotContainer {
                 driveController.x().onTrue(middleAlignment);
                 driveController.y().onTrue(highAlignment);
                 // driveController.a().onTrue(lowAlignPlacmentAndResetCommand);
-                driveController.a().onTrue(lowAlignPlacmentAndResetCommand);
+                driveController.a().whileTrue(end);
                 driveController.leftBumper().onTrue(middlePlacementAndResetCommand);
                 driveController.rightBumper().onTrue(highPlacementAndResetCommand);
                 driveController.povLeft().whileTrue(leftPortalAlign);
@@ -356,6 +356,14 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element3.position8.remainingPathConstraints,
                                 Constants.AutoRoutines.Element3.position8.translationConstants,
                                 Constants.AutoRoutines.Element3.position8.rotationConstants,
+                                Commands.none());
+
+                addAutoCommand(
+                                Constants.AutoRoutines.Element1.testing2.pathName,
+                                Constants.AutoRoutines.Element1.testing2.firstPathConstraint,
+                                Constants.AutoRoutines.Element1.testing2.remainingPathConstraints,
+                                Constants.AutoRoutines.Element1.testing2.translationConstants,
+                                Constants.AutoRoutines.Element1.testing2.rotationConstants,
                                 Commands.none());
 
                 addAutoCommand(
