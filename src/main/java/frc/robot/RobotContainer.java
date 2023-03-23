@@ -5,7 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Arm;
+import frc.robot.commands.ArmCommands;
 import frc.robot.commands.Chassis;
 import frc.robot.commands.PathPlannerToAuto;
 import frc.robot.framework.kinematics.KinematicsFactory;
@@ -187,18 +187,18 @@ public class RobotContainer {
                                 telemetry,
                                 Constants.Auto.Drive.ScoringPositions.positionsList);
 
-                CommandBase highConePoofCommand = Arm.createHighConePoofAndReset(
+                CommandBase highConePoofCommand = ArmCommands.createHighConePoofAndReset(
                                 elevator, elbow, tilt, claw, grabber);
 
-                CommandBase highPlacementAndResetCommand = Arm.createHighPlacementAndReset(
+                CommandBase highPlacementAndResetCommand = ArmCommands.createHighPlacementAndReset(
                                 elevator, elbow, tilt, claw, grabber);
 
-                CommandBase middlePlacementAndResetCommand = Arm.createMiddlePlacementAndReset(
+                CommandBase middlePlacementAndResetCommand = ArmCommands.createMiddlePlacementAndReset(
                                 elevator, elbow, tilt, claw, grabber);
 
-                CommandBase highAlignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
-                CommandBase middleAlignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
-                CommandBase lowAlignPlacmentAndResetCommand = Arm.createLowAlignPlacementAndReset(elevator, elbow, tilt,
+                CommandBase highAlignment = ArmCommands.createAlignHigh(elevator, elbow, tilt, claw);
+                CommandBase middleAlignment = ArmCommands.createAlignMiddle(elevator, elbow, tilt, claw);
+                CommandBase lowAlignPlacmentAndResetCommand = ArmCommands.createLowAlignPlacementAndReset(elevator, elbow, tilt,
                                 claw, grabber);
 
                 Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
@@ -229,27 +229,27 @@ public class RobotContainer {
 
         private void configureOperatorBindings() {
 
-                CommandBase elementCarry = Arm.createCarry(elevator, elbow, tilt, claw);
+                CommandBase elementCarry = ArmCommands.createCarry(elevator, elbow, tilt, claw);
 
-                CommandBase conePickupFloor = Arm.createFloorPickup(
+                CommandBase conePickupFloor = ArmCommands.createFloorPickup(
                                 elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CONE);
 
-                CommandBase cubePickupFloor = Arm.createFloorPickup(
+                CommandBase cubePickupFloor = ArmCommands.createFloorPickup(
                                 elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CUBE);
 
-                CommandBase conePickupSliding = Arm.createSlidingPickup(
+                CommandBase conePickupSliding = ArmCommands.createSlidingPickup(
                                 elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CONE);
 
-                CommandBase cubePickupSliding = Arm.createSlidingPickup(
+                CommandBase cubePickupSliding = ArmCommands.createSlidingPickup(
                                 elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CUBE);
 
-                CommandBase conePickupDrop = Arm.createDropPickup(
+                CommandBase conePickupDrop = ArmCommands.createDropPickup(
                                 elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CONE);
 
-                CommandBase cubePickupDrop = Arm.createDropPickup(
+                CommandBase cubePickupDrop = ArmCommands.createDropPickup(
                                 elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CUBE);
 
-                CommandBase grabberToggleCommand = Arm.SingleArmMovement.createToggleClawAndLights(claw, ledLighting);
+                CommandBase grabberToggleCommand = ArmCommands.SingleArmMovement.createToggleClawAndLights(claw, ledLighting);
 
                 CommandBase noLegsCommand = tilt.createControlCommand(ElevatorTilt.State.NONE);
                 CommandBase shortSaber = tilt.createControlCommand(ElevatorTilt.State.TWO);

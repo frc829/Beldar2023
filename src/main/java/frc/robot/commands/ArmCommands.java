@@ -18,7 +18,7 @@ import frc.robot.subsystems.LEDLighting;
 import frc.robot.subsystems.ElevatorTilt.State;
 
 /** Add your docs here. */
-public abstract class Arm {
+public abstract class ArmCommands {
 
         public static CommandBase createAlignHigh(
                         Elevator elevator,
@@ -26,7 +26,7 @@ public abstract class Arm {
                         ElevatorTilt tilt,
                         Claw claw) {
 
-                CommandBase movement0 = Arm.SingleArmMovement.createWithEnding(
+                CommandBase movement0 = ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -38,7 +38,7 @@ public abstract class Arm {
                                 Constants.Auto.Arm.Alignment.High.Cone.elbowPositionDegrees0,
                                 Constants.Auto.Arm.Alignment.High.Cube.elbowPositionDegrees0);
 
-                CommandBase movement1 = Arm.SingleArmMovement.createWithEnding(
+                CommandBase movement1 = ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -58,7 +58,7 @@ public abstract class Arm {
                         Elbow elbow,
                         ElevatorTilt tilt,
                         Claw claw) {
-                return Arm.SingleArmMovement.createWithEnding(
+                return ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -76,7 +76,7 @@ public abstract class Arm {
                         Elbow elbow,
                         ElevatorTilt tilt,
                         Claw claw) {
-                return Arm.SingleArmMovement.createWithEnding(
+                return ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -96,7 +96,7 @@ public abstract class Arm {
                         Claw claw,
                         Grabber grabber) {
 
-                CommandBase movement0 = Arm.SingleArmMovement.createWithEnding(
+                CommandBase movement0 = ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -108,7 +108,7 @@ public abstract class Arm {
                                 Constants.Auto.Arm.Alignment.High.Cone.elbowPositionDegrees0,
                                 Constants.Auto.Arm.Alignment.High.Cube.elbowPositionDegrees0);
 
-                CommandBase movement1 = Arm.SingleArmMovement.createWithEnding(
+                CommandBase movement1 = ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -134,7 +134,7 @@ public abstract class Arm {
                         Claw claw,
                         Grabber grabber) {
 
-                CommandBase movement0 = Arm.SingleArmMovement.createWithEnding(
+                CommandBase movement0 = ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -142,12 +142,12 @@ public abstract class Arm {
                                 Constants.Auto.Arm.Placement.High.Cone.elevatorTiltState,
                                 Constants.Auto.Arm.Placement.High.Cube.elevatorTiltState);
 
-                CommandBase wait0 = Arm.SingleArmMovement.ArmWaiting(
+                CommandBase wait0 = ArmCommands.SingleArmMovement.ArmWaiting(
                                 claw,
                                 Constants.Auto.Arm.Placement.High.Cone.waitForElevatorToTilt,
                                 Constants.Auto.Arm.Placement.High.Cube.waitForElevatorToTilt);
 
-                CommandBase movement1 = Arm.SingleArmMovement.createWithEnding(
+                CommandBase movement1 = ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 claw,
@@ -167,7 +167,7 @@ public abstract class Arm {
                         Claw claw,
                         Grabber grabber) {
 
-                CommandBase movement0 = Arm.SingleArmMovement.createWithEnding(
+                CommandBase movement0 = ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -175,12 +175,12 @@ public abstract class Arm {
                                 Constants.Auto.Arm.Placement.Middle.Cone.elevatorTiltState,
                                 Constants.Auto.Arm.Placement.Middle.Cube.elevatorTiltState);
 
-                CommandBase wait0 = Arm.SingleArmMovement.ArmWaiting(
+                CommandBase wait0 = ArmCommands.SingleArmMovement.ArmWaiting(
                                 claw,
                                 Constants.Auto.Arm.Placement.Middle.Cone.waitForElevatorToTilt,
                                 Constants.Auto.Arm.Placement.Middle.Cube.waitForElevatorToTilt);
 
-                CommandBase movement1 = Arm.SingleArmMovement.createWithEnding(
+                CommandBase movement1 = ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 claw,
@@ -200,7 +200,7 @@ public abstract class Arm {
                         Claw claw,
                         Grabber grabber) {
 
-                CommandBase movement0 = Arm.SingleArmMovement.createWithEnding(
+                CommandBase movement0 = ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -208,12 +208,12 @@ public abstract class Arm {
                                 Constants.Auto.Arm.Placement.Low.Cone.elevatorTiltState,
                                 Constants.Auto.Arm.Placement.Low.Cube.elevatorTiltState);
 
-                CommandBase wait0 = Arm.SingleArmMovement.ArmWaiting(
+                CommandBase wait0 = ArmCommands.SingleArmMovement.ArmWaiting(
                                 claw,
                                 Constants.Auto.Arm.Placement.Low.Cone.waitForElevatorToTilt,
                                 Constants.Auto.Arm.Placement.Low.Cube.waitForElevatorToTilt);
 
-                CommandBase movement1 = Arm.SingleArmMovement.createWithEnding(
+                CommandBase movement1 = ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 claw,
@@ -234,7 +234,7 @@ public abstract class Arm {
                         Claw claw,
                         LEDLighting ledLighting,
                         Claw.State clawState) {
-                return Arm.SingleArmMovement.create(
+                return ArmCommands.SingleArmMovement.create(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -260,7 +260,7 @@ public abstract class Arm {
                         Claw claw,
                         LEDLighting ledLighting,
                         Claw.State clawState) {
-                return Arm.SingleArmMovement.create(
+                return ArmCommands.SingleArmMovement.create(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -286,7 +286,7 @@ public abstract class Arm {
                         Claw claw,
                         LEDLighting ledLighting,
                         Claw.State clawState) {
-                return Arm.SingleArmMovement.create(
+                return ArmCommands.SingleArmMovement.create(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -309,7 +309,7 @@ public abstract class Arm {
                         Elbow elbow,
                         ElevatorTilt tilt,
                         Grabber grabber) {
-                return Arm.SingleArmMovement.createWithEnding(
+                return ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -325,7 +325,7 @@ public abstract class Arm {
                         Elbow elbow,
                         ElevatorTilt tilt,
                         Grabber grabber) {
-                return Arm.SingleArmMovement.createWithEnding(
+                return ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -341,7 +341,7 @@ public abstract class Arm {
                         Elbow elbow,
                         ElevatorTilt tilt,
                         Grabber grabber) {
-                return Arm.SingleArmMovement.createWithEnding(
+                return ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -357,7 +357,7 @@ public abstract class Arm {
                         Elbow elbow,
                         ElevatorTilt tilt,
                         Claw claw) {
-                return Arm.SingleArmMovement.createWithEnding(
+                return ArmCommands.SingleArmMovement.createWithEnding(
                                 elevator,
                                 elbow,
                                 tilt,
@@ -377,8 +377,8 @@ public abstract class Arm {
                         Claw claw,
                         Grabber grabber) {
                 return Commands.sequence(
-                                Arm.createHighConePoof(elevator, elbow, tilt, claw, grabber),
-                                Arm.createResetHigh(elevator, elbow, tilt, grabber));
+                                ArmCommands.createHighConePoof(elevator, elbow, tilt, claw, grabber),
+                                ArmCommands.createResetHigh(elevator, elbow, tilt, grabber));
         }
 
         public static CommandBase createHighPlacementAndReset(
@@ -389,9 +389,9 @@ public abstract class Arm {
                         Grabber grabber) {
 
                 return Commands.sequence(
-                                Arm.createHighPlacement(elevator, elbow, tilt, claw,
+                                ArmCommands.createHighPlacement(elevator, elbow, tilt, claw,
                                                 grabber),
-                                Arm.createResetHigh(elevator, elbow, tilt, grabber));
+                                ArmCommands.createResetHigh(elevator, elbow, tilt, grabber));
         }
 
         public static CommandBase createMiddlePlacementAndReset(
@@ -402,9 +402,9 @@ public abstract class Arm {
                         Grabber grabber) {
 
                 return Commands.sequence(
-                                Arm.createMiddlePlacement(elevator, elbow, tilt, claw,
+                                ArmCommands.createMiddlePlacement(elevator, elbow, tilt, claw,
                                                 grabber),
-                                Arm.createResetMiddle(elevator, elbow, tilt, grabber));
+                                ArmCommands.createResetMiddle(elevator, elbow, tilt, grabber));
         }
 
         public static CommandBase createLowAlignPlacementAndReset(
@@ -415,10 +415,10 @@ public abstract class Arm {
                         Grabber grabber) {
 
                 return Commands.sequence(
-                                Arm.createAlignLow(elevator, elbow, tilt, claw),
-                                Arm.createLowPlacement(elevator, elbow, tilt, claw,
+                                ArmCommands.createAlignLow(elevator, elbow, tilt, claw),
+                                ArmCommands.createLowPlacement(elevator, elbow, tilt, claw,
                                                 grabber),
-                                Arm.createResetLow(elevator, elbow, tilt,
+                                ArmCommands.createResetLow(elevator, elbow, tilt,
                                                 grabber));
 
         }

@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.framework.lighting.CANdleFactory;
 import frc.robot.framework.lighting.LEDLights;
-import frc.robot.framework.lighting.animations.Animation;
+import frc.robot.framework.lighting.animations.LEDAnimation;
 import frc.robot.framework.lighting.animations.multiColor.Fire;
 import frc.robot.framework.lighting.animations.multiColor.RGBFade;
 import frc.robot.framework.lighting.animations.multiColor.Rainbow;
@@ -49,7 +49,7 @@ public class LEDLighting2 extends SubsystemBase {
   }
 
   // Commands
-  public CommandBase createAnimateCommand(Animation animation) {
+  public CommandBase createAnimateCommand(LEDAnimation animation) {
 
     CommandBase animateCommand = new CommandBase() {
       @Override

@@ -5,12 +5,12 @@
 package frc.robot.framework.lighting.animations;
 
 /** Add your docs here. */
-public abstract class Animation {
+public abstract class LEDAnimation {
 
     private final int ledStart;
     private final int numLed;
 
-    public Animation(int ledStart, int numLed){
+    public LEDAnimation(int ledStart, int numLed){
         this.ledStart = ledStart;
         this.numLed = numLed;
     }

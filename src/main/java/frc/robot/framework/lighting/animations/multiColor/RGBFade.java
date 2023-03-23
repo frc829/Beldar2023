@@ -4,10 +4,10 @@
 
 package frc.robot.framework.lighting.animations.multiColor;
 
-import frc.robot.framework.lighting.animations.Animation;
+import frc.robot.framework.lighting.animations.LEDAnimation;
 
 /** Add your docs here. */
-public class RGBFade extends Animation {
+public class RGBFade extends LEDAnimation {
 
     private final double brightness;
     private final double speed;

@@ -115,35 +115,35 @@ public abstract class PathPlannerToAuto {
             Elbow elbow, Grabber grabber, Claw claw, ElevatorTilt tilt, LEDLighting ledLighting, Telemetry telemetry) {
         if (name.contains("ScoreHighCone")) {
             CommandBase clawCone = claw.createSetStateCommand(Claw.State.CONE);
-            CommandBase alignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
-            CommandBase placement = Arm.createHighPlacement(elevator, elbow, tilt, claw, grabber);
-            CommandBase reset = Arm.createResetHigh(elevator, elbow, tilt, grabber);
+            CommandBase alignment = ArmCommands.createAlignHigh(elevator, elbow, tilt, claw);
+            CommandBase placement = ArmCommands.createHighPlacement(elevator, elbow, tilt, claw, grabber);
+            CommandBase reset = ArmCommands.createResetHigh(elevator, elbow, tilt, grabber);
             return Commands.sequence(clawCone, alignment, placement, reset);
         } else if (name.contains("ScoreHighCube")) {
             CommandBase clawCube = claw.createSetStateCommand(Claw.State.CUBE);
-            CommandBase alignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
-            CommandBase placement = Arm.createHighPlacement(elevator, elbow, tilt, claw, grabber);
-            CommandBase reset = Arm.createResetHigh(elevator, elbow, tilt, grabber);
+            CommandBase alignment = ArmCommands.createAlignHigh(elevator, elbow, tilt, claw);
+            CommandBase placement = ArmCommands.createHighPlacement(elevator, elbow, tilt, claw, grabber);
+            CommandBase reset = ArmCommands.createResetHigh(elevator, elbow, tilt, grabber);
             return Commands.sequence(clawCube, alignment, placement, reset);
         } else if (name.contains("ScoreMiddleCone")) {
             CommandBase clawCone = claw.createSetStateCommand(Claw.State.CONE);
-            CommandBase alignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
-            CommandBase placement = Arm.createMiddlePlacement(elevator, elbow, tilt, claw, grabber);
-            CommandBase reset = Arm.createResetMiddle(elevator, elbow, tilt, grabber);
+            CommandBase alignment = ArmCommands.createAlignMiddle(elevator, elbow, tilt, claw);
+            CommandBase placement = ArmCommands.createMiddlePlacement(elevator, elbow, tilt, claw, grabber);
+            CommandBase reset = ArmCommands.createResetMiddle(elevator, elbow, tilt, grabber);
             return Commands.sequence(clawCone, alignment, placement, reset);
         } else if (name.contains("ScoreMiddleCube")) {
             CommandBase clawCube = claw.createSetStateCommand(Claw.State.CUBE);
-            CommandBase alignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
-            CommandBase placement = Arm.createMiddlePlacement(elevator, elbow, tilt, claw, grabber);
-            CommandBase reset = Arm.createResetMiddle(elevator, elbow, tilt, grabber);
+            CommandBase alignment = ArmCommands.createAlignMiddle(elevator, elbow, tilt, claw);
+            CommandBase placement = ArmCommands.createMiddlePlacement(elevator, elbow, tilt, claw, grabber);
+            CommandBase reset = ArmCommands.createResetMiddle(elevator, elbow, tilt, grabber);
             return Commands.sequence(clawCube, alignment, placement, reset);
         } else if (name.contains("ScoreLow")) {
-            CommandBase alignment = Arm.createAlignLow(elevator, elbow, tilt, claw);
-            CommandBase placement = Arm.createLowPlacement(elevator, elbow, tilt, claw, grabber);
-            CommandBase reset = Arm.createResetLow(elevator, elbow, tilt, grabber);
+            CommandBase alignment = ArmCommands.createAlignLow(elevator, elbow, tilt, claw);
+            CommandBase placement = ArmCommands.createLowPlacement(elevator, elbow, tilt, claw, grabber);
+            CommandBase reset = ArmCommands.createResetLow(elevator, elbow, tilt, grabber);
             return Commands.sequence(alignment, placement, reset);
         } else if (name.contains("ConePickup")) {
-            CommandBase conePickup = Arm.createFloorPickup(
+            CommandBase conePickup = ArmCommands.createFloorPickup(
                     elevator,
                     elbow,
                     tilt,
@@ -153,7 +153,7 @@ public abstract class PathPlannerToAuto {
                     Claw.State.CONE);
             return conePickup;
         } else if (name.contains("CubePickup")) {
-            CommandBase conePickup = Arm.createFloorPickup(
+            CommandBase conePickup = ArmCommands.createFloorPickup(
                     elevator,
                     elbow,
                     tilt,
@@ -167,7 +167,7 @@ public abstract class PathPlannerToAuto {
         } else if (name.contains("ElbowHold")) {
             return elbow.createHoldCommand();
         } else if (name.contains("Carry")) {
-            CommandBase carry = Arm.createCarry(
+            CommandBase carry = ArmCommands.createCarry(
                     elevator,
                     elbow,
                     tilt,

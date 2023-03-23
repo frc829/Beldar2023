@@ -19,6 +19,7 @@ import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 
+import frc.robot.framework.lighting.animations.LEDAnimation;
 import frc.robot.framework.lighting.animations.multiColor.Fire;
 import frc.robot.framework.lighting.animations.multiColor.RGBFade;
 import frc.robot.framework.lighting.animations.multiColor.Rainbow;
@@ -31,34 +32,44 @@ import frc.robot.framework.lighting.animations.singleColor.TwinkleOnOrOff;
 import frc.robot.framework.lighting.animations.singleColor.Larson.Bounce;
 
 /** Add your docs here. */
-public interface LEDLights {
+public abstract class LEDLights {
 
-    public void setLEDAnimation(SingleColorForever singleColorForever);
+    protected LEDAnimation currentAnimation = null;
 
-    public void setLEDAnimation(SingleFade singleFade);
+    public abstract LEDAnimation getLEDAnimation();
 
-    public void setLEDAnimation(ColorFlow colorFlow);
+    public abstract void setLEDAnimation(SingleColorForever singleColorForever);
 
-    public void setLEDAnimation(Larson larson);
+    public abstract void setLEDAnimation(SingleFade singleFade);
 
-    public void setLEDAnimation(Strobe strobe);
+    public abstract void setLEDAnimation(ColorFlow colorFlow);
 
-    public void setLEDAnimation(TwinkleOnOrOff twinkleOnOrOff);
+    public abstract void setLEDAnimation(Larson larson);
 
-    public void setLEDAnimation(RGBFade rgbFade);
+    public abstract void setLEDAnimation(Strobe strobe);
 
-    public void setLEDAnimation(Rainbow rainbow);
+    public abstract void setLEDAnimation(TwinkleOnOrOff twinkleOnOrOff);
 
-    public void setLEDAnimation(Fire fire);
+    public abstract void setLEDAnimation(RGBFade rgbFade);
 
-    public void clearLEDAnimations();
+    public abstract void setLEDAnimation(Rainbow rainbow);
+
+    public abstract void setLEDAnimation(Fire fire);
+
+    public abstract void clearLEDAnimations();
 
     public static LEDLights create(CANdle caNdle) {
 
         return new LEDLights() {
 
             @Override
+            public LEDAnimation getLEDAnimation() {
+                return this.currentAnimation;
+            }
+
+            @Override
             public void setLEDAnimation(SingleColorForever singleColorForever) {
+                this.currentAnimation = singleColorForever;
                 SingleFadeAnimation singleFadeAnimation = new SingleFadeAnimation(
                         singleColorForever.getRed(),
                         singleColorForever.getGreen(),
@@ -72,6 +83,7 @@ public interface LEDLights {
 
             @Override
             public void setLEDAnimation(SingleFade singleFade) {
+                this.currentAnimation = singleFade;
                 SingleFadeAnimation singleFadeAnimation = new SingleFadeAnimation(
                         singleFade.getRed(),
                         singleFade.getGreen(),
@@ -85,6 +97,7 @@ public interface LEDLights {
 
             @Override
             public void setLEDAnimation(ColorFlow colorFlow) {
+                this.currentAnimation = colorFlow;
                 ColorFlowAnimation colorFlowAnimation = new ColorFlowAnimation(
                         colorFlow.getRed(),
                         colorFlow.getGreen(),
@@ -99,6 +112,7 @@ public interface LEDLights {
 
             @Override
             public void setLEDAnimation(Larson larson) {
+                this.currentAnimation = larson;
                 BounceMode bounceMode = BounceMode.Front;
 
                 if (larson.getBounce() == Bounce.Center) {
@@ -122,6 +136,7 @@ public interface LEDLights {
 
             @Override
             public void setLEDAnimation(Strobe strobe) {
+                this.currentAnimation = strobe;
                 StrobeAnimation strobeAnimation = new StrobeAnimation(
                         strobe.getRed(),
                         strobe.getGreen(),
@@ -136,6 +151,7 @@ public interface LEDLights {
 
             @Override
             public void setLEDAnimation(TwinkleOnOrOff twinkleOnOrOff) {
+                this.currentAnimation = twinkleOnOrOff;
                 if (twinkleOnOrOff.isTwinkleOn) {
                     TwinklePercent twinklePercent = TwinklePercent.Percent100;
                     if (twinkleOnOrOff.getDivider() == 1) {
@@ -195,6 +211,7 @@ public interface LEDLights {
 
             @Override
             public void setLEDAnimation(RGBFade rgbFade) {
+                this.currentAnimation = rgbFade;
                 RgbFadeAnimation rgbFadeAnimation = new RgbFadeAnimation(
                         rgbFade.getBrightness(),
                         rgbFade.getSpeed(),
@@ -205,6 +222,7 @@ public interface LEDLights {
 
             @Override
             public void setLEDAnimation(Rainbow rainbow) {
+                this.currentAnimation = rainbow;
                 RainbowAnimation rainbowAnimation = new RainbowAnimation(
                         rainbow.getBrightness(),
                         rainbow.getSpeed(),
@@ -217,6 +235,7 @@ public interface LEDLights {
 
             @Override
             public void setLEDAnimation(Fire fire) {
+                this.currentAnimation = fire;
                 FireAnimation fireAnimation = new FireAnimation(
                         fire.getBrightness(),
                         fire.getSpeed(),
@@ -230,6 +249,7 @@ public interface LEDLights {
 
             @Override
             public void clearLEDAnimations() {
+                this.currentAnimation = null;
                 caNdle.animate(null);
             }
         };

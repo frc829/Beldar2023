@@ -4,10 +4,10 @@
 
 package frc.robot.framework.lighting.animations.singleColor;
 
-import frc.robot.framework.lighting.animations.Animation;
+import frc.robot.framework.lighting.animations.LEDAnimation;
 
 /** Add your docs here. */
-public class SingleColorForever extends Animation {
+public class SingleColorForever extends LEDAnimation {
 
     private final int red;
     private final int green;
