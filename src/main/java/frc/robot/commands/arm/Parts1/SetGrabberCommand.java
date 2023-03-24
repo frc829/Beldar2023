@@ -29,6 +29,6 @@ public class SetGrabberCommand extends ArmDefaultCommand{
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 }
