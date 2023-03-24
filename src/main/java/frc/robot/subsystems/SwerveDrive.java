@@ -427,7 +427,10 @@ public class SwerveDrive extends SubsystemBase {
 
     return this.swerveDriveKinematics.toChassisSpeeds(frontLeftModuleState, frontRightModuleState, rearLeftModuleState,
         rearRightModuleState);
+  }
 
+  public ManualChassisSpeedControl getManualChassisSpeedControl(){
+    return this.manualChassisSpeedControl;
   }
 
   public SwerveModule[] getSwerveModules() {
@@ -600,9 +603,4 @@ public class SwerveDrive extends SubsystemBase {
     return Commands.race(wait, drive);
 
   }
-
-  public CommandBase createStopCommand(){
-    return Commands.runOnce(this::stopDrive, this);
-  }
-
 }

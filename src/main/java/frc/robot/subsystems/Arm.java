@@ -60,7 +60,7 @@ public class Arm extends SubsystemBase {
   private final DecimalFormat decimalFormat;
   private final RotationMech elbowMech;
   private final AngularPositionSensor elbowSensor;
-  private final ManualSpeedControl manualSpeedControl;
+  private final ManualSpeedControl elbowManualSpeedControl;
   private final PIDController elbowPIDController;
   private final MechanismLigament2d elbowMech2d;
   private final DualRotationMechWithLimitSwitch grabberMech;
@@ -188,7 +188,7 @@ public class Arm extends SubsystemBase {
         false,
         Constants.OperatorConstants.ElevatorManualControls.kDeadband);
 
-    this.manualSpeedControl = new ManualSpeedControl(
+    this.elbowManualSpeedControl = new ManualSpeedControl(
         armUpDownAxis,
         Constants.Robot.Arm.ElbowConstants.Control.maxManualSpeedRotationsPerSecond);
 
@@ -338,6 +338,10 @@ public class Arm extends SubsystemBase {
     return elevatorPIDController.atSetpoint();
   }
 
+  public ManualSpeedControl getElevatorManualSpeedControl(){
+    return elevatorManualSpeedControl;
+  }
+
   // Elbow
   public double getElbowPosition() {
     return elbowMech.getPositionRotations().getRotations();
@@ -355,6 +359,10 @@ public class Arm extends SubsystemBase {
     return elbowPIDController.atSetpoint();
   }
 
+  public ManualSpeedControl getElbowManualSpeedControl(){
+    return elbowManualSpeedControl;
+  }
+
   // Grabber
   public GrabberState getGrabberState() {
     boolean isLimitSwitchOn = grabberMech.getLimitSwitchState();
@@ -363,6 +371,10 @@ public class Arm extends SubsystemBase {
 
   public Rotation2d getAverageVelocityPerSecond() {
     return grabberMech.getAverageVelocityRotationPerSecond();
+  }
+
+  public ManualSpeedControl getGrabbManualSpeedControl(){
+    return grabberManualControl;
   }
 
   // Elevator Tilt
@@ -383,6 +395,10 @@ public class Arm extends SubsystemBase {
   public ClawState getClawState() {
     JediCylinder.State jediCylinderState = this.claw.getExtendedState();
     return jediCylinderState == JediCylinder.State.Extended ? ClawState.CUBE : ClawState.CONE;
+  }
+
+  public boolean hasCone(){
+    return this.claw.getExtendedState() == JediCylinder.State.Retracted;
   }
 
   //LEDLights

@@ -22,12 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Elbow;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ElevatorTilt;
-import frc.robot.subsystems.Grabber;
-import frc.robot.subsystems.LEDLighting;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Telemetry;
 
@@ -63,12 +58,7 @@ public abstract class PathPlannerToAuto {
     public static Command createFullAutoFromPathGroup(
             SwerveDrive swerveDrive,
             Telemetry telemetry,
-            Elevator elevator,
-            Elbow elbow,
-            Grabber grabber,
-            Claw claw,
-            ElevatorTilt tilt,
-            LEDLighting ledLighting,
+            Arm arm,
             List<PathPlannerTrajectory> pathGroup,
             PIDConstants translationConstants,
             PIDConstants rotationConstants) {
@@ -97,8 +87,11 @@ public abstract class PathPlannerToAuto {
         }
 
         for (String name : commandNames) {
-            CommandBase command = createCommandForAuto(name, swerveDrive, elevator, elbow, grabber, claw, tilt,
-                    ledLighting, telemetry);
+            CommandBase command = createCommandForAuto(
+                name, 
+                swerveDrive, 
+                arm,
+                telemetry);
             eventMap.put(name, command);
         }
 
@@ -111,8 +104,11 @@ public abstract class PathPlannerToAuto {
                 rotationConstants);
     }
 
-    private static CommandBase createCommandForAuto(String name, SwerveDrive swerveDrive, Elevator elevator,
-            Elbow elbow, Grabber grabber, Claw claw, ElevatorTilt tilt, LEDLighting ledLighting, Telemetry telemetry) {
+    private static CommandBase createCommandForAuto(
+        String name, 
+        SwerveDrive swerveDrive, 
+        Arm arm,
+        Telemetry telemetry) {
         if (name.contains("ScoreHighCone")) {
             CommandBase clawCone = claw.createSetStateCommand(Claw.State.CONE);
             CommandBase alignment = ArmCommands.createAlignHigh(elevator, elbow, tilt, claw);

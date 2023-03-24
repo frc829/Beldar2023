@@ -5,21 +5,31 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ArmCommands;
+import frc.robot.commandSequences.arm.AlignHigh;
+import frc.robot.commandSequences.arm.AlignMiddle;
+import frc.robot.commandSequences.arm.Carry;
+import frc.robot.commandSequences.arm.PickupDropCone;
+import frc.robot.commandSequences.arm.PickupDropCube;
+import frc.robot.commandSequences.arm.PickupFloorCone;
+import frc.robot.commandSequences.arm.PickupFloorCube;
+import frc.robot.commandSequences.arm.PickupSlidingCone;
+import frc.robot.commandSequences.arm.PickupSlidingCube;
+import frc.robot.commandSequences.arm.ScoreHigh;
+import frc.robot.commandSequences.arm.ScoreMiddle;
 import frc.robot.commands.Chassis;
 import frc.robot.commands.PathPlannerToAuto;
+import frc.robot.commands.arm.ManualControl.ManualClawControlCommand;
+import frc.robot.commands.arm.ManualControl.ManualElevatorNoTiltCommand;
+import frc.robot.commands.arm.ManualControl.ManualElevatorTiltEightCommand;
+import frc.robot.commands.arm.ManualControl.ManualElevatorTiltSixCommand;
+import frc.robot.commands.arm.ManualControl.ManualElevatorTiltTwoCommand;
+import frc.robot.commands.chassis.ChassisDefaultCommand;
 import frc.robot.framework.kinematics.KinematicsFactory;
 import frc.robot.framework.telemetry.FieldMap;
 import frc.robot.framework.vision.DumbOldCamera;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Elbow;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ElevatorTilt;
-import frc.robot.subsystems.Grabber;
-import frc.robot.subsystems.LEDLighting;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Telemetry;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -60,12 +70,7 @@ public class RobotContainer {
 
         private final SwerveDrive swerveDrive;
         private final Telemetry telemetry;
-        private final Claw claw;
-        private final Grabber grabber;
-        private final Elevator elevator;
-        private final Elbow elbow;
-        private final ElevatorTilt tilt;
-        private final LEDLighting ledLighting;
+        private final Arm arm;
 
         private final HashMap<String, Command> autoCommands;
         private final HashMap<String, List<PathPlannerTrajectory>> pathPlannerTrajectories;
@@ -94,10 +99,10 @@ public class RobotContainer {
                                 OperatorConstants.DriverController.kOperatorControllerPort);
                 this.fieldMap = new FieldMap();
                 this.swerveDrive = new SwerveDrive(driveController, fieldMap, swerveDriveKinematics);
-                CommandBase swerveDriveDefault = swerveDrive.createStopCommand();
-                this.swerveDrive.setDefaultCommand(swerveDriveDefault);
                 this.telemetry = new Telemetry(initialPosition, fieldMap, swerveDriveKinematics,
                                 swerveDrive.getSwerveModules());
+                CommandBase swerveDriveDefault = new ChassisDefaultCommand(swerveDrive, telemetry);
+                this.swerveDrive.setDefaultCommand(swerveDriveDefault);
 
                 Mechanism2d mech = new Mechanism2d(3, 3);
                 MechanismRoot2d root = mech.getRoot("Arm", 2, 1);
@@ -129,26 +134,11 @@ public class RobotContainer {
 
                 SmartDashboard.putData("Arm2d", mech);
 
-                this.tilt = new ElevatorTilt(fakeElevatorMech2d, elevatorMech2d);
-                CommandBase defaultElevatorTiltCommand = tilt.createIdleCommand();
-                this.tilt.setDefaultCommand(defaultElevatorTiltCommand);
-
-                this.claw = new Claw();
-                claw.setDefaultCommand(claw.createIdleCommand());
-
-                this.grabber = new Grabber(operatorController);
-                this.grabber.setDefaultCommand(this.grabber.createStopCommand());
-                this.grabber.setManualControlTrigger();
-
-                this.elevator = new Elevator(operatorController, elevatorMech2d);
-                this.elevator.setDefaultCommand(this.elevator.createHoldCommand());
-                this.elevator.setManualControlTrigger();
-
-                this.elbow = new Elbow(operatorController, elbowMech2d);
-                this.elbow.setDefaultCommand(this.elbow.createHoldCommand());
-                this.elbow.setManualControlTrigger();
-
-                this.ledLighting = new LEDLighting();
+                this.arm = new Arm(
+                                operatorController,
+                                elevatorMech2d,
+                                elbowMech2d,
+                                fakeElevatorMech2d);
 
                 pathPlannerTrajectories = new HashMap<>();
                 autoCommands = new HashMap<>();
@@ -187,23 +177,19 @@ public class RobotContainer {
                                 telemetry,
                                 Constants.Auto.Drive.ScoringPositions.positionsList);
 
-                CommandBase highConePoofCommand = ArmCommands.createHighConePoofAndReset(
-                                elevator, elbow, tilt, claw, grabber);
+                CommandBase highAlignment = new AlignHigh(arm);
+                CommandBase middleAlignment = new AlignMiddle(arm);
 
-                CommandBase highPlacementAndResetCommand = ArmCommands.createHighPlacementAndReset(
-                                elevator, elbow, tilt, claw, grabber);
-
-                CommandBase middlePlacementAndResetCommand = ArmCommands.createMiddlePlacementAndReset(
-                                elevator, elbow, tilt, claw, grabber);
-
-                CommandBase highAlignment = ArmCommands.createAlignHigh(elevator, elbow, tilt, claw);
-                CommandBase middleAlignment = ArmCommands.createAlignMiddle(elevator, elbow, tilt, claw);
-                CommandBase lowAlignPlacmentAndResetCommand = ArmCommands.createLowAlignPlacementAndReset(elevator, elbow, tilt,
-                                claw, grabber);
+                CommandBase highScore = new ScoreHigh(arm);
+                CommandBase middleScore = new ScoreMiddle(arm);
 
                 Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
-                Command danceParty = ledLighting.getDanceParty2();
-                Command balanceAndDance = Commands.parallel(balance, danceParty);
+                // Command danceParty = ledLighting.getDanceParty2();
+                Command balanceAndDance = Commands.parallel(
+                                balance
+                // ,
+                // danceParty
+                );
                 Command driveABit = swerveDrive.getOnRampCommand();
                 Command end = Commands.sequence(driveABit, balanceAndDance);
 
@@ -213,13 +199,11 @@ public class RobotContainer {
 
                 driveController.start().onTrue(setTelemetryFromCameraCommand);
                 driveController.back().whileTrue(zeroModulesCommand);
-                driveController.b().onTrue(highConePoofCommand);
                 driveController.x().onTrue(middleAlignment);
                 driveController.y().onTrue(highAlignment);
-                // driveController.a().onTrue(lowAlignPlacmentAndResetCommand);
                 driveController.a().whileTrue(end);
-                driveController.leftBumper().onTrue(middlePlacementAndResetCommand);
-                driveController.rightBumper().onTrue(highPlacementAndResetCommand);
+                driveController.leftBumper().onTrue(middleScore);
+                driveController.rightBumper().onTrue(highScore);
                 driveController.povLeft().whileTrue(leftPortalAlign);
                 driveController.povUp().whileTrue(nearestScoreAlign);
                 driveController.povRight().whileTrue(rightPortalAlign);
@@ -229,33 +213,19 @@ public class RobotContainer {
 
         private void configureOperatorBindings() {
 
-                CommandBase elementCarry = ArmCommands.createCarry(elevator, elbow, tilt, claw);
-
-                CommandBase conePickupFloor = ArmCommands.createFloorPickup(
-                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CONE);
-
-                CommandBase cubePickupFloor = ArmCommands.createFloorPickup(
-                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CUBE);
-
-                CommandBase conePickupSliding = ArmCommands.createSlidingPickup(
-                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CONE);
-
-                CommandBase cubePickupSliding = ArmCommands.createSlidingPickup(
-                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CUBE);
-
-                CommandBase conePickupDrop = ArmCommands.createDropPickup(
-                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CONE);
-
-                CommandBase cubePickupDrop = ArmCommands.createDropPickup(
-                                elevator, elbow, tilt, grabber, claw, ledLighting, Claw.State.CUBE);
-
-                CommandBase grabberToggleCommand = ArmCommands.SingleArmMovement.createToggleClawAndLights(claw, ledLighting);
-
-                CommandBase noLegsCommand = tilt.createControlCommand(ElevatorTilt.State.NONE);
-                CommandBase shortSaber = tilt.createControlCommand(ElevatorTilt.State.TWO);
-                CommandBase tatooine = tilt.createControlCommand(ElevatorTilt.State.SIX);
-                CommandBase duelOfTheFates = tilt.createControlCommand(ElevatorTilt.State.EIGHT);
-                CommandBase danceParty = ledLighting.getDanceParty2();
+                CommandBase elementCarry = new Carry(arm);
+                CommandBase conePickupFloor = new PickupFloorCone(arm);
+                CommandBase cubePickupFloor = new PickupFloorCube(arm);
+                CommandBase conePickupSliding = new PickupSlidingCone(arm);
+                CommandBase cubePickupSliding = new PickupSlidingCube(arm);
+                CommandBase conePickupDrop = new PickupDropCone(arm);
+                CommandBase cubePickupDrop = new PickupDropCube(arm);
+                CommandBase grabberToggleCommand = new ManualClawControlCommand(arm);
+                CommandBase noLegsCommand = new ManualElevatorNoTiltCommand(arm);
+                CommandBase shortSaber = new ManualElevatorTiltTwoCommand(arm);
+                CommandBase tatooine = new ManualElevatorTiltSixCommand(arm);
+                CommandBase duelOfTheFates = new ManualElevatorTiltEightCommand(arm);
+                // CommandBase danceParty = ledLighting.getDanceParty2();
 
                 operatorController.rightBumper().whileTrue(cubePickupFloor);
                 operatorController.rightBumper().onFalse(elementCarry);
@@ -274,7 +244,7 @@ public class RobotContainer {
                 operatorController.povLeft().onTrue(shortSaber);
                 operatorController.povRight().onTrue(tatooine);
                 operatorController.povUp().onTrue(duelOfTheFates);
-                operatorController.start().whileTrue(danceParty);
+                // operatorController.start().whileTrue(danceParty);
         }
 
         private void configureAutoCommands() {
@@ -394,8 +364,11 @@ public class RobotContainer {
                         PIDConstants rotationConstants,
                         AutoBalanceDirection direction) {
                 Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
-                Command danceParty = ledLighting.getDanceParty2();
-                Command balanceAndDance = Commands.parallel(balance, danceParty);
+                // Command danceParty = ledLighting.getDanceParty2();
+                Command balanceAndDance = Commands.parallel(balance
+                // ,
+                // danceParty
+                );
 
                 if (direction == AutoBalanceDirection.Forward) {
                         Command driveABit = swerveDrive.getOnRampCommand();
@@ -432,12 +405,7 @@ public class RobotContainer {
                 Command pathPlannerCommand = PathPlannerToAuto.createFullAutoFromPathGroup(
                                 swerveDrive,
                                 telemetry,
-                                elevator,
-                                elbow,
-                                grabber,
-                                claw,
-                                tilt,
-                                ledLighting,
+                                arm,
                                 trajectories,
                                 translationConstants,
                                 rotationsConstants);
