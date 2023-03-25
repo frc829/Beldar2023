@@ -751,7 +751,7 @@ public final class Constants {
         public static String pathName = "ConsumeMassQuantities1";
         public static PIDConstants translationConstants = new PIDConstants(5.000, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(1, 2);
+        public static PathConstraints firstPathConstraint = new PathConstraints(1.02, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }
 

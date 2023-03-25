@@ -75,6 +75,9 @@ public abstract class Chassis {
 
                 SmartDashboard.putNumber("PitchAngleDeg", pitchDistanceFrom0.getDegrees());
                 SmartDashboard.putNumber("vxBalance", vxMetersPerSecond);
+                Rotation2d testPitch = Rotation2d.fromDegrees(15);
+                Rotation2d testPitchDiff = testPitch.minus(new Rotation2d());
+                SmartDashboard.putNumber("TestingPitchDiff", testPitchDiff.getDegrees());
                 swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
             }
 

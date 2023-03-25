@@ -46,7 +46,7 @@
         "names": [],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
-        "waitTime": 0.5
+        "waitTime": 0.25
       }
     },
     {
