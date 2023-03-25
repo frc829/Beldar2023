@@ -72,7 +72,7 @@ public abstract class Chassis {
 
                 vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
                 vyMetersPerSecond = MathUtil.applyDeadband(vyMetersPerSecond, 0.10);
-                swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, vyMetersPerSecond, 0));
+                swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
             }
 
             @Override
@@ -118,7 +118,7 @@ public abstract class Chassis {
 
                 vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
                 vyMetersPerSecond = MathUtil.applyDeadband(vyMetersPerSecond, 0.10);
-                swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, vyMetersPerSecond, 0));
+                swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
             }
 
             @Override
