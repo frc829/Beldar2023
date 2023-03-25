@@ -52,7 +52,7 @@ public abstract class Chassis {
 
             @Override
             public void initialize() {
-                SmartDashboard.putString("Swerve Drive Current Command", "Balancing");
+                SmartDashboard.putString("Swerve Drive Current Command", "Balancing2");
             }
 
             @Override
@@ -65,13 +65,16 @@ public abstract class Chassis {
                 double rollDistatnceFrom0Radians = rollDistanceFrom0.getRadians();
 
                 double vxMetersPerSecond = -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
-                        * Math.sin(pitchDistanceFrom0Radians) / 2.5;
+                        * Math.sin(pitchDistanceFrom0Radians) / 2.7;
 
                 double vyMetersPerSecond = Constants.Robot.Drive.Modules.maxModuleSpeedMPS
-                        * Math.sin(rollDistatnceFrom0Radians) / 2.5;
+                        * Math.sin(rollDistatnceFrom0Radians) / 2.7;
 
                 vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
                 vyMetersPerSecond = MathUtil.applyDeadband(vyMetersPerSecond, 0.10);
+
+                SmartDashboard.putNumber("PitchAngleDeg", pitchDistanceFrom0.getDegrees());
+                SmartDashboard.putNumber("vxBalance", vxMetersPerSecond);
                 swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
             }
 
@@ -118,6 +121,9 @@ public abstract class Chassis {
 
                 vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
                 vyMetersPerSecond = MathUtil.applyDeadband(vyMetersPerSecond, 0.10);
+
+                SmartDashboard.putNumber("PitchAngleDeg", pitchDistanceFrom0.getDegrees());
+                SmartDashboard.putNumber("vxBalance", vxMetersPerSecond);
                 swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
             }
 
