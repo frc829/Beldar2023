@@ -44,6 +44,52 @@ public abstract class Chassis {
 
     }
 
+    public static CommandBase getBalanceTestingCommand2(
+            SwerveDrive swerveDrive,
+            Telemetry telemetry) {
+
+        CommandBase balance = new CommandBase() {
+
+            @Override
+            public void initialize() {
+                SmartDashboard.putString("Swerve Drive Current Command", "Balancing");
+            }
+
+            @Override
+            public void execute() {
+                Rotation2d pitchAngle = telemetry.getPitch();
+                Rotation2d rollAngle = telemetry.getRoll();
+                Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
+                Rotation2d rollDistanceFrom0 = rollAngle.minus(new Rotation2d());
+                double pitchDistanceFrom0Radians = pitchDistanceFrom0.getRadians();
+                double rollDistatnceFrom0Radians = rollDistanceFrom0.getRadians();
+
+                double vxMetersPerSecond = -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
+                        * Math.sin(pitchDistanceFrom0Radians) / 2.5;
+
+                double vyMetersPerSecond = Constants.Robot.Drive.Modules.maxModuleSpeedMPS
+                        * Math.sin(rollDistatnceFrom0Radians) / 2.5;
+
+                vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
+                vyMetersPerSecond = MathUtil.applyDeadband(vyMetersPerSecond, 0.10);
+                swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, vyMetersPerSecond, 0));
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                swerveDrive.stopDrive();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+
+        balance.addRequirements(swerveDrive, telemetry);
+        return balance;
+    }
+
     public static CommandBase getBalanceTestingCommand(
             SwerveDrive swerveDrive,
             Telemetry telemetry) {

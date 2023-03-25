@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "ScoreMiddle1"
+          "ScoreHighCube1"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",

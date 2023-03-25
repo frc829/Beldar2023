@@ -302,7 +302,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position4.rotationConstants,
                                 AutoBalanceDirection.Backward);
 
-                addAutoCommand(
+                addAutoCommand2(
                                 Constants.AutoRoutines.Element1.position5.pathName,
                                 Constants.AutoRoutines.Element1.position5.firstPathConstraint,
                                 Constants.AutoRoutines.Element1.position5.remainingPathConstraints,
@@ -383,6 +383,35 @@ public class RobotContainer {
                                 AutoBalanceDirection.Ignore);
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        }
+
+        private void addAutoCommand2(
+                        String pathName,
+                        PathConstraints firstPathConstraint,
+                        PathConstraints[] remainingPathConstraints,
+                        PIDConstants translationConstants,
+                        PIDConstants rotationConstants,
+                        AutoBalanceDirection direction) {
+                Command balance = Chassis.getBalanceTestingCommand2(swerveDrive, telemetry);
+                Command danceParty = ledLighting.getDanceParty2();
+                Command balanceAndDance = Commands.parallel(balance, danceParty);
+
+                if (direction == AutoBalanceDirection.Forward) {
+                        Command driveABit = swerveDrive.getOnRampCommand();
+                        Command end = Commands.sequence(driveABit, balanceAndDance);
+                        addAutoCommand(pathName, firstPathConstraint, remainingPathConstraints, translationConstants,
+                                        rotationConstants, end);
+                } else if (direction == AutoBalanceDirection.Backward) {
+                        Command driveABit = swerveDrive.getOnRampBackwardCommand();
+                        Command end = Commands.sequence(driveABit, balanceAndDance);
+                        addAutoCommand(pathName, firstPathConstraint, remainingPathConstraints, translationConstants,
+                                        rotationConstants, end);
+                } else if (direction == AutoBalanceDirection.Ignore) {
+                        Command end = Commands.sequence(balanceAndDance);
+                        addAutoCommand(pathName, firstPathConstraint, remainingPathConstraints, translationConstants,
+                                        rotationConstants, end);
+                }
 
         }
 

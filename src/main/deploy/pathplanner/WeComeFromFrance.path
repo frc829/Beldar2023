@@ -51,11 +51,11 @@
     },
     {
       "anchorPoint": {
-        "x": 4.297979400967747,
+        "x": 5.3812070017302425,
         "y": 2.75
       },
       "prevControl": {
-        "x": 4.343890924487645,
+        "x": 5.42711852525014,
         "y": 2.75
       },
       "nextControl": null,
@@ -66,7 +66,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
