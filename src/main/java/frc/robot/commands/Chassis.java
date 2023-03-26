@@ -117,10 +117,10 @@ public abstract class Chassis {
                 double rollDistatnceFrom0Radians = rollDistanceFrom0.getRadians();
 
                 double vxMetersPerSecond = -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
-                        * Math.sin(pitchDistanceFrom0Radians) / 2.5;
+                        * Math.sin(pitchDistanceFrom0Radians) / 2.4;
 
                 double vyMetersPerSecond = Constants.Robot.Drive.Modules.maxModuleSpeedMPS
-                        * Math.sin(rollDistatnceFrom0Radians) / 2.5;
+                        * Math.sin(rollDistatnceFrom0Radians) / 2.4;
 
                 vxMetersPerSecond = MathUtil.applyDeadband(vxMetersPerSecond, 0.10);
                 vyMetersPerSecond = MathUtil.applyDeadband(vyMetersPerSecond, 0.10);

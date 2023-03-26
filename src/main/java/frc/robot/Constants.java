@@ -798,6 +798,22 @@ public final class Constants {
         public static PathConstraints[] remainingPathConstraints = {};
       }
 
+      public static class dumb {
+        public static String pathName = "STOOPID";
+        public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
+        public static PathConstraints[] remainingPathConstraints = {};
+      }
+
+      public static class dumber {
+        public static String pathName = "STOOPID2";
+        public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
+        public static PathConstraints[] remainingPathConstraints = {};
+      }
+
       public static class position6 {
         public static String pathName = "ChargeUp2";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);

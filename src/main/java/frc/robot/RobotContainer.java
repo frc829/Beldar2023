@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Arm;
+import frc.robot.commands.Balancing;
 import frc.robot.commands.Chassis;
 import frc.robot.commands.PathPlannerToAuto;
 import frc.robot.framework.kinematics.KinematicsFactory;
@@ -375,12 +376,36 @@ public class RobotContainer {
                                 AutoBalanceDirection.Backward);
 
                 addAutoCommand(
+                                Constants.AutoRoutines.Element1.dumb.pathName,
+                                Constants.AutoRoutines.Element1.dumb.firstPathConstraint,
+                                Constants.AutoRoutines.Element1.dumb.remainingPathConstraints,
+                                Constants.AutoRoutines.Element1.dumb.translationConstants,
+                                Constants.AutoRoutines.Element1.dumb.rotationConstants,
+                                AutoBalanceDirection.Ignore);
+
+                addAutoCommand(
+                                Constants.AutoRoutines.Element1.dumber.pathName,
+                                Constants.AutoRoutines.Element1.dumber.firstPathConstraint,
+                                Constants.AutoRoutines.Element1.dumber.remainingPathConstraints,
+                                Constants.AutoRoutines.Element1.dumber.translationConstants,
+                                Constants.AutoRoutines.Element1.dumber.rotationConstants,
+                                AutoBalanceDirection.Ignore);
+
+                addAutoCommand(
                                 Constants.AutoRoutines.Element1.position5Cone2.pathName,
                                 Constants.AutoRoutines.Element1.position5Cone2.firstPathConstraint,
                                 Constants.AutoRoutines.Element1.position5Cone2.remainingPathConstraints,
                                 Constants.AutoRoutines.Element1.position5Cone2.translationConstants,
                                 Constants.AutoRoutines.Element1.position5Cone2.rotationConstants,
                                 AutoBalanceDirection.Ignore);
+
+                Command balanceExperiment = Balancing.createCube(
+                                swerveDrive,
+                                telemetry,
+                                elevator, elbow, grabber, tilt, claw);
+
+                this.autoCommands.put("RobbiesBalance", balanceExperiment);
+                this.autoChooser.addOption("RobbiesBalance", "RobbiesBalance");
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -479,7 +504,9 @@ public class RobotContainer {
         }
 
         public Command getAutonomousCommand() {
-                if (this.autoChooser.getSelected() != null) {
+                if (this.autoChooser.getSelected() == "RobbiesBalance") {
+                        return autoCommands.get("RobbiesBalance");
+                } else if (this.autoChooser.getSelected() != null) {
                         String autoName = this.autoChooser.getSelected();
                         Command autoCommand = autoCommands.get(autoName);
                         List<PathPlannerTrajectory> autoTrajectories = pathPlannerTrajectories.get(autoName);
