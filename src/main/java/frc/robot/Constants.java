@@ -799,7 +799,7 @@ public final class Constants {
       }
 
       public static class dumb {
-        public static String pathName = "STOOPID";
+        public static String pathName = "STOOPIDCONE";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
@@ -807,7 +807,7 @@ public final class Constants {
       }
 
       public static class dumber {
-        public static String pathName = "STOOPID2";
+        public static String pathName = "STOOPIDCONE";
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(10, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
