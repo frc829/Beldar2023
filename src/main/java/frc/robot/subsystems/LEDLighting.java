@@ -187,6 +187,27 @@ public class LEDLighting extends SubsystemBase {
         return command;
     }
 
+    public CommandBase getDriveForwardLighting() {
+
+        CommandBase command = new CommandBase() {
+
+            @Override
+            public void initialize() {
+                SmartDashboard.putString("LED Lighting Current Command", "DriveForward");
+                Animation dance = getColorFlow(0, 255, 0, 0, 1, 400, ColorFlowAnimation.Direction.Forward, 0);
+                currentAnimation = dance;
+            }
+
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
+        };
+
+        command.addRequirements(this);
+        return command;
+    }
+
     public CommandBase getDriveUpHillLighting() {
 
         CommandBase command = new CommandBase() {

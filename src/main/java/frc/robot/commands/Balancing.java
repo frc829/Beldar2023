@@ -23,11 +23,96 @@ import frc.robot.subsystems.Telemetry;
 /** Add your docs here. */
 public class Balancing {
 
-    public static CommandBase WeComeFromFrance(){
-        return null;
+    public static CommandBase WeComeFromFrance(
+            SwerveDrive swerveDrive,
+            Telemetry telemetry,
+            Elevator elevator,
+            Elbow elbow,
+            Grabber grabber,
+            ElevatorTilt tilt,
+            Claw claw,
+            LEDLighting ledLighting,
+            double getOverRampTimeDeadLine,
+            double settlingWait,
+            double getOnRampTimeDeadLine,
+            double driveUpHillSpeed,
+            double driveUpHillTimeDeadline,
+            double balanceSpeedScaleFactor) {
+
+        CommandBase limeLightOff = telemetry.turnOffTrackingCamera();
+
+        CommandBase resetPose = Commands.runOnce(
+                () -> {
+
+                    telemetry.resetSwerveDrivePosition(new Pose2d(
+                            1.81,
+                            2.75,
+                            Rotation2d.fromDegrees(180)));
+                },
+                telemetry);
+
+        CommandBase clawCube = claw.createSetStateCommand(Claw.State.CUBE);
+        CommandBase alignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
+        CommandBase placement = Arm.createHighPlacement(elevator, elbow, tilt, claw, grabber);
+        CommandBase reset = Arm.createResetHigh(elevator, elbow, tilt, grabber);
+        CommandBase scoreHighCube = Commands.sequence(clawCube, alignment, placement, reset);
+
+        CommandBase driveBackwards = Commands.run(
+                () -> {
+                    swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(-2, 0, 0));
+                },
+                swerveDrive);
+
+        CommandBase smallWait = Commands.waitSeconds(settlingWait);
+
+        CommandBase driveBackwardsDeadline = Commands.waitSeconds(getOverRampTimeDeadLine);
+
+        CommandBase phase1 = Commands.deadline(driveBackwardsDeadline, driveBackwards);
+
+        CommandBase driveForwardsCommand = Commands.run(
+                () -> {
+                    swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(2, 0, 0));
+                },
+                swerveDrive);
+
+        CommandBase driveForwardsDeadline = Commands.waitSeconds(getOverRampTimeDeadLine);
+
+        CommandBase phase2 = Commands.deadline(driveForwardsDeadline, driveForwardsCommand);
+
+        CommandBase driveUpHill = Commands.run(
+                () -> {
+                    double vxMetersPerSecond = driveUpHillSpeed;
+                    swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
+                },
+                swerveDrive);
+
+        CommandBase driveUpHillDeadeLine = Commands.waitSeconds(driveUpHillTimeDeadline);
+
+        CommandBase phase3 = Commands.deadline(driveUpHillDeadeLine, driveUpHill);
+
+        CommandBase balance = Commands.run(
+                () -> {
+                    SmartDashboard.putString("01:Balance State", "Yes");
+
+                    Rotation2d pitchAngle = telemetry.getPitch();
+                    Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
+                    double vxMetersPerSecond = balanceSpeedScaleFactor * Math.sin(pitchDistanceFrom0.getRadians());
+                    SmartDashboard.putNumber("02:VX", vxMetersPerSecond);
+                    SmartDashboard.putNumber("03:ANGLE", pitchDistanceFrom0.getDegrees());
+                    SmartDashboard.putNumber("04:SIGN OF ANGLE", Math.signum(pitchDistanceFrom0.getDegrees()));
+                    swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
+                },
+                swerveDrive);
+
+        CommandBase phase1Lighting = ledLighting.getDriveBackwardLighting();
+        CommandBase phase2Lighting = ledLighting.getDriveForwardLighting();
+        CommandBase phase3Lighting = ledLighting.getDriveUpHillLighting();
+        CommandBase balanceLighting = ledLighting.getDanceParty();
+
+        return Commands.sequence(resetPose, scoreHighCube, limeLightOff, phase1Lighting, phase1, smallWait, phase2Lighting, phase2,
+                phase3Lighting, phase3,
+                balanceLighting, balance);
     }
-
-
 
     public static CommandBase RobbiesBalanceImproved(
             SwerveDrive swerveDrive,
@@ -73,8 +158,7 @@ public class Balancing {
 
         CommandBase driveUpHill = Commands.run(
                 () -> {
-                    double vxMetersPerSecond = -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
-                            * Math.sin(Math.toRadians(15)) / 2.35;
+                    double vxMetersPerSecond = driveUpHillSpeed;
                     swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
                 },
                 swerveDrive);

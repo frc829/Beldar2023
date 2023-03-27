@@ -188,9 +188,6 @@ public class RobotContainer {
                                 telemetry,
                                 Constants.Auto.Drive.ScoringPositions.positionsList);
 
-                CommandBase highConePoofCommand = Arm.createHighConePoofAndReset(
-                                elevator, elbow, tilt, claw, grabber);
-
                 CommandBase highPlacementAndResetCommand = Arm.createHighPlacementAndReset(
                                 elevator, elbow, tilt, claw, grabber);
 
@@ -210,8 +207,23 @@ public class RobotContainer {
                                 claw,
                                 ledLighting,
                                 1.70,
-                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
-                                                * Math.sin(Math.toRadians(15)) / 2.35,
+                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS * Math.sin(Math.toRadians(15)) / 2.35,
+                                0.5,
+                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
+
+                CommandBase weComeFromFranceTest = Balancing.WeComeFromFrance(
+                                swerveDrive,
+                                telemetry,
+                                elevator,
+                                elbow,
+                                grabber,
+                                tilt,
+                                claw,
+                                ledLighting,
+                                2,
+                                0.25,
+                                1.70,
+                                Constants.Robot.Drive.Modules.maxModuleSpeedMPS * Math.sin(Math.toRadians(15)) / 2.35,
                                 0.5,
                                 -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
 
@@ -221,7 +233,7 @@ public class RobotContainer {
 
                 driveController.start().onTrue(setTelemetryFromCameraCommand);
                 driveController.back().whileTrue(zeroModulesCommand);
-                driveController.b().onTrue(highConePoofCommand);
+                driveController.b().whileTrue(weComeFromFranceTest);
                 driveController.x().onTrue(middleAlignment);
                 driveController.y().onTrue(highAlignment);
                 driveController.a().whileTrue(cube2Test);
