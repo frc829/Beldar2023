@@ -199,14 +199,21 @@ public class RobotContainer {
 
                 CommandBase highAlignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
                 CommandBase middleAlignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
-                CommandBase lowAlignPlacmentAndResetCommand = Arm.createLowAlignPlacementAndReset(elevator, elbow, tilt,
-                                claw, grabber);
 
-                Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
-                Command danceParty = ledLighting.getDanceParty2();
-                Command balanceAndDance = Commands.parallel(balance, danceParty);
-                Command driveABit = swerveDrive.getOnRampCommand();
-                Command end = Commands.sequence(driveABit, balanceAndDance);
+                CommandBase cube2Test = Balancing.RobbiesBalanceImproved(
+                                swerveDrive,
+                                telemetry,
+                                elevator,
+                                elbow,
+                                grabber,
+                                tilt,
+                                claw,
+                                ledLighting,
+                                1.70,
+                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
+                                                * Math.sin(Math.toRadians(15)) / 2.35,
+                                0.5,
+                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
 
                 BooleanSupplier booleanSupplier = swerveDrive.manualSpeedControlActive(telemetry);
                 Trigger driveManualTrigger = new Trigger(booleanSupplier);
@@ -217,8 +224,7 @@ public class RobotContainer {
                 driveController.b().onTrue(highConePoofCommand);
                 driveController.x().onTrue(middleAlignment);
                 driveController.y().onTrue(highAlignment);
-                // driveController.a().onTrue(lowAlignPlacmentAndResetCommand);
-                driveController.a().whileTrue(end);
+                driveController.a().whileTrue(cube2Test);
                 driveController.leftBumper().onTrue(middlePlacementAndResetCommand);
                 driveController.rightBumper().onTrue(highPlacementAndResetCommand);
                 driveController.povLeft().whileTrue(leftPortalAlign);
@@ -256,7 +262,7 @@ public class RobotContainer {
                 CommandBase shortSaber = tilt.createControlCommand(ElevatorTilt.State.TWO);
                 CommandBase tatooine = tilt.createControlCommand(ElevatorTilt.State.SIX);
                 CommandBase duelOfTheFates = tilt.createControlCommand(ElevatorTilt.State.EIGHT);
-                CommandBase danceParty = ledLighting.getDanceParty2();
+                CommandBase danceParty = ledLighting.getDanceParty();
 
                 operatorController.rightBumper().whileTrue(cubePickupFloor);
                 operatorController.rightBumper().onFalse(elementCarry);
@@ -399,7 +405,7 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position5Cone2.rotationConstants,
                                 AutoBalanceDirection.Ignore);
 
-                Command balanceExperiment = Balancing.createCube(
+                Command balanceExperiment = Balancing.RobbiesBalance(
                                 swerveDrive,
                                 telemetry,
                                 elevator, elbow, grabber, tilt, claw);
@@ -419,7 +425,7 @@ public class RobotContainer {
                         PIDConstants rotationConstants,
                         AutoBalanceDirection direction) {
                 Command balance = Chassis.getBalanceTestingCommand2(swerveDrive, telemetry);
-                Command danceParty = ledLighting.getDanceParty2();
+                Command danceParty = ledLighting.getDanceParty();
                 Command balanceAndDance = Commands.parallel(balance, danceParty);
 
                 if (direction == AutoBalanceDirection.Forward) {
@@ -448,7 +454,7 @@ public class RobotContainer {
                         PIDConstants rotationConstants,
                         AutoBalanceDirection direction) {
                 Command balance = Chassis.getBalanceTestingCommand(swerveDrive, telemetry);
-                Command danceParty = ledLighting.getDanceParty2();
+                Command danceParty = ledLighting.getDanceParty();
                 Command balanceAndDance = Commands.parallel(balance, danceParty);
 
                 if (direction == AutoBalanceDirection.Forward) {
