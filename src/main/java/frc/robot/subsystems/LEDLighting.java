@@ -166,14 +166,14 @@ public class LEDLighting extends SubsystemBase {
         return setLEDCommand;
     }
 
-    public CommandBase getDanceParty() {
+    public CommandBase getDriveBackwardLighting() {
 
-        CommandBase dancePartyCommand = new CommandBase() {
+        CommandBase command = new CommandBase() {
 
             @Override
             public void initialize() {
-                SmartDashboard.putString("LED Lighting Current Command", "Dance Party");
-                Animation dance = getRainbow(1, 1, 400, false, 0);
+                SmartDashboard.putString("LED Lighting Current Command", "DriveBackward");
+                Animation dance = getFire(1, 1, 400, 1, 0, false, 0);
                 currentAnimation = dance;
             }
 
@@ -183,11 +183,32 @@ public class LEDLighting extends SubsystemBase {
             }
         };
 
-        dancePartyCommand.addRequirements(this);
-        return dancePartyCommand;
+        command.addRequirements(this);
+        return command;
     }
 
-    public CommandBase getDanceParty2() {
+    public CommandBase getDriveUpHillLighting() {
+
+        CommandBase command = new CommandBase() {
+
+            @Override
+            public void initialize() {
+                SmartDashboard.putString("LED Lighting Current Command", "DriveUpHill");
+                Animation dance = getStrobe(255, 0, 255, 0, 1, 400, 0);
+                currentAnimation = dance;
+            }
+
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
+        };
+
+        command.addRequirements(this);
+        return command;
+    }
+
+    public CommandBase getDanceParty() {
 
         CommandBase dancePartyCommand = new CommandBase() {
 

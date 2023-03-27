@@ -35,6 +35,8 @@ public interface Gyroscope {
      */
     public Rotation2d getRoll();
 
+    public Rotation2d getPitchRate();
+
     public static Gyroscope create(AHRS gyro) {
 
         return new Gyroscope() {
@@ -72,6 +74,11 @@ public interface Gyroscope {
             @Override
             public boolean isConnected() {
                 return gyro.isConnected();
+            }
+
+            @Override
+            public Rotation2d getPitchRate() {
+                return Rotation2d.fromDegrees(gyro.getRawGyroX());
             }
         };
     }
