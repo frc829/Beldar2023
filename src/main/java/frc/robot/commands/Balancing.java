@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
-import frc.robot.Constants.AutoRoutines.Element1.testing1;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
@@ -31,6 +30,8 @@ public class Balancing {
             Grabber grabber,
             ElevatorTilt tilt,
             Claw claw) {
+
+        CommandBase limeLightOff = telemetry.turnOffTrackingCamera();
 
         CommandBase resetPose = Commands.runOnce(
                 () -> {
@@ -54,9 +55,10 @@ public class Balancing {
                 },
                 swerveDrive);
 
-        CommandBase driveBackwardsDeadline = Commands.waitSeconds(1);
+        CommandBase driveBackwardsDeadline = Commands.waitSeconds(1.70);
 
         CommandBase phase1 = Commands.deadline(driveBackwardsDeadline, driveBackwards);
+
 
         CommandBase balance = Commands.run(
                 () -> {
@@ -65,15 +67,18 @@ public class Balancing {
                     Rotation2d pitchAngle = telemetry.getPitch();
                     Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
                     double vxMetersPerSecond = -Constants.Robot.Drive.Modules.maxModuleSpeedMPS
-                            * Math.sin(pitchDistanceFrom0.getRadians()) / 2.4;
+                            * Math.sin(pitchDistanceFrom0.getRadians()) / 2.35;
                     SmartDashboard.putNumber("VVVVVXXXXX", vxMetersPerSecond);
                     SmartDashboard.putNumber("AAAANGGGLLE", pitchDistanceFrom0.getDegrees());
                     SmartDashboard.putNumber("SIGN OF ANGLE", Math.signum(pitchDistanceFrom0.getDegrees()));
+                    if(vxMetersPerSecond >= 0){
+                        vxMetersPerSecond = 0;
+                    }
                     swerveDrive.setSwerveDriveChassisSpeed(new ChassisSpeeds(vxMetersPerSecond, 0, 0));
                 },
                 swerveDrive);
 
-        return Commands.sequence(resetPose, scoreHighCube, phase1, balance);
+        return Commands.sequence(resetPose, scoreHighCube, limeLightOff, phase1, balance);
 
     }
 

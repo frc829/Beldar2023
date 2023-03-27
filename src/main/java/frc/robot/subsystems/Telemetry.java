@@ -36,6 +36,8 @@ public class Telemetry extends SubsystemBase {
         private final TrackingCamera trackingCamera;
         private final FieldMap fieldMap;
 
+        private boolean trackingCameraEnabled = true;
+
         public Telemetry(
                         Pose2d initialPosition,
                         FieldMap fieldMap,
@@ -67,18 +69,20 @@ public class Telemetry extends SubsystemBase {
         @Override
         public void periodic() {
                 this.fieldTelemetry.updateCurrentPosition(this.gyroscope.getYaw());
-                double[] currentPoseFromCamera = this.trackingCamera.getFieldPosition(DriverStation.getAlliance());
-                this.fieldTelemetry.addVisionMeasurement(currentPoseFromCamera);
+
+                if (trackingCameraEnabled) {
+                        double[] currentPoseFromCamera = this.trackingCamera
+                                        .getFieldPosition(DriverStation.getAlliance());
+                        this.fieldTelemetry.addVisionMeasurement(currentPoseFromCamera);
+                        // SmartDashboard.putBoolean("Gyro Connected", this.gyroscope.isConnected());
+                        SmartDashboard.putNumber("PoseFromCameraX", currentPoseFromCamera[0]);
+                        SmartDashboard.putNumber("PoseFromCameraY", currentPoseFromCamera[1]);
+                        SmartDashboard.putNumber("PoseFromCameraZ", currentPoseFromCamera[2]);
+                        SmartDashboard.putNumber("PoseFromCameraRoll", currentPoseFromCamera[3]);
+                        SmartDashboard.putNumber("PoseFromCameraPitch", currentPoseFromCamera[4]);
+                        SmartDashboard.putNumber("PoseFromCameraYaw", currentPoseFromCamera[5]);
+                }
                 fieldMap.updateField(this.fieldTelemetry.getCurrentPosition());
-
-                // SmartDashboard.putBoolean("Gyro Connected", this.gyroscope.isConnected());
-                SmartDashboard.putNumber("PoseFromCameraX", currentPoseFromCamera[0]);
-                SmartDashboard.putNumber("PoseFromCameraY", currentPoseFromCamera[1]);
-                SmartDashboard.putNumber("PoseFromCameraZ", currentPoseFromCamera[2]);
-                SmartDashboard.putNumber("PoseFromCameraRoll", currentPoseFromCamera[3]);
-                SmartDashboard.putNumber("PoseFromCameraPitch", currentPoseFromCamera[4]);
-                SmartDashboard.putNumber("PoseFromCameraYaw", currentPoseFromCamera[5]);
-
                 // SmartDashboard.putNumber("Gyro Pitch",
                 // this.gyroscope.getPitch().getDegrees());
                 // SmartDashboard.putNumber("Gyro Roll", this.gyroscope.getRoll().getDegrees());
@@ -163,11 +167,21 @@ public class Telemetry extends SubsystemBase {
                 this.fieldTelemetry.resetCurrentPosition(cameraPose, gyroscope.getYaw());
         }
 
+        public void disableTrackingCamera() {
+                this.trackingCameraEnabled = false;
+        }
+
         // Commands
 
         public CommandBase setTelemetryFromCameraCommand() {
                 return Commands.runOnce(
                                 () -> setTelemetryFromCamera(),
+                                this);
+        }
+
+        public CommandBase turnOffTrackingCamera() {
+                return Commands.runOnce(
+                                () -> disableTrackingCamera(),
                                 this);
         }
 

@@ -17,7 +17,8 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "ScoreHighCube1"
+          "ScoreHighCube1",
+          "LimeLightOff"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -26,11 +27,11 @@
     },
     {
       "anchorPoint": {
-        "x": 3.3828525776709673,
+        "x": 4.25,
         "y": 2.75
       },
       "prevControl": {
-        "x": 2.7375367968784023,
+        "x": 3.604684219207435,
         "y": 2.75
       },
       "nextControl": null,

@@ -176,6 +176,9 @@ public abstract class PathPlannerToAuto {
         } else if (name.contains("Camera")) {
             CommandBase camera = telemetry.setTelemetryFromCameraCommand();
             return camera;
+        } else if (name.contains("LimeLightOff")) {
+            CommandBase cameraOff = telemetry.turnOffTrackingCamera();
+            return cameraOff;
         } else {
             CommandBase none = Commands.none();
             return none;
