@@ -729,7 +729,7 @@ public final class Constants {
         public static String pathName = "3ElementPosition2";
         public static PIDConstants translationConstants = new PIDConstants(5, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(0.5, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(1, 2);
+        public static PathConstraints firstPathConstraint = new PathConstraints(2, 3);
         public static PathConstraints[] remainingPathConstraints = {
             new PathConstraints(4, 3)
         };

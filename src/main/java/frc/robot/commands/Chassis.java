@@ -22,9 +22,9 @@ import frc.robot.subsystems.Telemetry;
 /** Add your docs here. */
 public abstract class Chassis {
 
-    private static PIDController forwardController = new PIDController(5, 0, 0);
-    private static PIDController strafeController = new PIDController(5, 0, 0);
-    private static PIDController rotationController = new PIDController(5, 0, 0);
+    private static PIDController forwardController = new PIDController(2, 0, 0);
+    private static PIDController strafeController = new PIDController(2, 0, 0);
+    private static PIDController rotationController = new PIDController(10, 0, 0);
 
     public static CommandBase createManualDriveCommand(
             SwerveDrive swerveDrive,
