@@ -99,6 +99,14 @@ public class Balancing {
                                         Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
                                         double vxMetersPerSecond = balanceSpeedScaleFactor
                                                         * Math.sin(pitchDistanceFrom0.getRadians());
+
+                                        if (Math.abs(pitchDistanceFrom0.getDegrees()) <= 6) {
+                                                vxMetersPerSecond /= 2;
+                                        }
+                                        if (Math.abs(pitchDistanceFrom0.getDegrees()) <= 2) {
+                                                vxMetersPerSecond /= 4;
+                                        }
+
                                         SmartDashboard.putNumber("02:VX", vxMetersPerSecond);
                                         SmartDashboard.putNumber("03:ANGLE", pitchDistanceFrom0.getDegrees());
                                         SmartDashboard.putNumber("04:SIGN OF ANGLE",
@@ -181,6 +189,14 @@ public class Balancing {
                                         Rotation2d pitchDistanceFrom0 = pitchAngle.minus(new Rotation2d());
                                         double vxMetersPerSecond = balanceSpeedScaleFactor
                                                         * Math.sin(pitchDistanceFrom0.getRadians());
+
+                                        if (Math.abs(pitchDistanceFrom0.getDegrees()) <= 6) {
+                                                vxMetersPerSecond /= 2;
+                                        }
+                                        if (Math.abs(pitchDistanceFrom0.getDegrees()) <= 2) {
+                                                vxMetersPerSecond /= 4;
+                                        }
+
                                         SmartDashboard.putNumber("02:VX", vxMetersPerSecond);
                                         SmartDashboard.putNumber("03:ANGLE", pitchDistanceFrom0.getDegrees());
                                         SmartDashboard.putNumber("04:SIGN OF ANGLE",

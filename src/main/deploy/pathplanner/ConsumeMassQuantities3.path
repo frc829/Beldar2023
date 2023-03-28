@@ -126,11 +126,11 @@
     },
     {
       "anchorPoint": {
-        "x": 1.910566481465506,
+        "x": 2.0,
         "y": 4.388947780270858
       },
       "prevControl": {
-        "x": 1.6796074696662489,
+        "x": 1.769040988200743,
         "y": 4.388947780270858
       },
       "nextControl": null,
@@ -154,7 +154,7 @@
   "isReversed": null,
   "markers": [
     {
-      "position": 1.6727272727272804,
+      "position": 1.5,
       "names": [
         "CubePickup1"
       ]

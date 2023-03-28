@@ -184,9 +184,9 @@ public class RobotContainer {
                                 Constants.Auto.Drive.PortalPositions.leftPortal);
 
                 // CommandBase nearestScoreAlign = Chassis.createNearestPointCommand(
-                //                 swerveDrive,
-                //                 telemetry,
-                //                 Constants.Auto.Drive.ScoringPositions.positionsList);
+                // swerveDrive,
+                // telemetry,
+                // Constants.Auto.Drive.ScoringPositions.positionsList);
 
                 CommandBase highPlacementAndResetCommand = Arm.createHighPlacementAndReset(
                                 elevator, elbow, tilt, claw, grabber);
@@ -220,9 +220,9 @@ public class RobotContainer {
                                 tilt,
                                 claw,
                                 ledLighting,
-                                2,
+                                3,
                                 0.25,
-                                1.70,
+                                0.85,
                                 Constants.Robot.Drive.Modules.maxModuleSpeedMPS * Math.sin(Math.toRadians(15)) / 2.35,
                                 0.5,
                                 -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
@@ -235,19 +235,19 @@ public class RobotContainer {
                 driveManualTrigger.whileTrue(manualDriveCommand);
 
                 CommandBase Conquer2Test = addAutoCommand5(
-                        Constants.AutoRoutines.Element3.position2.pathName,
-                        Constants.AutoRoutines.Element3.position2.firstPathConstraint,
-                        Constants.AutoRoutines.Element3.position2.remainingPathConstraints,
-                        Constants.AutoRoutines.Element3.position2.translationConstants,
-                        Constants.AutoRoutines.Element3.position2.rotationConstants,
-                        Commands.none());
+                                Constants.AutoRoutines.Element3.position2.pathName,
+                                Constants.AutoRoutines.Element3.position2.firstPathConstraint,
+                                Constants.AutoRoutines.Element3.position2.remainingPathConstraints,
+                                Constants.AutoRoutines.Element3.position2.translationConstants,
+                                Constants.AutoRoutines.Element3.position2.rotationConstants,
+                                Commands.none());
 
                 driveController.start().onTrue(setTelemetryFromCameraCommand);
                 driveController.back().whileTrue(zeroModulesCommand);
-                driveController.b().whileTrue(weComeFromFranceTest);
+                driveController.b().onTrue(weComeFromFranceTest);
                 driveController.x().onTrue(middleAlignment);
                 driveController.y().onTrue(highAlignment);
-                driveController.a().whileTrue(cube2Test);
+                driveController.a().onTrue(cube2Test);
                 driveController.leftBumper().onTrue(middlePlacementAndResetCommand);
                 driveController.rightBumper().onTrue(highPlacementAndResetCommand);
                 driveController.povLeft().whileTrue(leftPortalAlign);
@@ -286,8 +286,6 @@ public class RobotContainer {
                 CommandBase tatooine = tilt.createControlCommand(ElevatorTilt.State.SIX);
                 CommandBase duelOfTheFates = tilt.createControlCommand(ElevatorTilt.State.EIGHT);
                 CommandBase danceParty = ledLighting.getDanceParty();
-
-
 
                 operatorController.rightBumper().whileTrue(cubePickupFloor);
                 operatorController.rightBumper().onFalse(elementCarry);
@@ -374,8 +372,6 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element2.position8.rotationConstants,
                                 Commands.none());
 
-
-
                 addAutoCommand(
                                 Constants.AutoRoutines.Element3.position8.pathName,
                                 Constants.AutoRoutines.Element3.position8.firstPathConstraint,
@@ -417,6 +413,14 @@ public class RobotContainer {
                                 AutoBalanceDirection.Ignore);
 
                 addAutoCommand(
+                                Constants.AutoRoutines.Element3.position2.pathName,
+                                Constants.AutoRoutines.Element3.position2.firstPathConstraint,
+                                Constants.AutoRoutines.Element3.position2.remainingPathConstraints,
+                                Constants.AutoRoutines.Element3.position2.translationConstants,
+                                Constants.AutoRoutines.Element3.position2.rotationConstants,
+                                Commands.none());
+
+                addAutoCommand(
                                 Constants.AutoRoutines.Element1.position5Cone2.pathName,
                                 Constants.AutoRoutines.Element1.position5Cone2.firstPathConstraint,
                                 Constants.AutoRoutines.Element1.position5Cone2.remainingPathConstraints,
@@ -424,13 +428,65 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position5Cone2.rotationConstants,
                                 AutoBalanceDirection.Ignore);
 
+                addAutoCommand(
+                                Constants.AutoRoutines.Element1.allen.pathName,
+                                Constants.AutoRoutines.Element1.allen.firstPathConstraint,
+                                Constants.AutoRoutines.Element1.allen.remainingPathConstraints,
+                                Constants.AutoRoutines.Element1.allen.translationConstants,
+                                Constants.AutoRoutines.Element1.allen.rotationConstants,
+                                Commands.none());
+
+                addAutoCommand(
+                                Constants.AutoRoutines.Element1.braden.pathName,
+                                Constants.AutoRoutines.Element1.braden.firstPathConstraint,
+                                Constants.AutoRoutines.Element1.braden.remainingPathConstraints,
+                                Constants.AutoRoutines.Element1.braden.translationConstants,
+                                Constants.AutoRoutines.Element1.braden.rotationConstants,
+                                Commands.none());
+
                 Command balanceExperiment = Balancing.RobbiesBalance(
                                 swerveDrive,
                                 telemetry,
                                 elevator, elbow, grabber, tilt, claw);
 
+                Command balanceExperiment2 = Balancing.RobbiesBalanceImproved(
+                                swerveDrive,
+                                telemetry,
+                                elevator,
+                                elbow,
+                                grabber,
+                                tilt,
+                                claw,
+                                ledLighting,
+                                1.70,
+                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS * Math.sin(Math.toRadians(15)) / 2.35,
+                                0.5,
+                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
+
+                CommandBase weComeFromFranceTest = Balancing.WeComeFromFrance(
+                                swerveDrive,
+                                telemetry,
+                                elevator,
+                                elbow,
+                                grabber,
+                                tilt,
+                                claw,
+                                ledLighting,
+                                2,
+                                0.25,
+                                1.70,
+                                Constants.Robot.Drive.Modules.maxModuleSpeedMPS * Math.sin(Math.toRadians(15)) / 2.35,
+                                0.5,
+                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
+
+                this.autoCommands.put("RobbiesBalanceImproved", balanceExperiment2);
+                this.autoChooser.addOption("RobbiesBalanceImproved", "RobbiesBalanceImproved");
+
                 this.autoCommands.put("RobbiesBalance", balanceExperiment);
                 this.autoChooser.addOption("RobbiesBalance", "RobbiesBalance");
+
+                this.autoCommands.put("WeComeFromFranceTest", weComeFromFranceTest);
+                this.autoChooser.addOption("WeComeFromFranceTest", "WeComeFromFranceTest");
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -559,6 +615,10 @@ public class RobotContainer {
         public Command getAutonomousCommand() {
                 if (this.autoChooser.getSelected() == "RobbiesBalance") {
                         return autoCommands.get("RobbiesBalance");
+                } else if (this.autoChooser.getSelected() == "RobbiesBalanceImproved") {
+                        return autoCommands.get("RobbiesBalanceImproved");
+                } else if (this.autoChooser.getSelected() == "WeComeFromFranceTest") {
+                        return autoCommands.get("WeComeFromFranceTest");
                 } else if (this.autoChooser.getSelected() != null) {
                         String autoName = this.autoChooser.getSelected();
                         Command autoCommand = autoCommands.get(autoName);

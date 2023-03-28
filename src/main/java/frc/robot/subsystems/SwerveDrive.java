@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -483,6 +484,10 @@ public class SwerveDrive extends SubsystemBase {
   // Consumers
   public void setSwerveDriveChassisSpeed(ChassisSpeeds robotCentricChassisSpeeds) {
 
+    SmartDashboard.putNumber("VXTold", robotCentricChassisSpeeds.vxMetersPerSecond);
+    SmartDashboard.putNumber("VYTold", robotCentricChassisSpeeds.vyMetersPerSecond);
+    SmartDashboard.putNumber("WTold", robotCentricChassisSpeeds.omegaRadiansPerSecond);
+
     if (robotCentricChassisSpeeds.vxMetersPerSecond == 0 &&
         robotCentricChassisSpeeds.vyMetersPerSecond == 0 &&
         robotCentricChassisSpeeds.omegaRadiansPerSecond == 0) {
@@ -490,7 +495,7 @@ public class SwerveDrive extends SubsystemBase {
     } else {
       SwerveModuleState[] swerveModuleStates = this.swerveDriveKinematics
           .toSwerveModuleStates(robotCentricChassisSpeeds);
-      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Robot.Drive.Modules.maxModuleSpeedMPS);
+      //SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Robot.Drive.Modules.maxModuleSpeedMPS);
 
       SwerveModuleState frontLeftDesiredState = swerveModuleStates[0];
       Rotation2d frontLeftCurrentAngle = this.frontLeftModule.getSwerveModuleState().angle;

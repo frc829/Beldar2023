@@ -44,7 +44,7 @@ public final class Constants {
       public static final int kDriverControllerPort = 0;
       public static final double kDeadband = 0.1;
       public static final double maxTranslationalSpeedMPS = 6.0;
-      public static final double maxRotationalSpeedRadPS = 4.0;
+      public static final double maxRotationalSpeedRadPS = 10.0;
       public static final int kOperatorControllerPort = 1;
     }
 
@@ -85,7 +85,7 @@ public final class Constants {
             public static final double motorToMechConversion = steeringMotorToRotationMechConversion;
 
             public static class PID {
-              public static final double kP = 5;
+              public static final double kP = 20;
               public static final double kI = 0;
               public static final double kD = 0;
               public static final double minimumInput = 0;
@@ -141,7 +141,7 @@ public final class Constants {
             public static final double motorToMechConversion = steeringMotorToRotationMechConversion;
 
             public static class PID {
-              public static final double kP = 5;
+              public static final double kP = 20;
               public static final double kI = 0;
               public static final double kD = 0;
               public static final double minimumInput = 0;
@@ -197,7 +197,7 @@ public final class Constants {
             public static final double motorToMechConversion = steeringMotorToRotationMechConversion;
 
             public static class PID {
-              public static final double kP = 5;
+              public static final double kP = 20;
               public static final double kI = 0;
               public static final double kD = 0;
               public static final double minimumInput = 0;
@@ -253,7 +253,7 @@ public final class Constants {
             public static final double motorToMechConversion = steeringMotorToRotationMechConversion;
 
             public static class PID {
-              public static final double kP = 5;
+              public static final double kP = 20;
               public static final double kI = 0;
               public static final double kD = 0;
               public static final double minimumInput = 0;
@@ -727,12 +727,10 @@ public final class Constants {
     public static class Element3 {
       public static class position2 {
         public static String pathName = "3ElementPosition2";
-        public static PIDConstants translationConstants = new PIDConstants(5, 0, 0);
-        public static PIDConstants rotationConstants = new PIDConstants(0.5, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(2, 3);
-        public static PathConstraints[] remainingPathConstraints = {
-            new PathConstraints(4, 3)
-        };
+        public static PIDConstants translationConstants = new PIDConstants(5.000, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
+        public static PathConstraints[] remainingPathConstraints = {};
       }
 
       public static class position8 {
@@ -751,7 +749,7 @@ public final class Constants {
         public static String pathName = "ConsumeMassQuantities1";
         public static PIDConstants translationConstants = new PIDConstants(5.000, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(1.02, 2);
+        public static PathConstraints firstPathConstraint = new PathConstraints(1.5, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }
 
@@ -767,7 +765,7 @@ public final class Constants {
         public static String pathName = "ConsumeMassQuantities3";
         public static PIDConstants translationConstants = new PIDConstants(5.000, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(1, 2);
+        public static PathConstraints firstPathConstraint = new PathConstraints(1.5, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }
     }
@@ -851,6 +849,22 @@ public final class Constants {
         public static PIDConstants translationConstants = new PIDConstants(10, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(2, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
+        public static PathConstraints[] remainingPathConstraints = {};
+      }
+
+      public static class allen {
+        public static String pathName = "Allen";
+        public static PIDConstants translationConstants = new PIDConstants(5.000, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
+        public static PathConstraints[] remainingPathConstraints = {};
+      }
+
+      public static class braden {
+        public static String pathName = "Braden";
+        public static PIDConstants translationConstants = new PIDConstants(5.000, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(4, 3);
         public static PathConstraints[] remainingPathConstraints = {};
       }
 
