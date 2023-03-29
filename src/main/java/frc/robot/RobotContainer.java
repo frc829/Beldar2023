@@ -166,10 +166,10 @@ public class RobotContainer {
                 CommandBase zeroModulesCommand = swerveDrive.getZeroModuleCommand();
                 CommandBase setTelemetryFromCameraCommand = telemetry.setTelemetryFromCameraCommand();
 
-                // CommandBase dropPortalAlign = Chassis.createDropPortalCommand(
-                // swerveDrive,
-                // telemetry,
-                // Constants.Auto.Drive.PortalPositions.dropPortal);
+                CommandBase dropPortalAlign = Chassis.createDropPortalCommand(
+                swerveDrive,
+                telemetry,
+                Constants.Auto.Drive.PortalPositions.dropPortal);
 
                 CommandBase leftPortalAlign = Chassis.createSlidingPortalCommand(
                                 swerveDrive,
@@ -183,10 +183,10 @@ public class RobotContainer {
                                 Constants.Auto.Drive.PortalPositions.rightPortal,
                                 Constants.Auto.Drive.PortalPositions.leftPortal);
 
-                // CommandBase nearestScoreAlign = Chassis.createNearestPointCommand(
-                // swerveDrive,
-                // telemetry,
-                // Constants.Auto.Drive.ScoringPositions.positionsList);
+                CommandBase nearestScoreAlign = Chassis.createNearestPointCommand(
+                swerveDrive,
+                telemetry,
+                Constants.Auto.Drive.ScoringPositions.positionsList);
 
                 CommandBase highPlacementAndResetCommand = Arm.createHighPlacementAndReset(
                                 elevator, elbow, tilt, claw, grabber);
@@ -227,20 +227,9 @@ public class RobotContainer {
                                 0.5,
                                 -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
 
-                CommandBase conquer = Balancing.ConquerTheBluntSkulls(swerveDrive, telemetry, elevator, elbow, grabber,
-                                tilt, ledLighting, claw);
-
                 BooleanSupplier booleanSupplier = swerveDrive.manualSpeedControlActive(telemetry);
                 Trigger driveManualTrigger = new Trigger(booleanSupplier);
                 driveManualTrigger.whileTrue(manualDriveCommand);
-
-                CommandBase Conquer2Test = addAutoCommand5(
-                                Constants.AutoRoutines.Element3.position2.pathName,
-                                Constants.AutoRoutines.Element3.position2.firstPathConstraint,
-                                Constants.AutoRoutines.Element3.position2.remainingPathConstraints,
-                                Constants.AutoRoutines.Element3.position2.translationConstants,
-                                Constants.AutoRoutines.Element3.position2.rotationConstants,
-                                Commands.none());
 
                 driveController.start().onTrue(setTelemetryFromCameraCommand);
                 driveController.back().whileTrue(zeroModulesCommand);
@@ -251,9 +240,9 @@ public class RobotContainer {
                 driveController.leftBumper().onTrue(middlePlacementAndResetCommand);
                 driveController.rightBumper().onTrue(highPlacementAndResetCommand);
                 driveController.povLeft().whileTrue(leftPortalAlign);
-                driveController.povUp().onTrue(Conquer2Test);
+                driveController.povUp().whileTrue(nearestScoreAlign);
                 driveController.povRight().whileTrue(rightPortalAlign);
-                driveController.povDown().onTrue(conquer);
+                driveController.povDown().whileTrue(dropPortalAlign);
 
         }
 
@@ -381,22 +370,6 @@ public class RobotContainer {
                                 Commands.none());
 
                 addAutoCommand(
-                                Constants.AutoRoutines.Element1.testing2.pathName,
-                                Constants.AutoRoutines.Element1.testing2.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.testing2.remainingPathConstraints,
-                                Constants.AutoRoutines.Element1.testing2.translationConstants,
-                                Constants.AutoRoutines.Element1.testing2.rotationConstants,
-                                Commands.none());
-
-                addAutoCommand(
-                                Constants.AutoRoutines.Element1.position5Cone1.pathName,
-                                Constants.AutoRoutines.Element1.position5Cone1.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.position5Cone1.remainingPathConstraints,
-                                Constants.AutoRoutines.Element1.position5Cone1.translationConstants,
-                                Constants.AutoRoutines.Element1.position5Cone1.rotationConstants,
-                                AutoBalanceDirection.Backward);
-
-                addAutoCommand(
                                 Constants.AutoRoutines.Element1.dumb.pathName,
                                 Constants.AutoRoutines.Element1.dumb.firstPathConstraint,
                                 Constants.AutoRoutines.Element1.dumb.remainingPathConstraints,
@@ -418,30 +391,6 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element3.position2.remainingPathConstraints,
                                 Constants.AutoRoutines.Element3.position2.translationConstants,
                                 Constants.AutoRoutines.Element3.position2.rotationConstants,
-                                Commands.none());
-
-                addAutoCommand(
-                                Constants.AutoRoutines.Element1.position5Cone2.pathName,
-                                Constants.AutoRoutines.Element1.position5Cone2.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.position5Cone2.remainingPathConstraints,
-                                Constants.AutoRoutines.Element1.position5Cone2.translationConstants,
-                                Constants.AutoRoutines.Element1.position5Cone2.rotationConstants,
-                                AutoBalanceDirection.Ignore);
-
-                addAutoCommand(
-                                Constants.AutoRoutines.Element1.allen.pathName,
-                                Constants.AutoRoutines.Element1.allen.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.allen.remainingPathConstraints,
-                                Constants.AutoRoutines.Element1.allen.translationConstants,
-                                Constants.AutoRoutines.Element1.allen.rotationConstants,
-                                Commands.none());
-
-                addAutoCommand(
-                                Constants.AutoRoutines.Element1.braden.pathName,
-                                Constants.AutoRoutines.Element1.braden.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.braden.remainingPathConstraints,
-                                Constants.AutoRoutines.Element1.braden.translationConstants,
-                                Constants.AutoRoutines.Element1.braden.rotationConstants,
                                 Commands.none());
 
                 Command balanceExperiment = Balancing.RobbiesBalance(
@@ -490,34 +439,6 @@ public class RobotContainer {
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
-        }
-
-        private CommandBase addAutoCommand5(String pathName, PathConstraints firstPathConstraint,
-                        PathConstraints[] remainingPathConstraints, PIDConstants translationConstants,
-                        PIDConstants rotationsConstants, CommandBase endCommand) {
-
-                List<PathPlannerTrajectory> trajectories = PathPlannerToAuto
-                                .getPathPlannerTrajectory(
-                                                pathName,
-                                                firstPathConstraint,
-                                                remainingPathConstraints);
-
-                Command pathPlannerCommand = PathPlannerToAuto.createFullAutoFromPathGroup(
-                                swerveDrive,
-                                telemetry,
-                                elevator,
-                                elbow,
-                                grabber,
-                                claw,
-                                tilt,
-                                ledLighting,
-                                trajectories,
-                                translationConstants,
-                                rotationsConstants);
-
-                CommandBase autoCommand = Commands.sequence(pathPlannerCommand, endCommand);
-
-                return autoCommand;
         }
 
         private void addAutoCommand2(
