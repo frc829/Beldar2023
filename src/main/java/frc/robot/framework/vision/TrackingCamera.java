@@ -2,7 +2,6 @@ package frc.robot.framework.vision;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.types.LimelightHelpers;
 
 public interface TrackingCamera {
 
