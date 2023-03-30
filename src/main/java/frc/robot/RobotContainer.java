@@ -289,14 +289,6 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element1.position4.rotationConstants,
                                 AutoBalanceDirection.Backward);
 
-                addAutoCommand2(
-                                Constants.AutoRoutines.Element1.position5.pathName,
-                                Constants.AutoRoutines.Element1.position5.firstPathConstraint,
-                                Constants.AutoRoutines.Element1.position5.remainingPathConstraints,
-                                Constants.AutoRoutines.Element1.position5.translationConstants,
-                                Constants.AutoRoutines.Element1.position5.rotationConstants,
-                                AutoBalanceDirection.Forward);
-
                 addAutoCommand(
                                 Constants.AutoRoutines.Element1.position5Balance.pathName,
                                 Constants.AutoRoutines.Element1.position5Balance.firstPathConstraint,
@@ -330,14 +322,6 @@ public class RobotContainer {
                                 Commands.none());
 
                 addAutoCommand(
-                                Constants.AutoRoutines.Element3.position8.pathName,
-                                Constants.AutoRoutines.Element3.position8.firstPathConstraint,
-                                Constants.AutoRoutines.Element3.position8.remainingPathConstraints,
-                                Constants.AutoRoutines.Element3.position8.translationConstants,
-                                Constants.AutoRoutines.Element3.position8.rotationConstants,
-                                Commands.none());
-
-                addAutoCommand(
                                 Constants.AutoRoutines.Element1.dumb.pathName,
                                 Constants.AutoRoutines.Element1.dumb.firstPathConstraint,
                                 Constants.AutoRoutines.Element1.dumb.remainingPathConstraints,
@@ -361,10 +345,10 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element3.position2.rotationConstants,
                                 Commands.none());
 
-                Command balanceExperiment = Balancing.RobbiesBalance(
-                                swerveDrive,
-                                telemetry,
-                                elevator, elbow, grabber, tilt, claw);
+                // Command balanceExperiment = Balancing.RobbiesBalance(
+                //                 swerveDrive,
+                //                 telemetry,
+                //                 elevator, elbow, grabber, tilt, claw);
 
                 Command balanceExperiment2 = Balancing.RobbiesBalanceImproved(
                                 swerveDrive,
@@ -396,45 +380,16 @@ public class RobotContainer {
                                 0.5,
                                 -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
 
-                this.autoCommands.put("RobbiesBalanceImproved", balanceExperiment2);
-                this.autoChooser.addOption("RobbiesBalanceImproved", "RobbiesBalanceImproved");
-
-                this.autoCommands.put("RobbiesBalance", balanceExperiment);
+                this.autoCommands.put("RobbiesBalance", balanceExperiment2);
                 this.autoChooser.addOption("RobbiesBalance", "RobbiesBalance");
 
-                this.autoCommands.put("WeComeFromFranceTest", weComeFromFranceTest);
-                this.autoChooser.addOption("WeComeFromFranceTest", "WeComeFromFranceTest");
+                // this.autoCommands.put("RobbiesBalance", balanceExperiment);
+                // this.autoChooser.addOption("RobbiesBalance", "RobbiesBalance");
+
+                this.autoCommands.put("WeComeFromFrance", weComeFromFranceTest);
+                this.autoChooser.addOption("WeComeFromFrance", "WeComeFromFrance");
 
                 SmartDashboard.putData("Auto Chooser", autoChooser);
-
-        }
-
-        private void addAutoCommand2(
-                        String pathName,
-                        PathConstraints firstPathConstraint,
-                        PathConstraints[] remainingPathConstraints,
-                        PIDConstants translationConstants,
-                        PIDConstants rotationConstants,
-                        AutoBalanceDirection direction) {
-                Command balance = Chassis.getBalanceTestingCommand2(swerveDrive, telemetry);
-                Command danceParty = ledLighting.getDanceParty();
-                Command balanceAndDance = Commands.parallel(balance, danceParty);
-
-                if (direction == AutoBalanceDirection.Forward) {
-                        Command driveABit = swerveDrive.getOnRampCommand();
-                        Command end = Commands.sequence(driveABit, balanceAndDance);
-                        addAutoCommand(pathName, firstPathConstraint, remainingPathConstraints, translationConstants,
-                                        rotationConstants, end);
-                } else if (direction == AutoBalanceDirection.Backward) {
-                        Command driveABit = swerveDrive.getOnRampBackwardCommand();
-                        Command end = Commands.sequence(driveABit, balanceAndDance);
-                        addAutoCommand(pathName, firstPathConstraint, remainingPathConstraints, translationConstants,
-                                        rotationConstants, end);
-                } else if (direction == AutoBalanceDirection.Ignore) {
-                        Command end = Commands.sequence(balanceAndDance);
-                        addAutoCommand(pathName, firstPathConstraint, remainingPathConstraints, translationConstants,
-                                        rotationConstants, end);
-                }
 
         }
 
@@ -504,10 +459,8 @@ public class RobotContainer {
         public Command getAutonomousCommand() {
                 if (this.autoChooser.getSelected() == "RobbiesBalance") {
                         return autoCommands.get("RobbiesBalance");
-                } else if (this.autoChooser.getSelected() == "RobbiesBalanceImproved") {
-                        return autoCommands.get("RobbiesBalanceImproved");
-                } else if (this.autoChooser.getSelected() == "WeComeFromFranceTest") {
-                        return autoCommands.get("WeComeFromFranceTest");
+                } else if (this.autoChooser.getSelected() == "WeComeFromFrance") {
+                        return autoCommands.get("WeComeFromFrance");
                 } else if (this.autoChooser.getSelected() != null) {
                         String autoName = this.autoChooser.getSelected();
                         Command autoCommand = autoCommands.get(autoName);
