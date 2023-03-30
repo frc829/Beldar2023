@@ -197,46 +197,14 @@ public class RobotContainer {
                 CommandBase highAlignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
                 CommandBase middleAlignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
 
-                CommandBase cube2Test = Balancing.RobbiesBalanceImproved(
-                                swerveDrive,
-                                telemetry,
-                                elevator,
-                                elbow,
-                                grabber,
-                                tilt,
-                                claw,
-                                ledLighting,
-                                1.70,
-                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS * Math.sin(Math.toRadians(15)) / 2.35,
-                                0.5,
-                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
-
-                CommandBase weComeFromFranceTest = Balancing.WeComeFromFrance(
-                                swerveDrive,
-                                telemetry,
-                                elevator,
-                                elbow,
-                                grabber,
-                                tilt,
-                                claw,
-                                ledLighting,
-                                3,
-                                0.25,
-                                0.85,
-                                Constants.Robot.Drive.Modules.maxModuleSpeedMPS * Math.sin(Math.toRadians(15)) / 2.35,
-                                0.5,
-                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
-
                 BooleanSupplier booleanSupplier = swerveDrive.manualSpeedControlActive(telemetry);
                 Trigger driveManualTrigger = new Trigger(booleanSupplier);
                 driveManualTrigger.whileTrue(manualDriveCommand);
 
                 driveController.start().onTrue(setTelemetryFromCameraCommand);
                 driveController.back().whileTrue(zeroModulesCommand);
-                driveController.b().onTrue(weComeFromFranceTest);
                 driveController.x().onTrue(middleAlignment);
                 driveController.y().onTrue(highAlignment);
-                driveController.a().onTrue(cube2Test);
                 driveController.leftBumper().onTrue(middlePlacementAndResetCommand);
                 driveController.rightBumper().onTrue(highPlacementAndResetCommand);
                 driveController.povLeft().whileTrue(leftPortalAlign);
