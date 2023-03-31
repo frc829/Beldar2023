@@ -167,9 +167,9 @@ public class RobotContainer {
                 CommandBase setTelemetryFromCameraCommand = telemetry.setTelemetryFromCameraCommand();
 
                 CommandBase dropPortalAlign = Chassis.createDropPortalCommand(
-                swerveDrive,
-                telemetry,
-                Constants.Auto.Drive.PortalPositions.dropPortal);
+                                swerveDrive,
+                                telemetry,
+                                Constants.Auto.Drive.PortalPositions.dropPortal);
 
                 CommandBase leftPortalAlign = Chassis.createSlidingPortalCommand(
                                 swerveDrive,
@@ -184,9 +184,9 @@ public class RobotContainer {
                                 Constants.Auto.Drive.PortalPositions.leftPortal);
 
                 CommandBase nearestScoreAlign = Chassis.createNearestPointCommand(
-                swerveDrive,
-                telemetry,
-                Constants.Auto.Drive.ScoringPositions.positionsList);
+                                swerveDrive,
+                                telemetry,
+                                Constants.Auto.Drive.ScoringPositions.positionsList);
 
                 CommandBase highPlacementAndResetCommand = Arm.createHighPlacementAndReset(
                                 elevator, elbow, tilt, claw, grabber);
@@ -322,6 +322,14 @@ public class RobotContainer {
                                 Commands.none());
 
                 addAutoCommand(
+                                Constants.AutoRoutines.Element2.ellie.pathName,
+                                Constants.AutoRoutines.Element2.ellie.firstPathConstraint,
+                                Constants.AutoRoutines.Element2.ellie.remainingPathConstraints,
+                                Constants.AutoRoutines.Element2.ellie.translationConstants,
+                                Constants.AutoRoutines.Element2.ellie.rotationConstants,
+                                Commands.none());
+
+                addAutoCommand(
                                 Constants.AutoRoutines.Element1.dumb.pathName,
                                 Constants.AutoRoutines.Element1.dumb.firstPathConstraint,
                                 Constants.AutoRoutines.Element1.dumb.remainingPathConstraints,
@@ -346,9 +354,9 @@ public class RobotContainer {
                                 Commands.none());
 
                 // Command balanceExperiment = Balancing.RobbiesBalance(
-                //                 swerveDrive,
-                //                 telemetry,
-                //                 elevator, elbow, grabber, tilt, claw);
+                // swerveDrive,
+                // telemetry,
+                // elevator, elbow, grabber, tilt, claw);
 
                 Command balanceExperiment2 = Balancing.RobbiesBalanceImproved(
                                 swerveDrive,
@@ -359,10 +367,10 @@ public class RobotContainer {
                                 tilt,
                                 claw,
                                 ledLighting,
-                                1.70,
-                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS * Math.sin(Math.toRadians(15)) / 2.35,
+                                1.60,
+                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS * Math.sin(Math.toRadians(15)) / 2.55,
                                 0.5,
-                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
+                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.55);
 
                 CommandBase weComeFromFranceTest = Balancing.WeComeFromFrance(
                                 swerveDrive,
@@ -373,12 +381,12 @@ public class RobotContainer {
                                 tilt,
                                 claw,
                                 ledLighting,
-                                2,
-                                0.25,
-                                1.70,
+                                2.25,
+                                0.5,
+                                1.50,
                                 Constants.Robot.Drive.Modules.maxModuleSpeedMPS * Math.sin(Math.toRadians(15)) / 2.35,
                                 0.5,
-                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.35);
+                                -Constants.Robot.Drive.Modules.maxModuleSpeedMPS / 2.70);
 
                 this.autoCommands.put("RobbiesBalance", balanceExperiment2);
                 this.autoChooser.addOption("RobbiesBalance", "RobbiesBalance");
