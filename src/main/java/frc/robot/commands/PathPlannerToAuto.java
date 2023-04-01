@@ -19,6 +19,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -123,8 +124,18 @@ public abstract class PathPlannerToAuto {
             CommandBase clawCube = claw.createSetStateCommand(Claw.State.CUBE);
             CommandBase alignment = Arm.createAlignHigh(elevator, elbow, tilt, claw);
             CommandBase placement = Arm.createHighPlacement(elevator, elbow, tilt, claw, grabber);
+            CommandBase wait = Commands.waitSeconds(1);
             CommandBase reset = Arm.createResetHigh(elevator, elbow, tilt, grabber);
-            return Commands.sequence(clawCube, alignment, placement, reset);
+            CommandBase resetDeadline = Commands.race(wait, reset);
+            CommandBase message1 = Commands.runOnce(
+                () -> {
+                    SmartDashboard.putString("Message", "I'm not done");
+                });
+            CommandBase message2 = Commands.runOnce(
+                () -> {
+                    SmartDashboard.putString("Message", "I'm done");
+                });
+            return Commands.sequence(clawCube, alignment, placement, message1, resetDeadline, message2);
         } else if (name.contains("ScoreMiddleCone")) {
             CommandBase clawCone = claw.createSetStateCommand(Claw.State.CONE);
             CommandBase alignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
