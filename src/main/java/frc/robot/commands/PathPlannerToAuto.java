@@ -138,16 +138,18 @@ public abstract class PathPlannerToAuto {
             return Commands.sequence(clawCube, alignment, placement, message1, resetDeadline, message2);
         } else if (name.contains("ScoreMiddleCone")) {
             CommandBase clawCone = claw.createSetStateCommand(Claw.State.CONE);
-            CommandBase alignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
+            CommandBase alignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);           
             CommandBase placement = Arm.createMiddlePlacement(elevator, elbow, tilt, claw, grabber);
             CommandBase reset = Arm.createResetMiddle(elevator, elbow, tilt, grabber);
             return Commands.sequence(clawCone, alignment, placement, reset);
         } else if (name.contains("ScoreMiddleCube")) {
             CommandBase clawCube = claw.createSetStateCommand(Claw.State.CUBE);
             CommandBase alignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
+            CommandBase waitABit = Commands.waitSeconds(0.3);
+            CommandBase alignAndWait = Commands.race(waitABit, alignment);
             CommandBase placement = Arm.createMiddlePlacement(elevator, elbow, tilt, claw, grabber);
             CommandBase reset = Arm.createResetMiddle(elevator, elbow, tilt, grabber);
-            return Commands.sequence(clawCube, alignment, placement, reset);
+            return Commands.sequence(clawCube, alignAndWait, placement, reset);
         } else if (name.contains("ScoreLow")) {
             CommandBase alignment = Arm.createAlignLow(elevator, elbow, tilt, claw);
             CommandBase placement = Arm.createLowPlacement(elevator, elbow, tilt, claw, grabber);

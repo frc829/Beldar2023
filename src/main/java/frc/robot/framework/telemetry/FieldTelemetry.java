@@ -70,28 +70,29 @@ public interface FieldTelemetry {
                 // SmartDashboard.putNumber("YAWFROMTELE", poseFromVision[5]);
 
                 if (poseFromVision[0] != 0) {
-                    if (poseDifferencesNorm <= 1.0 && yawDifferenceDegreesMag <= 2.0) {
+                    if (poseDifferencesNorm <= 0.25 && yawDifferenceDegreesMag <= 2.0) {
                         swerveDrivePoseEstimator.addVisionMeasurement(
                                 new Pose2d(poseFromVision[0], poseFromVision[1],
                                         Rotation2d.fromDegrees(poseFromVision[5])),
                                 Timer.getFPGATimestamp());
-                    } else if (poseDifferencesNorm <= 1.0) {
-                        Pose2d visionPose = new Pose2d(
-                                poseFromVision[0],
-                                poseFromVision[1],
-                                getCurrentPosition().getRotation());
-                        swerveDrivePoseEstimator.addVisionMeasurement(
-                                visionPose,
-                                Timer.getFPGATimestamp());
-                    } else if (yawDifferenceDegreesMag <= 2.0) {
-                        Pose2d visionPose = new Pose2d(
-                                getCurrentPosition().getX(),
-                                getCurrentPosition().getY(),
-                                Rotation2d.fromDegrees(poseFromVision[5]));
-                        swerveDrivePoseEstimator.addVisionMeasurement(
-                                visionPose,
-                                Timer.getFPGATimestamp());
-                    }
+                    } 
+                    // else if (poseDifferencesNorm <= 1.0) {
+                    //     Pose2d visionPose = new Pose2d(
+                    //             poseFromVision[0],
+                    //             poseFromVision[1],
+                    //             getCurrentPosition().getRotation());
+                    //     swerveDrivePoseEstimator.addVisionMeasurement(
+                    //             visionPose,
+                    //             Timer.getFPGATimestamp());
+                    // } else if (yawDifferenceDegreesMag <= 2.0) {
+                    //     Pose2d visionPose = new Pose2d(
+                    //             getCurrentPosition().getX(),
+                    //             getCurrentPosition().getY(),
+                    //             Rotation2d.fromDegrees(poseFromVision[5]));
+                    //     swerveDrivePoseEstimator.addVisionMeasurement(
+                    //             visionPose,
+                    //             Timer.getFPGATimestamp());
+                    // }
                 }
 
             }

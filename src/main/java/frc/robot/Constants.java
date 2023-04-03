@@ -683,7 +683,7 @@ public final class Constants {
 
         public static class Sliding {
           public static class Cone {
-            public static final double elevatorPositionMeters = 0.594;
+            public static final double elevatorPositionMeters = 0.634;
             public static final double elbowPositionDegrees = 90;
             public static final ElevatorTilt.State elevatorTiltState = State.NONE;
             public static final double grabberSpeedRPM = 916.0;
@@ -763,7 +763,7 @@ public final class Constants {
         public static String pathName = "ConsumeMassQuantities3";
         public static PIDConstants translationConstants = new PIDConstants(5.000, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(1.5, 2);
+        public static PathConstraints firstPathConstraint = new PathConstraints(1.15, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }
     }
