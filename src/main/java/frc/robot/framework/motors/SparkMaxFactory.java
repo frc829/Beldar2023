@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.framework.motors.Motor.REVMotor;
@@ -36,6 +37,9 @@ public abstract class SparkMaxFactory {
         canSparkMax.getPIDController().setD(velocityKD);
         canSparkMax.getPIDController().setFF(velocityKF);
 
+        if (revMotor == REVMotor.NEO) {
+            canSparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 40);
+        }
         setSmartCurrentLimit(canSparkMax, revMotor);
         addToSimulator(canSparkMax, revMotor);
 
@@ -43,19 +47,17 @@ public abstract class SparkMaxFactory {
     }
 
     private static void addToSimulator(CANSparkMax canSparkMax, REVMotor revMotor) {
-        if(revMotor == REVMotor.NEO){
+        if (revMotor == REVMotor.NEO) {
             REVPhysicsSim.getInstance().addSparkMax(canSparkMax, DCMotor.getNEO(1));
-        }
-        else{
+        } else {
             REVPhysicsSim.getInstance().addSparkMax(canSparkMax, DCMotor.getNeo550(1));
         }
     }
 
     private static void setSmartCurrentLimit(CANSparkMax canSparkMax, REVMotor sparkMaxBrand) {
-        if(sparkMaxBrand == REVMotor.NEO){
+        if (sparkMaxBrand == REVMotor.NEO) {
             canSparkMax.setSmartCurrentLimit(40);
-        }
-        else{
+        } else {
             canSparkMax.setSmartCurrentLimit(20);
         }
     }

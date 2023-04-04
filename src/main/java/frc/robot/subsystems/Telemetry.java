@@ -73,7 +73,11 @@ public class Telemetry extends SubsystemBase {
                 if (trackingCameraEnabled) {
                         double[] currentPoseFromCamera = this.trackingCamera
                                         .getFieldPosition(DriverStation.getAlliance());
-                        //this.fieldTelemetry.addVisionMeasurement(currentPoseFromCamera);
+
+                        if (fieldTelemetry.getCurrentPosition().getX() <= 4.5) {
+                                this.fieldTelemetry.addVisionMeasurement(currentPoseFromCamera);
+                        }
+
                         // SmartDashboard.putBoolean("Gyro Connected", this.gyroscope.isConnected());
                         SmartDashboard.putNumber("PoseFromCameraX", currentPoseFromCamera[0]);
                         SmartDashboard.putNumber("PoseFromCameraY", currentPoseFromCamera[1]);

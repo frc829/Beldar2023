@@ -26,31 +26,6 @@
     },
     {
       "anchorPoint": {
-        "x": 3.871788266141854,
-        "y": 4.674562603281976
-      },
-      "prevControl": {
-        "x": 2.8717882661418543,
-        "y": 4.674562603281976
-      },
-      "nextControl": {
-        "x": 4.898710965087441,
-        "y": 4.674562603281976
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
         "x": 6.066357089979137,
         "y": 4.59
       },
@@ -126,15 +101,15 @@
     },
     {
       "anchorPoint": {
-        "x": 1.95,
+        "x": 2.05,
         "y": 4.362122228517961
       },
       "prevControl": {
-        "x": 1.719040988200743,
+        "x": 1.8190409882007428,
         "y": 4.362122228517961
       },
       "nextControl": {
-        "x": 2.180959011799257,
+        "x": 2.280959011799257,
         "y": 4.362122228517961
       },
       "holonomicAngle": 180.0,
@@ -224,32 +199,23 @@
       }
     }
   ],
-  "maxVelocity": 2.0,
-  "maxAcceleration": 2.0,
-  "isReversed": null,
   "markers": [
     {
-      "position": 1.5,
+      "position": 0.814545454545423,
       "names": [
         "CubePickup1"
       ]
     },
     {
-      "position": 3.27,
+      "position": 2.4945454545453263,
       "names": [
         "Carry1"
       ]
     },
     {
-      "position": 5.876363636363665,
+      "position": 5.141818181818096,
       "names": [
         "CubePickup2"
-      ]
-    },
-    {
-      "position": 7.679999999999916,
-      "names": [
-        "Carry2"
       ]
     }
   ]

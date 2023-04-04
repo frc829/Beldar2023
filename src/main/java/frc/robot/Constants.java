@@ -727,6 +727,14 @@ public final class Constants {
     public static class Element3 {
       public static class position2 {
         public static String pathName = "CubeCubed";
+        public static PIDConstants translationConstants = new PIDConstants(2.500, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
+        public static PathConstraints[] remainingPathConstraints = {};
+      }
+
+      public static class position22 {
+        public static String pathName = "CubeCubed2";
         public static PIDConstants translationConstants = new PIDConstants(5.000, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
@@ -753,8 +761,8 @@ public final class Constants {
 
       public static class ellie {
         public static String pathName = "Ellie";
-        public static PIDConstants translationConstants = new PIDConstants(1, 0, 0);
-        public static PIDConstants rotationConstants = new PIDConstants(1, 0, 0);
+        public static PIDConstants translationConstants = new PIDConstants(2.5, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(0.5, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(1, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }

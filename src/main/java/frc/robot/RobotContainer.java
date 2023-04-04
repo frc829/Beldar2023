@@ -353,6 +353,14 @@ public class RobotContainer {
                                 Constants.AutoRoutines.Element3.position2.rotationConstants,
                                 Commands.none());
 
+                addAutoCommand(
+                                Constants.AutoRoutines.Element3.position22.pathName,
+                                Constants.AutoRoutines.Element3.position22.firstPathConstraint,
+                                Constants.AutoRoutines.Element3.position22.remainingPathConstraints,
+                                Constants.AutoRoutines.Element3.position22.translationConstants,
+                                Constants.AutoRoutines.Element3.position22.rotationConstants,
+                                Commands.none());
+
                 // Command balanceExperiment = Balancing.RobbiesBalance(
                 // swerveDrive,
                 // telemetry,

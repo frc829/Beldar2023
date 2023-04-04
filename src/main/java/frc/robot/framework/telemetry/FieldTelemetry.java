@@ -70,7 +70,7 @@ public interface FieldTelemetry {
                 // SmartDashboard.putNumber("YAWFROMTELE", poseFromVision[5]);
 
                 if (poseFromVision[0] != 0) {
-                    if (poseDifferencesNorm <= 0.25 && yawDifferenceDegreesMag <= 2.0) {
+                    if (poseDifferencesNorm <= 0.125 && yawDifferenceDegreesMag <= 1.0) {
                         swerveDrivePoseEstimator.addVisionMeasurement(
                                 new Pose2d(poseFromVision[0], poseFromVision[1],
                                         Rotation2d.fromDegrees(poseFromVision[5])),

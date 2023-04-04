@@ -171,8 +171,8 @@
       },
       "/SmartDashboard/The Field": {
         "Robot": {
-          "length": 0.7599999904632568,
-          "width": 0.6100000143051147
+          "length": 0.9300000071525574,
+          "width": 0.7799999713897705
         },
         "Trajectory": {
           "arrowSize": 0,
@@ -183,6 +183,7 @@
           "style": "Line"
         },
         "height": 8.020000457763672,
+        "image": "C:\\Users\\narmstro\\Desktop\\Charged Up Field.PNG",
         "width": 16.5,
         "window": {
           "visible": true
