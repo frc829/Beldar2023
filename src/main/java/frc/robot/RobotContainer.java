@@ -362,6 +362,22 @@ public class RobotContainer {
                                 Commands.none());
 
                 addAutoCommand(
+                                Constants.AutoRoutines.Element3.position2Return.pathName,
+                                Constants.AutoRoutines.Element3.position2Return.firstPathConstraint,
+                                Constants.AutoRoutines.Element3.position2Return.remainingPathConstraints,
+                                Constants.AutoRoutines.Element3.position2Return.translationConstants,
+                                Constants.AutoRoutines.Element3.position2Return.rotationConstants,
+                                Commands.none());
+
+                addAutoCommand(
+                                Constants.AutoRoutines.Element3.position2ReturnForReals.pathName,
+                                Constants.AutoRoutines.Element3.position2ReturnForReals.firstPathConstraint,
+                                Constants.AutoRoutines.Element3.position2ReturnForReals.remainingPathConstraints,
+                                Constants.AutoRoutines.Element3.position2ReturnForReals.translationConstants,
+                                Constants.AutoRoutines.Element3.position2ReturnForReals.rotationConstants,
+                                Commands.none());
+
+                addAutoCommand(
                                 Constants.AutoRoutines.Element3.position2Fast.pathName,
                                 Constants.AutoRoutines.Element3.position2Fast.firstPathConstraint,
                                 Constants.AutoRoutines.Element3.position2Fast.remainingPathConstraints,
