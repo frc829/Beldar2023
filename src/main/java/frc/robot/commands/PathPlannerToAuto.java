@@ -128,17 +128,17 @@ public abstract class PathPlannerToAuto {
             CommandBase reset = Arm.createResetHigh(elevator, elbow, tilt, grabber);
             CommandBase resetDeadline = Commands.race(wait, reset);
             CommandBase message1 = Commands.runOnce(
-                () -> {
-                    SmartDashboard.putString("Message", "I'm not done");
-                });
+                    () -> {
+                        SmartDashboard.putString("Message", "I'm not done");
+                    });
             CommandBase message2 = Commands.runOnce(
-                () -> {
-                    SmartDashboard.putString("Message", "I'm done");
-                });
+                    () -> {
+                        SmartDashboard.putString("Message", "I'm done");
+                    });
             return Commands.sequence(clawCube, alignment, placement, message1, resetDeadline, message2);
         } else if (name.contains("ScoreMiddleCone")) {
             CommandBase clawCone = claw.createSetStateCommand(Claw.State.CONE);
-            CommandBase alignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);           
+            CommandBase alignment = Arm.createAlignMiddle(elevator, elbow, tilt, claw);
             CommandBase placement = Arm.createMiddlePlacement(elevator, elbow, tilt, claw, grabber);
             CommandBase reset = Arm.createResetMiddle(elevator, elbow, tilt, grabber);
             return Commands.sequence(clawCone, alignment, placement, reset);
@@ -167,6 +167,16 @@ public abstract class PathPlannerToAuto {
             return conePickup;
         } else if (name.contains("CubePickup")) {
             CommandBase conePickup = Arm.createFloorPickup(
+                    elevator,
+                    elbow,
+                    tilt,
+                    grabber,
+                    claw,
+                    ledLighting,
+                    Claw.State.CUBE);
+            return conePickup;
+        } else if (name.contains("POOF")) {
+            CommandBase conePickup = Arm.createPoof(
                     elevator,
                     elbow,
                     tilt,

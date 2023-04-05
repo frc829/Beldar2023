@@ -224,9 +224,6 @@
       }
     }
   ],
-  "maxVelocity": 2.0,
-  "maxAcceleration": 2.0,
-  "isReversed": null,
   "markers": [
     {
       "position": 1.5,
@@ -241,13 +238,13 @@
       ]
     },
     {
-      "position": 5.876363636363665,
+      "position": 5.88,
       "names": [
         "CubePickup2"
       ]
     },
     {
-      "position": 7.679999999999916,
+      "position": 7.68,
       "names": [
         "Carry2"
       ]

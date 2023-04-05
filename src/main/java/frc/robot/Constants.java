@@ -733,13 +733,14 @@ public final class Constants {
         public static PathConstraints[] remainingPathConstraints = {};
       }
 
-      public static class position22 {
+      public static class position2Fast {
         public static String pathName = "CubeCubed2";
-        public static PIDConstants translationConstants = new PIDConstants(5.000, 0, 0);
+        public static PIDConstants translationConstants = new PIDConstants(2.500, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
-        public static PathConstraints firstPathConstraint = new PathConstraints(2, 2);
+        public static PathConstraints firstPathConstraint = new PathConstraints(4, 4);
         public static PathConstraints[] remainingPathConstraints = {};
       }
+
     }
 
     public static class Element2 {
@@ -753,8 +754,8 @@ public final class Constants {
 
       public static class position8 {
         public static String pathName = "ConsumeMassQuantities2";
-        public static PIDConstants translationConstants = new PIDConstants(1, 0, 0);
-        public static PIDConstants rotationConstants = new PIDConstants(1, 0, 0);
+        public static PIDConstants translationConstants = new PIDConstants(2.5, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(0.5, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(1, 2);
         public static PathConstraints[] remainingPathConstraints = {};
       }
@@ -767,9 +768,17 @@ public final class Constants {
         public static PathConstraints[] remainingPathConstraints = {};
       }
 
+      public static class ellie2 {
+        public static String pathName = "Ellie2";
+        public static PIDConstants translationConstants = new PIDConstants(2.5, 0, 0);
+        public static PIDConstants rotationConstants = new PIDConstants(0.5, 0, 0);
+        public static PathConstraints firstPathConstraint = new PathConstraints(1, 2);
+        public static PathConstraints[] remainingPathConstraints = {};
+      }
+
       public static class position2Again {
         public static String pathName = "ConsumeMassQuantities3";
-        public static PIDConstants translationConstants = new PIDConstants(5.000, 0, 0);
+        public static PIDConstants translationConstants = new PIDConstants(2.500, 0, 0);
         public static PIDConstants rotationConstants = new PIDConstants(0.500, 0, 0);
         public static PathConstraints firstPathConstraint = new PathConstraints(1.15, 2);
         public static PathConstraints[] remainingPathConstraints = {};

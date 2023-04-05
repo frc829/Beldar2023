@@ -252,6 +252,32 @@ public abstract class Arm {
                                 Constants.Auto.Arm.Pickup.Floor.Cube.grabberSpeedRPM);
         }
 
+        public static CommandBase createPoof(
+                        Elevator elevator,
+                        Elbow elbow,
+                        ElevatorTilt tilt,
+                        Grabber grabber,
+                        Claw claw,
+                        LEDLighting ledLighting,
+                        Claw.State clawState) {
+                return Arm.SingleArmMovement.create(
+                                elevator,
+                                elbow,
+                                tilt,
+                                grabber,
+                                claw,
+                                ledLighting,
+                                clawState,
+                                Constants.Auto.Arm.Pickup.Floor.Cone.elevatorTiltState,
+                                Constants.Auto.Arm.Pickup.Floor.Cube.elevatorTiltState,
+                                Constants.Auto.Arm.Pickup.Floor.Cone.elevatorPositionMeters,
+                                Constants.Auto.Arm.Pickup.Floor.Cube.elevatorPositionMeters,
+                                Constants.Auto.Arm.Pickup.Floor.Cone.elbowPositionDegrees,
+                                Constants.Auto.Arm.Pickup.Floor.Cube.elbowPositionDegrees,
+                                -916,
+                                -160);
+        }
+
         public static CommandBase createSlidingPickup(
                         Elevator elevator,
                         Elbow elbow,
@@ -724,7 +750,8 @@ public abstract class Arm {
                                         double elbowPositionRotations = elbow.getPositionRotations();
                                         double elevatorSpeed = elevator.getPIDController()
                                                         .calculate(elevatorPositionMeters);
-                                        elevatorSpeed = Math.abs(elevatorSpeed) > 0.5 ? Math.signum(elevatorSpeed) * 0.5 : elevatorSpeed; 
+                                        elevatorSpeed = Math.abs(elevatorSpeed) > 0.5 ? Math.signum(elevatorSpeed) * 0.5
+                                                        : elevatorSpeed;
                                         double elbowSpeed = elbow.getPIDController().calculate(elbowPositionRotations);
                                         elbow.setVelocityRotationsPerSecond(elbowSpeed);
                                         elevator.setVelocity(elevatorSpeed);

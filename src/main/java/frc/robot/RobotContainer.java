@@ -330,6 +330,14 @@ public class RobotContainer {
                                 Commands.none());
 
                 addAutoCommand(
+                                Constants.AutoRoutines.Element2.ellie2.pathName,
+                                Constants.AutoRoutines.Element2.ellie2.firstPathConstraint,
+                                Constants.AutoRoutines.Element2.ellie2.remainingPathConstraints,
+                                Constants.AutoRoutines.Element2.ellie2.translationConstants,
+                                Constants.AutoRoutines.Element2.ellie2.rotationConstants,
+                                Commands.none());
+
+                addAutoCommand(
                                 Constants.AutoRoutines.Element1.dumb.pathName,
                                 Constants.AutoRoutines.Element1.dumb.firstPathConstraint,
                                 Constants.AutoRoutines.Element1.dumb.remainingPathConstraints,
@@ -354,11 +362,11 @@ public class RobotContainer {
                                 Commands.none());
 
                 addAutoCommand(
-                                Constants.AutoRoutines.Element3.position22.pathName,
-                                Constants.AutoRoutines.Element3.position22.firstPathConstraint,
-                                Constants.AutoRoutines.Element3.position22.remainingPathConstraints,
-                                Constants.AutoRoutines.Element3.position22.translationConstants,
-                                Constants.AutoRoutines.Element3.position22.rotationConstants,
+                                Constants.AutoRoutines.Element3.position2Fast.pathName,
+                                Constants.AutoRoutines.Element3.position2Fast.firstPathConstraint,
+                                Constants.AutoRoutines.Element3.position2Fast.remainingPathConstraints,
+                                Constants.AutoRoutines.Element3.position2Fast.translationConstants,
+                                Constants.AutoRoutines.Element3.position2Fast.rotationConstants,
                                 Commands.none());
 
                 // Command balanceExperiment = Balancing.RobbiesBalance(
