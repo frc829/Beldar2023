@@ -133,8 +133,35 @@
       "/LiveWindow/Ungrouped/PIDController[38]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[39]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[40]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[41]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[42]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[43]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[44]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[45]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[46]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[47]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[48]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[49]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[50]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[51]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[52]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[53]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[54]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[55]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[56]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[57]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[58]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[59]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[60]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[61]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[62]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[63]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[64]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[65]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[66]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
@@ -145,6 +172,7 @@
       "/SmartDashboard/Arm2d": "Mechanism2d",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Field Centric Test": "Command",
       "/SmartDashboard/The Field": "Field2d"
     },
     "windows": {
@@ -183,7 +211,6 @@
           "style": "Line"
         },
         "height": 8.020000457763672,
-        "image": "C:\\Users\\narmstro\\Desktop\\Charged Up Field.PNG",
         "width": 16.5,
         "window": {
           "visible": true
@@ -205,13 +232,13 @@
     },
     "transitory": {
       "CameraPublisher": {
-        "USB Camera 0": {
-          "open": true
-        },
         "open": true
       },
       "SmartDashboard": {
         "Elevator Speed (m": {
+          "open": true
+        },
+        "Field Centric Test": {
           "open": true
         },
         "Grabber Open": {

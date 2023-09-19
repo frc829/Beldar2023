@@ -154,6 +154,9 @@ public class RobotContainer {
                 pathPlannerTrajectories = new HashMap<>();
                 autoCommands = new HashMap<>();
 
+                CommandBase testFieldCentricCommand = this.swerveDrive.testFieldCentric(telemetry);
+                SmartDashboard.putData("Field Centric Test", testFieldCentricCommand);
+
                 // Configure the trigger bindings
                 configureDriverBindings();
                 configureOperatorBindings();
