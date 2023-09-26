@@ -156,6 +156,9 @@ public class RobotContainer {
 
                 CommandBase testFieldCentricCommand = this.swerveDrive.testFieldCentric(telemetry);
                 SmartDashboard.putData("Field Centric Test", testFieldCentricCommand);
+                CommandBase resetPoseForTesting = this.swerveDrive.resetPoseForTesting(telemetry);
+                SmartDashboard.putData("Reset Pose Test", resetPoseForTesting);
+
 
                 // Configure the trigger bindings
                 configureDriverBindings();
@@ -514,7 +517,6 @@ public class RobotContainer {
                         return autoCommand;
                 } else {
                         return null;
-
                 }
         }
 

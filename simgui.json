@@ -173,6 +173,7 @@
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Field Centric Test": "Command",
+      "/SmartDashboard/Reset Pose Test": "Command",
       "/SmartDashboard/The Field": "Field2d"
     },
     "windows": {
@@ -245,6 +246,9 @@
           "open": true
         },
         "PPSwerveControllerCommand": {
+          "open": true
+        },
+        "Reset Pose Test": {
           "open": true
         },
         "The Field": {

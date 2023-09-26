@@ -505,11 +505,11 @@ public class SwerveDrive extends SubsystemBase {
         // Consumers
         public void setSwerveDriveChassisSpeed(ChassisSpeeds robotCentricChassisSpeeds) {
 
-                // robotCentricChassisSpeeds = discretize(
-                //                 robotCentricChassisSpeeds.vxMetersPerSecond,
-                //                 robotCentricChassisSpeeds.vyMetersPerSecond,
-                //                 robotCentricChassisSpeeds.omegaRadiansPerSecond,
-                //                 0.060);
+                robotCentricChassisSpeeds = discretize(
+                                robotCentricChassisSpeeds.vxMetersPerSecond,
+                                robotCentricChassisSpeeds.vyMetersPerSecond,
+                                robotCentricChassisSpeeds.omegaRadiansPerSecond,
+                                0.077);
 
                 SmartDashboard.putNumber("VXTold", robotCentricChassisSpeeds.vxMetersPerSecond);
                 SmartDashboard.putNumber("VYTold", robotCentricChassisSpeeds.vyMetersPerSecond);
@@ -660,7 +660,9 @@ public class SwerveDrive extends SubsystemBase {
 
     public CommandBase testFieldCentric(Telemetry telemetry){
         return new FunctionalCommand(
-                () -> {},
+                () -> {
+                        telemetry.disableTrackingCamera();
+                },
                 () -> {
                         Rotation2d robotAngle = telemetry.getSwerveDrivePosition().getRotation();
                         ChassisSpeeds fieldChassisSpeeds = new ChassisSpeeds(4,     0, 4);
@@ -669,9 +671,14 @@ public class SwerveDrive extends SubsystemBase {
                 }, 
                 (isFinished) -> {}, 
                 () -> {
-                        return telemetry.getSwerveDrivePosition().getX() >= 15.0;
+                        return telemetry.getSwerveDrivePosition().getX() >= 9.0;
                 }, 
                 this,telemetry);
+    }
+
+    public CommandBase resetPoseForTesting(Telemetry telemetry){
+        return runOnce(
+                ()-> telemetry.resetSwerveDrivePosition(new Pose2d(3, 3, new Rotation2d())));
     }
 
 }
