@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -505,11 +506,13 @@ public class SwerveDrive extends SubsystemBase {
         // Consumers
         public void setSwerveDriveChassisSpeed(ChassisSpeeds robotCentricChassisSpeeds) {
 
-                robotCentricChassisSpeeds = discretize(
-                                robotCentricChassisSpeeds.vxMetersPerSecond,
-                                robotCentricChassisSpeeds.vyMetersPerSecond,
-                                robotCentricChassisSpeeds.omegaRadiansPerSecond,
-                                0.077);
+                if (DriverStation.isTeleop()) {
+                        robotCentricChassisSpeeds = discretize(
+                                        robotCentricChassisSpeeds.vxMetersPerSecond,
+                                        robotCentricChassisSpeeds.vyMetersPerSecond,
+                                        robotCentricChassisSpeeds.omegaRadiansPerSecond,
+                                        0.077);
+                }
 
                 SmartDashboard.putNumber("VXTold", robotCentricChassisSpeeds.vxMetersPerSecond);
                 SmartDashboard.putNumber("VYTold", robotCentricChassisSpeeds.vyMetersPerSecond);
@@ -647,38 +650,41 @@ public class SwerveDrive extends SubsystemBase {
                 return Commands.runOnce(this::stopDrive, this);
         }
 
-//     public CommandBase testFieldCentric(Telemetry telemetry){
-//         return Commands.run(
-//                 () -> {
-//                         Rotation2d robotAngle = telemetry.getSwerveDrivePosition().getRotation();
-//                         ChassisSpeeds fieldChassisSpeeds = new ChassisSpeeds(4,     0, 1);
-//                         ChassisSpeeds robotChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fieldChassisSpeeds, robotAngle);
-//                         this.setSwerveDriveChassisSpeed(robotChassisSpeeds);
-//                 }, 
-//                 this, telemetry);
-//     }
+        // public CommandBase testFieldCentric(Telemetry telemetry){
+        // return Commands.run(
+        // () -> {
+        // Rotation2d robotAngle = telemetry.getSwerveDrivePosition().getRotation();
+        // ChassisSpeeds fieldChassisSpeeds = new ChassisSpeeds(4, 0, 1);
+        // ChassisSpeeds robotChassisSpeeds =
+        // ChassisSpeeds.fromFieldRelativeSpeeds(fieldChassisSpeeds, robotAngle);
+        // this.setSwerveDriveChassisSpeed(robotChassisSpeeds);
+        // },
+        // this, telemetry);
+        // }
 
-    public CommandBase testFieldCentric(Telemetry telemetry){
-        return new FunctionalCommand(
-                () -> {
-                        telemetry.disableTrackingCamera();
-                },
-                () -> {
-                        Rotation2d robotAngle = telemetry.getSwerveDrivePosition().getRotation();
-                        ChassisSpeeds fieldChassisSpeeds = new ChassisSpeeds(4,     0, 4);
-                        ChassisSpeeds robotChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fieldChassisSpeeds, robotAngle);
-                        this.setSwerveDriveChassisSpeed(robotChassisSpeeds);
-                }, 
-                (isFinished) -> {}, 
-                () -> {
-                        return telemetry.getSwerveDrivePosition().getX() >= 9.0;
-                }, 
-                this,telemetry);
-    }
+        public CommandBase testFieldCentric(Telemetry telemetry) {
+                return new FunctionalCommand(
+                                () -> {
+                                        telemetry.disableTrackingCamera();
+                                },
+                                () -> {
+                                        Rotation2d robotAngle = telemetry.getSwerveDrivePosition().getRotation();
+                                        ChassisSpeeds fieldChassisSpeeds = new ChassisSpeeds(4, 0, 4);
+                                        ChassisSpeeds robotChassisSpeeds = ChassisSpeeds
+                                                        .fromFieldRelativeSpeeds(fieldChassisSpeeds, robotAngle);
+                                        this.setSwerveDriveChassisSpeed(robotChassisSpeeds);
+                                },
+                                (isFinished) -> {
+                                },
+                                () -> {
+                                        return telemetry.getSwerveDrivePosition().getX() >= 9.0;
+                                },
+                                this, telemetry);
+        }
 
-    public CommandBase resetPoseForTesting(Telemetry telemetry){
-        return runOnce(
-                ()-> telemetry.resetSwerveDrivePosition(new Pose2d(3, 3, new Rotation2d())));
-    }
+        public CommandBase resetPoseForTesting(Telemetry telemetry) {
+                return runOnce(
+                                () -> telemetry.resetSwerveDrivePosition(new Pose2d(3, 3, new Rotation2d())));
+        }
 
 }
