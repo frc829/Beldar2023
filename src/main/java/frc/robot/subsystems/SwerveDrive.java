@@ -567,14 +567,24 @@ public class SwerveDrive extends SubsystemBase {
                                         rearRightCurrentAngle,
                                         rearRightSteerPIDController);
 
+                        double frontLeftCosine = frontLeftCurrentAngle.minus(frontLeftDesiredState.angle).getCos();
+                        double frontRightCosine = frontRightCurrentAngle.minus(frontRightDesiredState.angle).getCos();
+                        double rearLeftCosine = rearLeftCurrentAngle.minus(rearLeftDesiredState.angle).getCos();
+                        double rearRightCosine = rearRightCurrentAngle.minus(rearRightDesiredState.angle).getCos();
+
+                        // double frontLeftCosine = 1;
+                        // double frontRightCosine = 1;
+                        // double rearLeftCosine = 1;
+                        // double rearRightCosine = 1;
+
                         this.frontLeftModule.setSwerveModuleState(frontLeftDesiredSteerSpeedRPS,
-                                        frontLeftDesiredDriveSpeedMPS);
+                                        frontLeftDesiredDriveSpeedMPS * frontLeftCosine);
                         this.frontRightModule.setSwerveModuleState(frontRightDesiredSteerSpeedRPS,
-                                        frontRightDesiredDriveSpeedMPS);
+                                        frontRightDesiredDriveSpeedMPS * frontRightCosine);
                         this.rearLeftModule.setSwerveModuleState(rearLeftDesiredSteerSpeedRPS,
-                                        rearLeftDesiredDriveSpeedMPS);
+                                        rearLeftDesiredDriveSpeedMPS * rearLeftCosine);
                         this.rearRightModule.setSwerveModuleState(rearRightDesiredSteerSpeedRPS,
-                                        rearRightDesiredDriveSpeedMPS);
+                                        rearRightDesiredDriveSpeedMPS * rearRightCosine);
                 }
 
         }

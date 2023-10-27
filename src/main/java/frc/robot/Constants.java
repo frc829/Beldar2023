@@ -683,8 +683,8 @@ public final class Constants {
 
         public static class Sliding {
           public static class Cone {
-            public static final double elevatorPositionMeters = 0.584;
-            public static final double elbowPositionDegrees = 90;
+            public static final double elevatorPositionMeters = 0.604;
+            public static final double elbowPositionDegrees = 88;
             public static final ElevatorTilt.State elevatorTiltState = State.NONE;
             public static final double grabberSpeedRPM = 916.0;
           }
